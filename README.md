@@ -15,6 +15,7 @@ Vidya is an Android-first, offline-oriented technical inspection assistant.
 - Deterministic six-dimension safety policy engine (Time, ROI, Content, Action, Logic, Predictive Safety).
 - Stop event triggers local vibration and a Hindi TTS warning.
 - Android speech recognition adapter with on-device recognition preference where available.
+- UI language selector for Assamese, Hindi, English, Bengali, Tamil, Telugu, Marathi, Gujarati, Kannada, Malayalam, Punjabi, and Urdu (actual voice availability depends on installed device language packs).
 - Small deterministic offline safety FAQ for common electrical and moving-machinery questions.
 - Unit tests for safety-engine policy and offline FAQ behavior.
 - GitHub Actions workflow to run unit tests and assemble a debug APK.
@@ -40,7 +41,7 @@ Requirements: JDK 17, Android SDK 35, Gradle 8.10.2.
 gradle testDebugUnitTest assembleDebug
 ```
 
-GitHub Actions runs the same unit-test and debug-APK tasks on pushes and pull requests. The APK path after a successful build is `app/build/outputs/apk/debug/app-debug.apk`.
+GitHub Actions runs unit tests and builds a debug APK on pushes and pull requests, then uploads it as the `vidya-debug-apk` workflow artifact. The local APK path after a successful build is `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## Safety principles
 
