@@ -40,7 +40,8 @@ object OnlineMachineResearch {
 
         try {
             val status = connection.responseCode
-            if (status == HttpURLConnection.HTTP_TOO_MANY_REQUESTS) {
+            // HttpURLConnection does not expose a portable HTTP_TOO_MANY_REQUESTS constant.
+            if (status == 429) {
                 val retryAfter = connection.getHeaderField("Retry-After")
                 throw IllegalStateException(
                     if (retryAfter.isNullOrBlank()) {
