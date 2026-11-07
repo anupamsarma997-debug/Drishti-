@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -212,7 +214,7 @@ private fun VidyaApp() {
         )
     ) {
         Surface(modifier = Modifier.fillMaxSize(), color = Color(0xFF080D14)) {
-            Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Column(modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState())) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -422,7 +424,7 @@ private fun VidyaApp() {
                 }
 
                 Box(
-                    modifier = Modifier.weight(1f).fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().height(320.dp)
                         .background(Color(0xFF101923), RoundedCornerShape(20.dp))
                 ) {
                     if (cameraGranted && arMode) {
