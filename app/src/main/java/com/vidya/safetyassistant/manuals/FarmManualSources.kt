@@ -9,6 +9,8 @@ data class FarmManualSource(
 /** Public Indian government reference portals for agricultural machinery categories/specifications. */
 object FarmManualSources {
     val entries = listOf(
+        FarmManualSource("NERFMTTI — Machinery available for training", "Official Assam institute inventory covering tractors, power tillers, ploughs, harrows, levellers, planters, transplanters, power weeders, reapers, fodder harvesters, threshers, mini combines, grain dryers, mulchers and balers.", "https://nerfmtti.nic.in/trg_machineries.html"),
+        FarmManualSource("Government of India — Farm Mechanization Portal", "Central government portal for farm machinery performance testing, testing institutes, mechanization resources and FARMS app information.", "https://agrimachinery.nic.in/"),
         FarmManualSource("North Eastern Region Farm Machinery Training & Testing Institute (Assam)", "Official specifications and training/testing information for rotavators, power tillers, brush cutters, chaff cutters, rice transplanters, threshers, rice mills, power weeders and more.", "https://nerfmtti.nic.in/test_application.html"),
         FarmManualSource("KIRAN — Farm Tools (North East)", "North-East focused farm-tool and crop-operation guide covering tillage, paddy, planting, weeding, spraying, harvesting, threshing and winnowing.", "https://kiran.nic.in/farm_tools.html"),
         FarmManualSource("KIRAN — Agricultural Engineering FAQ", "Regional guidance on hill paddy machinery, power tillers, transplanters, sprayers, reapers, threshers and cono weeders.", "https://kiran.nic.in/faq_engg.html"),
