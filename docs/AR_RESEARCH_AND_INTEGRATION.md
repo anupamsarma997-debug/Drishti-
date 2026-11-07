@@ -1,0 +1,101 @@
+# AR research pack for Vidya
+
+Research date: 2026-11-07
+
+This document records useful public Android AR repositories inspected for Vidya. It is a technical selection guide, not a claim that any third-party code has already been integrated or device-tested.
+
+## Recommended foundation
+
+**Use ARCore + SceneView + Jetpack Compose.**
+
+Why:
+- Vidya already uses Kotlin, Compose, CameraX and minSdk 26.
+- SceneView provides ARCore session/rendering and 3D nodes without Vidya needing to write an OpenGL renderer first.
+- Compose can keep Vidya's instruction, warning, voice and step controls as normal UI above the 3D camera scene.
+- ARCore plane hit-testing can anchor a visual marker to a detected physical surface; anchors track the physical world as the camera moves.
+
+### Repositories inspected
+
+| Repository | Useful parts | License / caution |
+|---|---|---|
+| [rahulmasal/ARWifiScanner](https://github.com/rahulmasal/ARWifiScanner) | Compose + AndroidView + ARSceneView, plane hit-test, AnchorNode, SphereNode, Compose HUD and clear-marker flow. Its ARScreen is the closest small implementation pattern for Vidya. | README says MIT, but a root LICENSE file was not found in this inspection. Verify license with owner before copying source. |
+| [Qu4X/ReMeasure](https://github.com/Qu4X/ReMeasure) | Compose navigation, ViewModel/StateFlow, measurement history, AR surface placement and polished Material 3 structure. | Apache-2.0. Its inspected dependency catalog uses SceneView 2.3.0 and ARCore 1.47.0; project uses Java 21, so do not copy its entire build configuration into Vidya. |
+| [PauGuillamon/sample_compose_arcore](https://github.com/PauGuillamon/sample_compose_arcore) | Compose + OpenGL ES + ARCore, renderer separated through ViewModel, avoids unnecessary Compose recompositions, hitTest/anchors, Depth API occlusion and EIS. Best advanced reference for a future performance/depth phase. | MIT. Preserve copyright/license notice if adapting code. |
+| [SceneView/sceneform-android](https://github.com/SceneView/sceneform-android) | Explains Sceneform lineage, glTF/GLB model loading, animated models, depth occlusion and ARCore features. | README explicitly points new projects to SceneView Kotlin successor; this repository is the Java continuation, not the preferred new Kotlin foundation. |
+| [JN0V/TraceGlass](https://github.com/JN0V/TraceGlass) | CameraX + OpenCV ArUco marker tracking, perspective correction, homography, smoothing, camera lifecycle, modular MVVM and session persistence. Useful if Vidya later needs to align instructions to a printed manual diagram or a physical marker. | GPL-3.0. Do not copy its source into Vidya without accepting GPL obligations and reviewing distribution implications. Also, this is camera overlay tracking, not ARCore world-space anchoring. |
+| [google-ar/arcore-android-sdk](https://github.com/google-ar/arcore-android-sdk) | Official ARCore Android samples, including augmented image tracking and session handling. Use as authoritative API reference. | Apache-2.0 in the inspected sample. Prefer official current sample/API guidance for lifecycle and platform compatibility. |
+
+## Small AR placement pattern inspected
+
+The ARWifiScanner sample demonstrates the following flow (described here, not copied wholesale):
+
+1. Host an `ARSceneView` inside Compose using `AndroidView`.
+2. On a screen touch, get the current ARCore frame.
+3. Run `frame.hitTest(x, y)`.
+4. Accept a hit only when its trackable is a detected `Plane` and the hit pose lies inside that plane polygon.
+5. Create an ARCore `Anchor` from the hit.
+6. Attach an `AnchorNode` to the scene and put a 3D node under it.
+7. Keep Compose controls (step title, safety warning, voice replay, next/back) as a normal overlay.
+
+This is a good starting pattern for placing a neutral AR step marker. It does **not** identify a wire, terminal, machine part, or prove that the chosen physical location is correct.
+
+## Dependency versions observed
+
+The ARWifiScanner app uses:
+```kotlin
+implementation("com.google.ar:core:1.46.0")
+implementation("io.github.sceneview:arsceneview:2.2.1")
+implementation("io.github.sceneview:sceneview:2.2.1")
+```
+
+ReMeasure uses SceneView 2.3.0 and ARCore 1.47.0 in its version catalog, but also uses Java 21 and a newer Android Gradle Plugin. Vidya currently targets Java 17 and compileSdk 35. Do not blindly upgrade all toolchain versions based on that repository.
+
+Before choosing exact dependencies for Vidya:
+- Check the current SceneView release notes and Maven Central metadata.
+- Check the supported ARCore version and device compatibility.
+- Keep AR optional: devices without Google Play Services for AR must still use Vidya's ordinary camera/manual mode.
+- Build and run on a real ARCore-supported phone before enabling the feature by default.
+
+## What Vidya should implement (safe order)
+
+### Phase A — AR foundation
+- Add an optional AR mode, separate from existing CameraX inspection mode.
+- Check ARCore availability and request/install support gracefully.
+- Manage ARCore session lifecycle correctly on pause/resume/destroy.
+- Detect horizontal/vertical planes and show a neutral placement reticle.
+- Let user place/remove a neutral marker; do not auto-place based on generic object labels.
+
+### Phase B — manual-guided visual steps
+- Only show AR step markers after the user selects the exact equipment model and a verified manual section.
+- Keep the written step and source/page reference visible in Compose.
+- Use AR marker as a visual pointer only; show a persistent "verify location against the manual" warning.
+- Do not show green "safe" confirmations from AR tracking.
+- If tracking is lost, plane confidence is poor, or the anchor drifts, hide the step marker and return to a text-only instruction.
+
+### Phase C — depth and occlusion
+- Evaluate Depth API only on supported devices.
+- Use occlusion to make 3D overlays appear behind real objects where appropriate.
+- Depth occlusion is a rendering feature, not hazard detection or proof of physical clearance.
+
+### Phase D — specialist alignment
+- Evaluate image/marker tracking for known manufacturer diagrams, labels or fiducials.
+- Keep the camera model and AR anchor model separate: object recognition alone cannot establish precise 3D part location.
+- Validate each equipment family with annotated test sets and false-negative analysis before giving operational guidance.
+
+## Safety and product constraints
+
+- AR overlays cannot physically stop a machine, isolate electrical power, or verify a circuit is de-energized.
+- Never guide a user to touch live wiring, moving parts, safety interlocks or guards.
+- A misplaced arrow can be more dangerous than no arrow. Require manual/model match and explicit user confirmation.
+- If the app cannot confidently localize the referenced part, show a non-spatial text instruction instead.
+- Green tracking/plane status must never be labelled as equipment SAFE.
+
+## Source links
+
+- ARWifiScanner AR screen: https://github.com/rahulmasal/ARWifiScanner/blob/main/app/src/main/java/com/example/arwifiscanner/ar/ARScreen.kt
+- ARWifiScanner build dependencies: https://github.com/rahulmasal/ARWifiScanner/blob/main/app/build.gradle.kts
+- ReMeasure app entry/navigation: https://github.com/Qu4X/ReMeasure/blob/main/app/src/main/java/org/remmeasure/MainActivity.kt
+- ReMeasure versions: https://github.com/Qu4X/ReMeasure/blob/main/gradle/libs.versions.toml
+- Compose + ARCore advanced sample: https://github.com/PauGuillamon/sample_compose_arcore
+- TraceGlass architecture: https://github.com/JN0V/TraceGlass/blob/main/docs/architecture.md
+- Official ARCore samples: https://github.com/google-ar/arcore-android-sdk
