@@ -277,7 +277,14 @@ private fun VidyaApp() {
                             onTextRecognized = { text ->
                                 liveOcrText = text
                                 val parsed = EquipmentLabelParser.parse(text)
-                                if (parsed.hasAnyFact) equipmentFacts = parsed
+                                if (parsed.hasAnyFact) equipmentFacts = EquipmentLabelFacts(
+                                    manufacturer = parsed.manufacturer ?: equipmentFacts.manufacturer,
+                                    model = parsed.model ?: equipmentFacts.model,
+                                    voltage = parsed.voltage ?: equipmentFacts.voltage,
+                                    current = parsed.current ?: equipmentFacts.current,
+                                    frequency = parsed.frequency ?: equipmentFacts.frequency,
+                                    power = parsed.power ?: equipmentFacts.power
+                                )
                             }
                         )
                         SafetyOverlay(
