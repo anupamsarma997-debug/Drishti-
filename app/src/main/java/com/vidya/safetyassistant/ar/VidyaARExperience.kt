@@ -51,6 +51,7 @@ fun VidyaARExperience(
                             }
                             if (hit != null) {
                                 try {
+                                    sceneView.clearChildNodes()
                                     val anchor = hit.createAnchor()
                                     val material = sceneView.materialLoader.createColorInstance(
                                         Color(0.12f, 0.78f, 1f, 1f)
