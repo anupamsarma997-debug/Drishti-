@@ -17,10 +17,15 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
+import com.vidya.safetyassistant.camera.CameraDetections
 import com.vidya.safetyassistant.safety.SafetyStatus
 
 @Composable
-fun SafetyOverlay(status: SafetyStatus, modifier: Modifier = Modifier) {
+fun SafetyOverlay(
+    status: SafetyStatus,
+    detections: CameraDetections? = null,
+    modifier: Modifier = Modifier
+) {
     val transition = rememberInfiniteTransition(label = "danger-flash")
     val alpha by transition.animateFloat(
         initialValue = 1f,
@@ -35,6 +40,8 @@ fun SafetyOverlay(status: SafetyStatus, modifier: Modifier = Modifier) {
             SafetyStatus.STOP -> Color(0xFFFF3030)
         }
         val activeAlpha = if (status == SafetyStatus.STOP) alpha else 1f
+
+        // Main inspection frame. SAFE means no configured issue was flagged, not guaranteed safe.
         val left = size.width * 0.12f
         val top = size.height * 0.24f
         val right = size.width * 0.88f
@@ -45,6 +52,47 @@ fun SafetyOverlay(status: SafetyStatus, modifier: Modifier = Modifier) {
             size = androidx.compose.ui.geometry.Size(right - left, bottom - top),
             style = Stroke(width = 4.dp.toPx())
         )
+
+        // ML Kit returns generic object boxes, not hazard classifications.
+        detections?.let { frame ->
+            val sourceW = frame.imageWidth.toFloat()
+            val sourceH = frame.imageHeight.toFloat()
+            if (sourceW > 0f && sourceH > 0f) {
+                val scale = maxOf(size.width / sourceW, size.height / sourceH)
+                val offsetX = (size.width - sourceW * scale) / 2f
+                val offsetY = (size.height - sourceH * scale) / 2f
+                frame.objects.forEach { item ->
+                    val box = RectF(
+                        offsetX + item.left * sourceW * scale,
+                        offsetY + item.top * sourceH * scale,
+                        offsetX + item.right * sourceW * scale,
+                        offsetY + item.bottom * sourceH * scale
+                    )
+                    drawContext.canvas.nativeCanvas.drawRoundRect(
+                        box, 8.dp.toPx(), 8.dp.toPx(),
+                        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                            this.color = android.graphics.Color.CYAN
+                            style = Paint.Style.STROKE
+                            strokeWidth = 2.dp.toPx()
+                        }
+                    )
+                    val label = if (item.confidence > 0f) {
+                        "${item.label} ${(item.confidence * 100).toInt()}%"
+                    } else item.label
+                    drawContext.canvas.nativeCanvas.drawText(
+                        label,
+                        box.left.coerceAtLeast(4.dp.toPx()),
+                        (box.top - 6.dp.toPx()).coerceAtLeast(18.dp.toPx()),
+                        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                            this.color = android.graphics.Color.WHITE
+                            textSize = 12.dp.toPx()
+                            style = Paint.Style.FILL
+                        }
+                    )
+                }
+            }
+        }
+
         val label = when (status) {
             SafetyStatus.SAFE -> "SAFE: Step Active*"
             SafetyStatus.CAUTION -> "CAUTION: Verify before proceeding"
