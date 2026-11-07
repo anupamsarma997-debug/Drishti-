@@ -64,23 +64,20 @@ class ManualTextIndexer(context: Context) {
     }
 
     fun search(query: String, limit: Int = 8): List<ManualPageText> {
-        val terms = query.lowercase().split(Regex("[^\\p{L}\\p{N}]+")).filter { it.length >= 2 }.distinct()
-        if (terms.isEmpty()) return emptyList()
-        return buildList {
-            for (manual in ManualLibrary(app).list()) {
-                val raw = prefs.getString(key(manual.uri), null) ?: continue
-                val array = try { JSONArray(raw) } catch (_: Exception) { continue }
-                for (i in 0 until array.length()) {
-                    val item = array.getJSONObject(i)
-                    val body = item.optString("text")
-                    val normalized = body.lowercase()
-                    val hits = terms.count { normalized.contains(it) }
-                    if (hits > 0) add(ManualPageText(manual.displayName, item.optInt("page"), body))
+        if (query.isBlank() || limit <= 0) return emptyList()
+        val pages = mutableListOf<ManualPageText>()
+        for (manual in ManualLibrary(app).list()) {
+            val raw = prefs.getString(key(manual.uri), null) ?: continue
+            val array = try { JSONArray(raw) } catch (_: Exception) { continue }
+            for (i in 0 until array.length()) {
+                val item = array.getJSONObject(i)
+                val body = item.optString("text")
+                if (body.isNotBlank()) {
+                    pages += ManualPageText(manual.displayName, item.optInt("page"), body)
                 }
             }
-        }.sortedByDescending { page ->
-            terms.count { page.text.lowercase().contains(it) }
-        }.take(limit)
+        }
+        return ManualSearchRanker.rank(query, pages, limit)
     }
 
     fun close() {
