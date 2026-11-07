@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.vidya.safetyassistant.camera.CameraDetections
 import com.vidya.safetyassistant.camera.CameraPreview
 import com.vidya.safetyassistant.safety.SafetyController
 import com.vidya.safetyassistant.safety.SafetyEngine
@@ -67,6 +68,8 @@ private fun VidyaApp() {
                 PackageManager.PERMISSION_GRANTED
         )
     }
+    var detections by remember { mutableStateOf<CameraDetections?>(null) }
+    var detectorStatus by remember { mutableStateOf("Starting on-device object detector…") }
     var voiceStatus by remember { mutableStateOf("Voice assistant is ready when you tap the microphone.") }
     var heardQuestion by remember { mutableStateOf("") }
 
@@ -139,8 +142,23 @@ private fun VidyaApp() {
                         .background(Color(0xFF101923), RoundedCornerShape(20.dp))
                 ) {
                     if (cameraGranted) {
-                        CameraPreview(Modifier.fillMaxSize())
-                        SafetyOverlay(assessment.status, Modifier.fillMaxSize())
+                        CameraPreview(
+                            modifier = Modifier.fillMaxSize(),
+                            onDetections = { frame ->
+                                detections = frame
+                                detectorStatus = if (frame.objects.isEmpty()) {
+                                    "No generic objects recognized in the latest frame."
+                                } else {
+                                    "On-device objects: " + frame.objects.take(3).joinToString { it.label }
+                                }
+                            },
+                            onDetectionError = { detectorStatus = it }
+                        )
+                        SafetyOverlay(
+                            status = assessment.status,
+                            detections = detections,
+                            modifier = Modifier.fillMaxSize()
+                        )
                     } else {
                         Column(
                             modifier = Modifier.align(Alignment.Center).padding(24.dp),
@@ -163,13 +181,12 @@ private fun VidyaApp() {
                     style = MaterialTheme.typography.bodySmall
                 )
                 Text(
-                    "Camera preview only: no visual AI detector is connected in this MVP.",
+                    "On-device generic object recognition is active. It does not detect electrical faults or certify safety.",
                     color = Color(0xFFFFC247),
                     style = MaterialTheme.typography.labelSmall
                 )
 
-                Spacer(Modifier.height(12.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(detectorStatus, color = Color(0xFF68E0FF),\n                    style = MaterialTheme.typography.labelSmall)\n                Spacer(Modifier.height(12.dp))\n                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(
                         modifier = Modifier.weight(1f),
                         onClick = { safetyController.setManualTestState(true) },
