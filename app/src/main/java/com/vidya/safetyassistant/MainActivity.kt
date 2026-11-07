@@ -391,7 +391,10 @@ private fun VidyaApp() {
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         val query = manualQuery
-                        manualExecutor.execute {\n                            val results = manualIndexer.search(query)\n                            mainHandler.post { manualResults = results }\n                        }
+                        manualExecutor.execute {
+                            val results = manualIndexer.search(query)
+                            mainHandler.post { manualResults = results }
+                        }
                     },
                     enabled = manualQuery.isNotBlank()
                 ) { Text("Search manual pages") }
