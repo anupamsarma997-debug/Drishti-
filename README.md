@@ -96,3 +96,10 @@ No project-wide license has been selected yet. Do not assume the repository is o
 Vidya now includes a deterministic specialist router for motorcycle/scooter/car/EV/truck, farm machinery, home appliances, motors and pumps, workshop tools, and selected industrial equipment. The user selects a machine category, enters brand/model/year and describes the symptom. The local rule-based expert returns possible inspection areas, safe external observations, stop-use conditions and escalation guidance.
 
 This is an offline knowledge-based first version, **not a trained generative AI model**, not a confirmed fault diagnosis, and not an equipment safety certification. Model-specific repair procedures must come from the exact verified manufacturer manual. High-voltage, electrical, gas, refrigerant, pressure, hydraulic, braking and moving-part work remains technician-only.
+
+
+## Offline manual retrieval and research
+
+Imported PDF manuals are OCR-indexed locally. Search now uses a lightweight lexical ranker that rewards complete query coverage, exact phrases, repeated terms and model/fault-code text. Results retain the manual name and page number so users can inspect the source page. This is **not semantic retrieval**, does not verify that a manual matches the exact machine variant, and must not be treated as proof that a suggested action is safe.
+
+Research papers, candidate open-source references, licensing cautions, research gap and an evaluation plan are documented in [docs/RESEARCH_LANDSCAPE_VIDYA.md](docs/RESEARCH_LANDSCAPE_VIDYA.md).
