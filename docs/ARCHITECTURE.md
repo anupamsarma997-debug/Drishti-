@@ -84,3 +84,12 @@ This is not a complete DTC database and does not establish that a code is suppor
 A curated directory links to official India-market manual pages for Honda 2Wheelers, Hero MotoCorp, TVS, Bajaj, Suzuki Motorcycle India, Royal Enfield, Maruti Suzuki, Hyundai India and Mahindra, plus the Government of India's Right to Repair portal. The app opens the source in the browser and does not download, mirror or bundle copyrighted manuals. The selected vehicle type filters the displayed sources; users must still confirm exact model, year, variant, market and powertrain on the manufacturer's site.
 
 A dashboard warning guide provides conservative general explanations for common oil-pressure, coolant-temperature, brake, charging, check-engine, ABS, SRS/airbag, TPMS, EV/hybrid battery and low-fuel indicators. It explicitly tells users to confirm symbols in their exact owner's manual. It is not a substitute for model-specific instrument-cluster documentation or a physical inspection.
+
+
+## Rural and agricultural machinery support
+
+The Android app includes a deterministic rural-machine selector for tractor, power tiller/walking tractor, rotavator, irrigation/water pump, diesel/petrol agricultural engine, knapsack/power/tractor sprayer, paddy and multi-crop thresher, combine harvester, reaper, chaff/fodder cutter, rice mill/huller/polisher, maize sheller/groundnut decorticator, brush cutter, power weeder, paddy transplanter/seed drill, solar pump controller, farm generator and dairy milking/milk chiller.
+
+The user can enter brand, model/engine model, year and displayed fault code. The app can search only locally imported PDF manuals using those text clues; it does not yet decode farm-machine-specific fault codes or fetch a model-matched manual online. Safe guidance is observation-only and includes machine-specific stop-work warnings for PTO, rotating blades, feed rollers, chemicals, solar DC, exhaust, raised implements and electrical hazards.
+
+Official reference entry points include the North Eastern Region Farm Machinery Training & Testing Institute in Biswanath Chariali, KIRAN North-East farm tools/agricultural engineering pages, the Government of India's SMAM machinery guidelines and BIS farm-machinery standards. These sources ground the machine-category list and specifications; they are not treated as model-specific repair manuals. No copyrighted manual is mirrored or bundled.
