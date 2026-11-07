@@ -1,65 +1,62 @@
-# Drishti AI
+# Vidya — Drishti AI
 
 **See. Understand. Prevent.**
 
-Drishti AI is an Android-first technical safety assistant concept. It is designed to use a phone camera, voice interaction, equipment manuals, and guided visual instructions to help people understand technical tasks and recognize visible hazards before proceeding.
+Vidya is the Android app for the Drishti AI technical-safety project. It is being built as an offline-first, camera-assisted inspection and guidance tool.
 
-## Project status
+## Current implementation
 
-This repository starts as a planning and development foundation. It is **not a finished app**, and no real-world safety performance has been validated.
+The first Android MVP foundation is now in this repository:
 
-## Planned capabilities
+- Kotlin + Jetpack Compose Android application.
+- CameraX lifecycle-aware live camera preview.
+- Compose Canvas overlay with SAFE, CAUTION, and flashing STOP states.
+- Manual SAFE/STOP controls for exercising the UI.
+- A deterministic six-dimension safety policy engine (Time, ROI, Content, Action, Logic, Predictive Safety).
+- Local vibration alert and Android Text-to-Speech warning when a stop condition is raised.
+- Android speech recognition adapter with a device-local recognition preference.
+- Unit tests for hard-stop, stale-frame, and no-flag cases.
+- GitHub Actions workflow to run unit tests and assemble a debug APK.
 
-- Camera-based inspection support for motorcycles, electrical panels, machines, pumps, generators, appliances, and tools.
-- Identification of visible warning signs and potential hazards, with uncertainty clearly communicated.
-- Step-by-step instructions grounded in verified equipment manuals and model-specific documentation.
-- Voice questions and answers, with support planned for Assamese, Hindi, English, Bengali, and other Indian languages.
-- Visual guidance with labels, arrows, and AR overlays where supported.
-- Offline-friendly design, low-bandwidth operation, and privacy-conscious processing.
-- Manual and QR/label scanning to identify equipment and retrieve relevant documentation.
+## Important implementation limits
+
+This is an early MVP foundation, **not a completed or validated safety product**.
+
+- CameraX currently displays the live preview; no object detector, NPU model, or live frame classifier is connected yet.
+- The SAFE/STOP buttons simulate classifications for UI and policy testing. They do not inspect real equipment.
+- Speech input can capture a spoken question, but no conversational AI or technical knowledge model is connected yet.
+- ARCore, manual/PDF retrieval, equipment identification, persistent history, and multilingual answer generation are planned, not implemented.
+- A camera cannot establish whether a wire is energized or detect many hidden/internal defects.
+- The app's stop event stops the app's guidance workflow and alerts the user. It cannot physically stop a machine, vehicle, or electrical system.
+- A green state means only that the current configured checks did not flag a hazard. It is never a guarantee of safety.
+
+## Build
+
+Open this repository in Android Studio, or use a GitHub Actions run:
+
+```bash
+gradle testDebugUnitTest assembleDebug
+```
+
+Requirements: JDK 17, Android SDK 35, and Gradle 8.10.2.
+
+The debug APK is produced at `app/build/outputs/apk/debug/app-debug.apk` when the CI build succeeds.
 
 ## Safety principles
 
-- A phone camera cannot reliably detect hidden, internal, or energized electrical faults.
-- Drishti AI must never claim to guarantee accident prevention or replace a qualified technician.
-- It must not guide an unqualified user to touch live electrical wiring or high-voltage equipment.
-- Vehicle, battery, fuel, hot-surface, and industrial-machine hazards require conservative warnings.
-- Safety interlocks must never be bypassed. Lockout/tagout and manufacturer instructions take priority.
-- When risk or uncertainty is high, the app must stop the workflow and direct the user to a qualified professional.
+- Never touch live wiring or open an energized electrical panel.
+- Keep away from smoke, fire, exposed conductors, moving machinery, fuel leaks, and damaged batteries.
+- Never bypass machine guards or safety interlocks.
+- Follow the correct manufacturer's manual and use qualified professionals for hazardous work.
+- Do not treat AI output or a camera view as a substitute for professional inspection.
 
-## Planned Android technology
+## Project structure
 
-- Kotlin and Jetpack Compose
-- CameraX for camera capture
-- On-device computer vision where practical
-- Multimodal AI for image understanding, with confidence and limitation handling
-- Android speech recognition and text-to-speech
-- ARCore for supported devices, with a camera-overlay fallback
-- Firebase for authentication and carefully scoped cloud data
-- Retrieval-augmented answers grounded in manuals, including page references
-
-Technology choices will be validated during implementation; no integration is claimed complete yet.
-
-## Development roadmap
-
-1. Define safety requirements, supported equipment, and failure-handling rules.
-2. Build the Android app shell and camera preview.
-3. Add equipment identification and manual/document ingestion.
-4. Add grounded step-by-step guidance and voice interaction.
-5. Add visual overlays and optional ARCore support.
-6. Test with safe, controlled scenarios and qualified reviewers.
-7. Conduct extensive real-world validation before any public safety claims.
-
-## Repository structure (planned)
-
-- `AGENTS.md` — instructions for coding agents
-- `docs/` — product requirements, architecture, safety policy, and testing plan
-- `app/` — Android application source (to be added)
-
-## Important disclaimer
-
-Drishti AI is an assistive guidance project, not a certified inspection system, emergency service, or substitute for professional training. Never rely on camera-based AI alone for electrical, mechanical, vehicle, or industrial safety decisions.
+- `app/src/main`: Android application, camera preview, UI overlay, safety controller, and voice adapter.
+- `app/src/test`: safety-engine unit tests.
+- `docs/`: product requirements, architecture, and safety policy.
+- `AGENTS.md`: engineering and safety instructions for coding agents.
 
 ## License
 
-No open-source license has been selected yet. All rights remain with the repository owner until a license is added.
+No project-wide license has been selected yet. Do not assume the repository is open-source licensed until a LICENSE file is added.
