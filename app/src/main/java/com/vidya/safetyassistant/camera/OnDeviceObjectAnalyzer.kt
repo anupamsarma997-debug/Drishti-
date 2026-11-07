@@ -6,6 +6,11 @@ import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.TextRecognizer
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
+import java.util.concurrent.atomic.AtomicInteger
 
 data class DetectedObject(
     val label: String,
@@ -29,7 +34,8 @@ data class CameraDetections(
  */
 class OnDeviceObjectAnalyzer(
     private val onDetections: (CameraDetections) -> Unit,
-    private val onError: (String) -> Unit
+    private val onError: (String) -> Unit,
+    private val onTextRecognized: (String) -> Unit = {}
 ) : ImageAnalysis.Analyzer, AutoCloseable {
 
     private val detector = ObjectDetection.getClient(
@@ -39,7 +45,10 @@ class OnDeviceObjectAnalyzer(
             .enableClassification()
             .build()
     )
+    private val latinRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+    private val devanagariRecognizer = TextRecognition.getClient(DevanagariTextRecognizerOptions.Builder().build())
     private var lastSubmittedAt = 0L
+    private var lastOcrSubmittedAt = 0L
     @Volatile private var closed = false
 
     override fun analyze(imageProxy: ImageProxy) {
@@ -100,6 +109,6 @@ class OnDeviceObjectAnalyzer(
 
     override fun close() {
         closed = true
-        detector.close()
+        detector.close()\n        latinRecognizer.close()\n        devanagariRecognizer.close()
     }
 }
