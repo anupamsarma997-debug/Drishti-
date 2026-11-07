@@ -58,7 +58,7 @@ dependencies {
     implementation("androidx.camera:camera-view:$cameraX")
 
     // Optional AR mode: Compose-native ARCore scene rendering and plane tracking.
-    implementation("io.github.sceneview:arsceneview:4.26.0")
+    implementation("io.github.sceneview:arsceneview:2.3.0")
 
     // Bundled on-device model: runs locally; no image upload or API key required.
     implementation("com.google.mlkit:object-detection:17.0.2")
