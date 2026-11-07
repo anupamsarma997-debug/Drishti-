@@ -65,3 +65,8 @@ Current code is still a single Gradle :app module with packages for camera, safe
 The camera OCR nameplate parser can extract explicitly labelled model/manufacturer clues. When a model clue exists, the UI can search the local OCR index of imported PDFs for an exact model string. The matcher tolerates common separators (space, dot, underscore, slash, hyphen), rejects longer alphanumeric substring matches, and ranks pages that also contain manufacturer text.
 
 This is a text-presence lookup only. It does not prove that the imported PDF is genuine, that the physical appliance is the same model, or that an instruction is safe/applicable. The user must verify the manual cover and complete model against the physical nameplate. No automatic repair instructions are generated from these matches.
+
+
+## Home appliance triage selector
+
+The Android UI now exposes a local deterministic category/symptom selector for AC, TV, washing machine, motor, pump, refrigerator, generator, microwave, geyser and power tools. Its advice is limited to safe external observations, simple control/settings checks and escalation. High-risk symptoms such as shock, sparks, smoke, burning smell, exposed wiring, fuel/exhaust hazards and water near electricity are treated as stop conditions. This is not fault diagnosis and must not instruct users to open housings, probe live circuits, bypass interlocks or service refrigerant systems.
