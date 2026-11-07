@@ -12,7 +12,7 @@ object OfflineSafetyGuide {
     fun answer(question: String, assessment: SafetyAssessment): String {
         val q = question.lowercase(Locale.ROOT)
         val hindi = q.any { it in "अआइईउऊएऐओऔकखगघचछजझटठडढतथदधनपफबभमयरलवशषसह" } ||
-            listOf("kya", "kaise", "kyun", "kahan", "ruko", "bijli", "wire", "machine")
+            listOf("kya", "kaise", "kyun", "kahan", "ruko", "bijli")
                 .any(q::contains)
 
         if (assessment.status == SafetyStatus.STOP) {
