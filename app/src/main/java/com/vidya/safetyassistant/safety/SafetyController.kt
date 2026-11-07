@@ -23,7 +23,7 @@ class SafetyController(context: Context, private val engine: SafetyEngine) {
             status = SafetyStatus.CAUTION,
             stopRequired = false,
             voiceWarning = null,
-            reason = "Point the camera at equipment. No automated AI detector is connected yet.",
+            reason = "Inspection not verified. Generic object labels do not assess hazards. Use manual STOP controls for policy testing only.",
             evaluatedAtMillis = System.currentTimeMillis()
         )
     )
