@@ -20,7 +20,7 @@
 - feature-visualization: labels, arrows, and optional AR presentation
 - data: repositories and network/local data sources
 
-Modules are a proposed structure, not yet implemented.
+Current code is still a single Gradle :app module with packages for camera, safety, UI, and voice. CameraX preview and a bundled ML Kit generic object detector are implemented in the app. The generic detector is not a specialist hazard model. The proposed feature-module split remains future refactoring.
 
 ## AI request pipeline
 1. User explicitly captures an image and selects an equipment/task context.
@@ -46,13 +46,13 @@ Modules are a proposed structure, not yet implemented.
 - Do not retain raw media by default.
 - Provide deletion controls and avoid collecting precise location unless a feature requires it.
 
-## Build sequencing
-1. Empty Compose app, navigation, permission flows.
-2. Camera preview and local capture.
-3. Safety state machine and refusal tests.
-4. PDF import and manual retrieval.
-5. Text-based grounded guidance.
-6. Voice input/output.
-7. Image understanding integration.
-8. Visual overlays, then optional ARCore.
-9. Controlled usability and safety evaluation.
+## Implementation status and next sequence
+1. Implemented: Compose app shell, camera permission, CameraX preview, low-resolution throttled analysis.
+2. Implemented: bundled ML Kit generic object detection with Canvas bounding boxes; no camera frame upload.
+3. Implemented: conservative safety state machine with manual test classifications, vibration, and TTS warnings.
+4. Implemented: Android speech adapter, language selector, and limited rule-based offline safety FAQ.
+5. Next: validate Gradle build and device camera behavior; add automated tests for camera lifecycle and permissions.
+6. Next: local PDF import and searchable manual text with source/page references.
+7. Next: specialist equipment-specific vision models and verified hazard datasets; never infer safety from generic labels.
+8. Next: step-by-step manual-grounded guidance, then ARCore on supported devices.
+9. Required before safety claims: controlled field testing, false-negative analysis, low-end device profiling, and independent safety review.
