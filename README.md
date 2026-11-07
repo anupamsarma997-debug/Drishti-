@@ -2,58 +2,58 @@
 
 **See. Understand. Prevent.**
 
-Vidya is the Android app for the Drishti AI technical-safety project. It is being built as an offline-first, camera-assisted inspection and guidance tool.
+Vidya is an Android-first, offline-oriented technical inspection assistant.
 
-## Current implementation
+## Implemented MVP foundation
 
-The first Android MVP foundation is now in this repository:
-
-- Kotlin + Jetpack Compose Android application.
-- CameraX lifecycle-aware live camera preview.
-- Compose Canvas overlay with SAFE, CAUTION, and flashing STOP states.
-- Manual SAFE/STOP controls for exercising the UI.
-- A deterministic six-dimension safety policy engine (Time, ROI, Content, Action, Logic, Predictive Safety).
-- Local vibration alert and Android Text-to-Speech warning when a stop condition is raised.
-- Android speech recognition adapter with a device-local recognition preference.
-- Unit tests for hard-stop, stale-frame, and no-flag cases.
+- Kotlin + Jetpack Compose Android app.
+- CameraX live preview with a 640×480 analysis stream and keep-latest backpressure.
+- Bundled ML Kit on-device generic object detection; no image upload or API key is used for this detector.
+- Live bounding boxes and generic object labels drawn over the camera preview.
+- Safety overlay states: SAFE, CAUTION, and flashing STOP.
+- Manual SAFE/STOP controls for UI and policy testing.
+- Deterministic six-dimension safety policy engine (Time, ROI, Content, Action, Logic, Predictive Safety).
+- Stop event triggers local vibration and a Hindi TTS warning.
+- Android speech recognition adapter with on-device recognition preference where available.
+- Small deterministic offline safety FAQ for common electrical and moving-machinery questions.
+- Unit tests for safety-engine policy and offline FAQ behavior.
 - GitHub Actions workflow to run unit tests and assemble a debug APK.
 
-## Important implementation limits
+## Critical limits — read before use
 
-This is an early MVP foundation, **not a completed or validated safety product**.
+This is an early engineering MVP, **not a validated safety product**.
 
-- CameraX currently displays the live preview; no object detector, NPU model, or live frame classifier is connected yet.
-- The SAFE/STOP buttons simulate classifications for UI and policy testing. They do not inspect real equipment.
-- Speech input can capture a spoken question, but no conversational AI or technical knowledge model is connected yet.
-- ARCore, manual/PDF retrieval, equipment identification, persistent history, and multilingual answer generation are planned, not implemented.
-- A camera cannot establish whether a wire is energized or detect many hidden/internal defects.
-- The app's stop event stops the app's guidance workflow and alerts the user. It cannot physically stop a machine, vehicle, or electrical system.
-- A green state means only that the current configured checks did not flag a hazard. It is never a guarantee of safety.
+- ML Kit's generic object detector recognizes broad object categories. It does **not** identify incorrect wire connections, energized conductors, high-voltage proximity, unsafe tool angles, hidden defects, internal machine faults, or accident probability.
+- Detected object boxes are visual annotations only. They are not hazard boxes.
+- Real hazard classifications currently enter the SafetyEngine only through the manual test controls or a future trusted classifier adapter.
+- The green test state is simulated and must never be interpreted as a real inspection result or proof of safety.
+- Voice input currently uses Android's installed speech service; offline language availability depends on device language packs. The offline FAQ is rule-based, not a generative AI assistant.
+- The app can stop its own guidance workflow and alert the user. It cannot physically stop a machine, vehicle, or electrical circuit.
+- No ARCore world tracking, manufacturer-manual RAG, PDF extraction, equipment-specific model database, persistent inspection history, or validated multilingual translation is implemented yet.
+- A camera cannot establish whether a wire is energized or detect many hidden/internal faults.
 
 ## Build
 
-Open this repository in Android Studio, or use a GitHub Actions run:
+Requirements: JDK 17, Android SDK 35, Gradle 8.10.2.
 
 ```bash
 gradle testDebugUnitTest assembleDebug
 ```
 
-Requirements: JDK 17, Android SDK 35, and Gradle 8.10.2.
-
-The debug APK is produced at `app/build/outputs/apk/debug/app-debug.apk` when the CI build succeeds.
+GitHub Actions runs the same unit-test and debug-APK tasks on pushes and pull requests. The APK path after a successful build is `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## Safety principles
 
 - Never touch live wiring or open an energized electrical panel.
 - Keep away from smoke, fire, exposed conductors, moving machinery, fuel leaks, and damaged batteries.
 - Never bypass machine guards or safety interlocks.
-- Follow the correct manufacturer's manual and use qualified professionals for hazardous work.
+- Follow the manufacturer's verified manual and use qualified professionals for hazardous work.
 - Do not treat AI output or a camera view as a substitute for professional inspection.
 
 ## Project structure
 
-- `app/src/main`: Android application, camera preview, UI overlay, safety controller, and voice adapter.
-- `app/src/test`: safety-engine unit tests.
+- `app/src/main`: Android application, CameraX preview/analyzer, safety engine/controller, Compose overlay, voice adapter and offline FAQ.
+- `app/src/test`: safety-engine and offline-FAQ unit tests.
 - `docs/`: product requirements, architecture, and safety policy.
 - `AGENTS.md`: engineering and safety instructions for coding agents.
 
