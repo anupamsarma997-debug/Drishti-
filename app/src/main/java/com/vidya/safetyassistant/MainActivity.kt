@@ -133,9 +133,17 @@ private fun VidyaApp() {
                 context.contentResolver.takePersistableUriPermission(
                     uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
-                manualLibrary.importPdf(uri)
+                val imported = manualLibrary.importPdf(uri)
                 manuals = manualLibrary.list()
-                manualStatus = "PDF imported locally. Text extraction and manual Q&A are not available yet."
+                manualStatus = "PDF imported locally. Building on-device OCR index…"
+                manualExecutor.execute {
+                    try {
+                        val pages = manualIndexer.index(imported)
+                        indexStatus = "Indexed $pages pages with on-device OCR (maximum first 40 pages)."
+                    } catch (error: Exception) {
+                        indexStatus = error.localizedMessage ?: "Could not index this manual."
+                    }
+                }
             } catch (error: Exception) {
                 manualStatus = error.localizedMessage ?: "Could not import this PDF."
             }
@@ -151,6 +159,12 @@ private fun VidyaApp() {
 
     DisposableEffect(voiceAssistant) {
         onDispose { voiceAssistant.release() }
+    }
+    DisposableEffect(manualIndexer, manualExecutor) {
+        onDispose {
+            manualExecutor.shutdownNow()
+            manualIndexer.close()
+        }
     }
 
     val assessment = safetyController.assessment
@@ -337,7 +351,29 @@ private fun VidyaApp() {
                 ) { Text("Import equipment PDF manual") }
                 Text(manualStatus, color = Color(0xFF9BAFC2),
                     style = MaterialTheme.typography.labelSmall)
-                OutlinedTextField(\n                    value = manualQuery,\n                    onValueChange = { manualQuery = it },\n                    modifier = Modifier.fillMaxWidth(),\n                    label = { Text("Search imported manuals") },\n                    singleLine = true\n                )\n                Button(\n                    modifier = Modifier.fillMaxWidth(),\n                    onClick = {\n                        manualExecutor.execute { manualResults = manualIndexer.search(manualQuery) }\n                    },\n                    enabled = manualQuery.isNotBlank()\n                ) { Text("Search manual pages") }\n                Text(indexStatus, color = Color(0xFF68E0FF), style = MaterialTheme.typography.labelSmall)\n                manualResults.forEach { result ->\n                    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {\n                        Text("${result.manualName} · Page ${result.pageNumber}", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelMedium)\n                        Text(result.text.take(420), color = Color.White, style = MaterialTheme.typography.bodySmall)\n                    }\n                }\n                manuals.take(3).forEach { manual ->
+                OutlinedTextField(
+                    value = manualQuery,
+                    onValueChange = { manualQuery = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Search imported manuals") },
+                    singleLine = true
+                )
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        val query = manualQuery
+                        manualExecutor.execute { manualResults = manualIndexer.search(query) }
+                    },
+                    enabled = manualQuery.isNotBlank()
+                ) { Text("Search manual pages") }
+                Text(indexStatus, color = Color(0xFF68E0FF), style = MaterialTheme.typography.labelSmall)
+                manualResults.forEach { result ->
+                    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                        Text("${result.manualName} · Page ${result.pageNumber}", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelMedium)
+                        Text(result.text.take(420), color = Color.White, style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+                manuals.take(3).forEach { manual ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
