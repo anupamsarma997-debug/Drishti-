@@ -50,7 +50,7 @@ object ManualSearchRanker {
         normalize(value).split(Regex("[^\\p{L}\\p{N}]+")).filter { it.length >= 2 }
 
     private fun normalize(value: String): String =
-        value.lowercase().replace(Regex("[^\\p{L}\\p{N}]+"), " ").trim()
+        value.lowercase().replace(Regex("(?<=[\\p{L}\\p{N}])[-._/](?=[\\p{L}\\p{N}])"), "").replace(Regex("[^\\p{L}\\p{N}]+"), " ").trim()
 
     private fun containsToken(text: String, term: String): Boolean =
         text.split(' ').any { it == term }
