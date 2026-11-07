@@ -150,6 +150,91 @@ object PartFailureGuide {
         )
     )
 
+    // Home appliances, workshop tools and vehicles use the same cautious part-triage format.
+    private val additionalCatalog: Map<String, List<MachinePartFinding>> = mapOf(
+        "ac" to listOf(
+            finding("Air filter", "Weak airflow, dust, reduced cooling", "Blocked filter or restricted return airflow", "Observe airflow and clean only a user-removable filter exactly as the owner manual permits", "Verify filter size and airflow", "Never open electrical or refrigerant compartments"),
+            finding("Indoor blower / fan", "Low airflow, rattling, fan noise", "Fan obstruction, bearing wear or motor fault", "Note indoor/outdoor location of sound without reaching through grille", "Technician inspects blower and motor", "Never touch fan or remove guard while powered"),
+            finding("Outdoor condenser coil", "Poor cooling, high running noise", "Blocked airflow, dirt or heat rejection problem", "Look for blocked external airflow from a safe distance", "Technician cleans and checks coil condition", "Never spray water near electrical parts"),
+            finding("Compressor / refrigerant circuit", "Not cooling, repeated trips, hissing", "Compressor, sensor, leak or refrigerant-system fault", "Record error code and operating pattern", "Licensed refrigeration technician checks sealed circuit", "Never release refrigerant or open sealed lines"),
+            finding("Control board / sensors", "Blinking code, erratic operation", "Sensor, wiring or control-board fault", "Record exact blink sequence and model number", "Technician decodes model-specific error table", "Never probe live board or bypass protection")
+        ),
+        "tv" to listOf(
+            finding("Backlight / LED strips", "Sound but black screen, faint image", "LED strip, backlight driver or power supply fault", "Check picture with a flashlight only externally if safe; note whether menu appears", "Technician checks backlight circuit", "Never open TV; capacitors can retain dangerous charge"),
+            finding("Display panel / T-Con", "Lines, half screen, flicker", "Panel bond, T-Con or display cable issue", "Check if lines appear in built-in menu and all inputs", "Technician diagnoses panel and timing board", "Never press panel or disconnect internal ribbons"),
+            finding("Power supply board", "No standby light, repeated restart", "Power board, fuse, connector or upstream supply fault", "Note standby LED and any clicking sound", "Qualified TV technician checks power stage", "Never replace fuse or open power board yourself"),
+            finding("Main board", "Boot loop, no input, frozen logo", "Firmware, main board or peripheral fault", "Record logo, error and connected devices", "Technician performs model-specific board diagnosis", "Never attempt internal live testing")
+        ),
+        "washer" to listOf(
+            finding("Drain pump / filter", "Water remains, drain error", "Pump obstruction, filter blockage or pump wear", "Record code and check external drain hose for visible kink", "Clean accessible filter only as manual directs and with safe water handling", "Never open hot or powered pump assembly"),
+            finding("Door lock / lid switch", "Cycle will not start, door code", "Door latch, interlock or wiring fault", "Observe latch engagement and exact code", "Technician checks interlock using service manual", "Never bypass door lock"),
+            finding("Inlet valve / hose", "No fill, slow fill, leak", "Supply tap, inlet screen or valve fault", "Observe tap position and external hose condition", "Technician checks valve and inlet path", "Never remove valve while connected to water/power"),
+            finding("Drive belt / motor", "Drum not spinning, noise", "Belt, motor, sensor or load imbalance", "Note whether drum turns by normal cycle and record code", "Technician inspects drive assembly", "Never reach into drum or remove rear cover"),
+            finding("Suspension / bearings", "Loud spin, shaking, drum play", "Unbalanced load, dampers, bearing or mounting fault", "Observe whether machine is level and record load condition", "Technician checks suspension and bearing wear", "Never run with damaged drum or exposed moving parts")
+        ),
+        "fridge" to listOf(
+            finding("Door gasket / hinges", "Warm cabinet, frost, door not sealing", "Damaged gasket, misalignment or obstruction", "Check visible seal contact and door closure", "Replace correct gasket or adjust hinges per service data", "Do not use sharp tools or heat on gasket"),
+            finding("Evaporator fan", "Uneven cooling, fan noise", "Fan motor, ice obstruction or sensor fault", "Record whether noise stops when door opens if model normally does this", "Technician inspects fan and defrost system", "Never remove internal covers or touch fan"),
+            finding("Compressor / start relay", "Clicking, not cooling, repeated start", "Start device, compressor or supply fault", "Record click timing and temperature trend", "Qualified refrigeration technician tests sealed system", "Never open compressor or refrigerant circuit"),
+            finding("Defrost heater / sensor", "Heavy frost, cooling weak", "Defrost heater, sensor, timer or drain fault", "Photograph frost location and note recurrence", "Technician checks defrost system by model manual", "Never chip ice or bypass thermal fuse"),
+            finding("Control board / thermostat", "Wrong temperature, error display", "Sensor, thermostat or control board fault", "Record exact code and actual displayed temperature", "Technician verifies sensor values and board", "Never probe energized board")
+        ),
+        "microwave" to listOf(
+            finding("Door interlock / latch", "Will not start, door error", "Latch or safety switch fault", "Check only visible door damage and closure", "Qualified microwave technician tests interlock", "Never bypass interlocks or operate with damaged door"),
+            finding("Turntable motor / roller ring", "Plate does not rotate, scraping", "Roller ring, coupler or motor fault", "Check removable glass tray is seated when unplugged and cool", "Technician checks drive parts if issue remains", "Never remove microwave cover"),
+            finding("Magnetron / high-voltage supply", "Runs but does not heat, buzzing", "Magnetron, diode, capacitor or transformer fault", "Record sound and heating symptom", "Qualified specialist diagnoses high-voltage section", "Never open or repair high-voltage circuit; lethal charge risk"),
+            finding("Waveguide cover / cavity", "Sparks, burning marks", "Food residue or damaged cover/cavity", "Stop immediately and photograph after cool-down", "Service technician checks cavity and cover", "Never restart with damaged cavity or waveguide cover")
+        ),
+        "water_heater" to listOf(
+            finding("Thermostat / temperature sensor", "Water not hot, temperature swings", "Thermostat, sensor or control fault", "Record display and temperature setting", "Technician checks thermostat to model manual", "Never open electrical cover or touch live terminals"),
+            finding("Heating element", "Slow heating, no heating, breaker trips", "Element scale, open circuit or insulation fault", "Record trip behaviour; keep clear if water leaks", "Qualified electrician tests isolated heater element", "Never energize a leaking heater or test live wiring"),
+            finding("Pressure / temperature relief valve", "Dripping, pressure noise", "Valve discharge or pressure/temperature issue", "Observe discharge pipe without blocking it", "Technician verifies pressure and relief valve", "Never cap, block or disable relief valve")
+        ),
+        "power_tools" to listOf(
+            finding("Battery pack / charger", "Tool stops, battery not charging", "Cell imbalance, charger fault or temperature protection", "Record indicator pattern and battery model", "Use manufacturer-approved charger and service process", "Never open battery pack or short terminals"),
+            finding("Trigger / switch / controller", "Intermittent start, speed changes", "Switch wear, controller or wiring fault", "Record trigger response without dismantling tool", "Technician tests control assembly", "Never bypass trigger or safety interlock"),
+            finding("Motor / gearbox / bearings", "Grinding, sparks, heat, low torque", "Brush wear, bearing, gear or motor fault", "Stop if sparks, burning smell or unusual vibration", "Technician inspects motor and gearbox", "Never run with guard removed or touch rotating accessory")
+        ),
+        "motor" to listOf(
+            finding("Bearings / shaft", "Vibration, rumbling, shaft noise", "Bearing wear, misalignment or load issue", "Record vibration and load; do not touch shaft", "Technician checks alignment and bearing condition", "Never approach exposed rotating shaft"),
+            finding("Cooling fan / ventilation", "Motor overheating, thermal trip", "Blocked ventilation, fan damage or overload", "Observe external vents and operating load", "Technician checks cooling and rated load", "Never remove fan cover while connected"),
+            finding("Windings / insulation", "Burning smell, trips, low torque", "Winding insulation or supply fault", "Stop and record smell, trip and nameplate details", "Qualified electrician tests isolated motor", "Never open terminal box or perform live tests")
+        ),
+        "bike" to listOf(
+            finding("Battery / starter / charging", "Slow crank, no start, dim lights", "Battery, starter relay, alternator or connection fault", "Record dash lights and clicking; photograph warning indicators", "Technician tests battery and charging system", "Never bridge terminals or touch exposed wiring"),
+            finding("Fuel / air intake", "Stalling, poor pickup, hard start", "Fuel delivery, air filter or injector/carburettor fault", "Record fuel, cold/hot behaviour and warning codes", "Service to exact make/model manual", "Never open fuel injection lines"),
+            finding("Ignition / spark system", "Misfire, difficult start, power loss", "Spark plug, coil, sensor or wiring fault", "Record whether fault occurs cold, hot or under load", "Technician checks ignition system with correct tools", "Avoid hot engine parts and exposed ignition leads"),
+            finding("Brake pads / discs / hydraulic system", "Brake noise, weak braking, lever travel", "Pad wear, disc condition, fluid or hydraulic fault", "Do not ride; note warning lamp and visible fluid leak", "Qualified mechanic inspects complete brake system", "Never ride with uncertain or weak brakes"),
+            finding("Chain / sprocket / belt drive", "Rattle, jerk, drive noise", "Wear, alignment, tension or lubrication issue", "Observe only with engine off and vehicle stable", "Adjust/replace using model-specific specification", "Never touch drive while engine is running"),
+            finding("Tyres / wheel bearings / suspension", "Wobble, vibration, uneven wear", "Pressure, tyre damage, bearing or suspension fault", "Check visible tyre damage and pressure only as manual states", "Mechanic checks wheel, bearing and suspension", "Do not ride on damaged tyre or unstable wheel")
+        ),
+        "scooter" to listOf(
+            finding("CVT belt / variator / clutch", "Poor pickup, judder, drive loss", "Belt wear, roller wear or clutch issue", "Record speed/load conditions and sound", "Technician inspects CVT using exact parts specification", "Never open CVT while hot or running"),
+            finding("Battery / starter / charging", "No crank, weak start, dim display", "Battery, starter relay or charging issue", "Record indicator lights and clicking", "Technician tests battery and charging circuit", "Never short terminals"),
+            finding("Brake / tyre / wheel", "Poor braking, wobble, noise", "Pad wear, tyre damage, bearing or brake fault", "Stop riding if braking or steering feels abnormal", "Qualified mechanic checks safety-critical parts", "Never continue riding with brake/steering fault")
+        ),
+        "car" to listOf(
+            finding("Engine air / fuel / ignition", "Misfire, stalling, poor pickup", "Air leak, fuel delivery, spark or sensor fault", "Record exact OBD codes and symptoms", "Technician uses vehicle-specific scan data and tests", "Do not replace parts from one code alone"),
+            finding("Cooling system / thermostat", "Temperature warning, steam, coolant loss", "Coolant leak, thermostat, fan or pump fault", "Stop safely; observe temperature and visible leak from distance", "Technician pressure-tests after full cool-down", "Never open hot coolant cap"),
+            finding("Alternator / battery / starter", "No start, battery lamp, repeated stall", "Battery, alternator, belt or starter fault", "Record dashboard lamps and crank behaviour", "Technician tests charging and starting systems", "Never bridge terminals"),
+            finding("ABS / brake hydraulics", "Brake warning, ABS warning, pedal change", "Wheel sensor, hydraulic or control fault", "Stop if braking feel changes; arrange recovery", "Qualified technician scans ABS and checks brakes", "Never drive with compromised braking"),
+            finding("Transmission / clutch", "Gear slip, harsh shift, clutch smell", "Fluid, clutch, actuator or transmission fault", "Record gear, speed and warning messages", "Technician diagnoses exact transmission variant", "Never crawl under unsupported vehicle"),
+            finding("Tyres / steering / suspension", "Pulling, wobble, uneven tyre wear", "Tyre, alignment, steering or suspension issue", "Stop if steering control is uncertain", "Mechanic checks tyres, joints and suspension", "Never work under vehicle supported only by jack")
+        ),
+        "ev" to listOf(
+            finding("12V battery / low-voltage system", "Vehicle will not wake, display resets", "12V battery or low-voltage supply fault", "Record dashboard message and 12V warning", "EV-qualified technician checks low-voltage system", "Never touch orange high-voltage cables"),
+            finding("Traction battery / BMS", "Battery warning, reduced range, isolation alert", "Cell, sensor, cooling or battery-management fault", "Record exact warning and stop if heat, smoke or unusual smell", "Authorized EV technician diagnoses pack and BMS", "Never open battery pack or disconnect HV service plug"),
+            finding("Inverter / motor controller", "Power limited, drive warning", "Inverter, motor sensor or control fault", "Record exact code and driving conditions", "EV-qualified technician uses OEM diagnostic procedure", "Never open inverter or touch HV terminals"),
+            finding("Charging inlet / onboard charger", "Charging stops, connector warning", "Connector, interlock, charger or supply issue", "Stop charging if connector overheats or is damaged", "Qualified technician checks charger and inlet", "Never force connector or repair live charging equipment")
+        ),
+        "truck" to listOf(
+            finding("Air brake compressor / reservoirs", "Low air pressure warning, brake alarm", "Compressor, leak, governor or reservoir fault", "Park safely and record pressure warning", "Commercial-vehicle technician checks air brake system", "Do not drive with low air pressure or compromised brakes"),
+            finding("Diesel fuel / aftertreatment", "Power loss, DPF/SCR warning, smoke", "Fuel, DPF loading, sensor or emissions system fault", "Record exact dashboard code and operating conditions", "Technician follows OEM aftertreatment procedure", "Never bypass emissions controls or open hot exhaust"),
+            finding("Clutch / gearbox / propeller shaft", "Gear issue, vibration, driveline noise", "Clutch, gearbox, universal joint or mount fault", "Stop if severe vibration or loss of drive", "Technician inspects driveline with vehicle secured", "Never work beneath unsupported vehicle"),
+            finding("Tyres / wheel hubs / suspension", "Wheel heat, wobble, uneven wear", "Tyre damage, bearing, alignment or suspension fault", "Stop if wheel wobble, smoke or severe heat is noticed", "Commercial vehicle technician inspects hub and suspension", "Never touch hot hub or continue with suspected wheel failure")
+        )
+    )
+
     private fun finding(part: String, clues: String, causes: String, observations: String,
                         technician: String, never: String) = MachinePartFinding(
         partName = part,
@@ -160,7 +245,7 @@ object PartFailureGuide {
         neverDo = never
     )
 
-    fun forMachine(machineId: String): List<MachinePartFinding> = catalog[machineId].orEmpty()
+    fun forMachine(machineId: String): List<MachinePartFinding> = catalog[machineId] ?: additionalCatalog[machineId].orEmpty()
 
     fun match(machineId: String, complaint: String): List<MachinePartFinding> {
         val entries = forMachine(machineId)
