@@ -1,71 +1,88 @@
 package com.vidya.safetyassistant.ar
 
+import android.view.MotionEvent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.google.ar.core.Anchor
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.viewinterop.AndroidView
 import com.google.ar.core.Plane
 import com.google.ar.core.TrackingState
 import io.github.sceneview.ar.ARSceneView
-import io.github.sceneview.math.Position
-import io.github.sceneview.math.Size
+import io.github.sceneview.ar.node.AnchorNode
+import io.github.sceneview.math.Color as SceneColor
+import io.github.sceneview.node.SphereNode
 
 /**
- * Optional ARCore surface-placement demonstration.
- *
- * The marker is deliberately generic: plane tracking does not identify equipment parts
- * and must never be interpreted as a safety assessment.
+ * Optional ARCore surface marker. A tap on a tracked plane places a neutral visual marker.
+ * This is not object recognition, equipment-part localization, or hazard detection.
  */
 @Composable
 fun VidyaARExperience(
     modifier: Modifier = Modifier,
     onStatus: (String) -> Unit
 ) {
-    var markerAnchor by remember { mutableStateOf<Anchor?>(null) }
-
-    ARSceneView(
+    AndroidView(
         modifier = modifier,
-        planeRenderer = true,
-        onSessionUpdated = { _, frame ->
-            if (markerAnchor == null) {
-                val plane = frame.getUpdatedTrackables(Plane::class.java)
-                    .firstOrNull {
-                        it.trackingState == TrackingState.TRACKING &&
-                            it.type == Plane.Type.HORIZONTAL_UPWARD_FACING
+        factory = { context ->
+            ARSceneView(context).also { sceneView ->
+                onStatus("AR camera starting. Move slowly, then tap a detected flat surface.")
+
+                sceneView.onSessionFailed = { error ->
+                    onStatus("AR unavailable: ${error.localizedMessage ?: "Install/update Google Play Services for AR or use camera mode."}")
+                }
+                sceneView.onTrackingFailureChanged = { reason ->
+                    if (reason != null) {
+                        onStatus("Tracking limited: ${reason.name}. Move slowly and improve lighting.")
                     }
-                if (plane != null) {
-                    try {
-                        markerAnchor = plane.createAnchor(plane.centerPose)
-                        onStatus("Surface tracked. Neutral marker placed; no equipment or hazard was identified.")
-                    } catch (error: Exception) {
-                        onStatus(error.localizedMessage ?: "Could not place the AR marker.")
+                }
+                sceneView.onSessionUpdated = { _, frame ->
+                    if (frame.camera.trackingState == TrackingState.TRACKING) {
+                        onStatus("Tracking active. Tap a visible horizontal surface to place a neutral marker.")
                     }
-                } else {
-                    onStatus("Move the phone slowly to scan a flat horizontal surface.")
+                }
+                sceneView.onTouchEvent = { event, _ ->
+                    if (event.action == MotionEvent.ACTION_UP) {
+                        val frame = sceneView.frame
+                        if (frame != null && frame.camera.trackingState == TrackingState.TRACKING) {
+                            val hit = frame.hitTest(event.x, event.y).firstOrNull { result ->
+                                val trackable = result.trackable
+                                trackable is Plane &&
+                                    trackable.type == Plane.Type.HORIZONTAL_UPWARD_FACING &&
+                                    trackable.isPoseInPolygon(result.hitPose)
+                            }
+                            if (hit != null) {
+                                try {
+                                    val anchor = hit.createAnchor()
+                                    val material = sceneView.materialLoader.createColorInstance(
+                                        Color(0.12f, 0.78f, 1f, 1f)
+                                    )
+                                    val marker = SphereNode(
+                                        engine = sceneView.engine,
+                                        radius = 0.035f,
+                                        materialInstance = material
+                                    )
+                                    val anchorNode = AnchorNode(
+                                        engine = sceneView.engine,
+                                        anchor = anchor
+                                    )
+                                    anchorNode.childNodes = setOf(marker)
+                                    sceneView.addChildNode(anchorNode)
+                                    onStatus("Neutral marker placed on the selected surface. No equipment part or hazard was identified.")
+                                } catch (error: Exception) {
+                                    onStatus(error.localizedMessage ?: "Could not place the AR marker.")
+                                }
+                            } else {
+                                onStatus("No valid horizontal surface at that point. Scan a flat surface and try again.")
+                            }
+                        }
+                    }
+                    true
                 }
             }
         },
-        onSessionFailed = { error ->
-            onStatus("AR unavailable: ${error.localizedMessage ?: "Check ARCore installation and camera permission."}")
-        },
-        onTrackingFailureChanged = { reason ->
-            if (reason != null) {
-                onStatus("Tracking limited: ${reason.name}. Move slowly and improve lighting.")
-            } else if (markerAnchor == null) {
-                onStatus("Camera tracking active. Looking for a flat surface…")
-            }
+        onRelease = { sceneView ->
+            sceneView.clearChildNodes()
+            sceneView.destroy()
         }
-    ) {
-        markerAnchor?.let { anchor ->
-            AnchorNode(anchor = anchor) {
-                CubeNode(
-                    size = Size(0.06f),
-                    position = Position(y = 0.04f)
-                )
-            }
-        }
-    }
+    )
 }
