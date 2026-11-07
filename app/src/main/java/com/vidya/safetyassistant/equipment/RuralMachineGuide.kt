@@ -68,7 +68,7 @@ object RuralMachineGuide {
         FarmMachineCategory("rice_mill", "Rice mill / huller / polisher", "Mini rice mill, huller and polishing units", "Belts, rollers, dust, electrical motors and hot bearings", listOf(
             FarmMachineSymptom("poor_polish", "Poor milling / polishing", listOf("Stop machine before inspecting external feed settings.", "Record crop moisture, feed rate setting and model.", "Do not open roller or huller housing while connected to power.")),
             FarmMachineSymptom("dust", "Excess dust or overheating", listOf("Stop operation if smoke, burning smell or excessive heat occurs.", "Keep ventilation clear and avoid inhaling dust.", "Have bearings, belts and dust extraction checked by service staff."), true, "Dust and overheated components can create respiratory and fire hazards.")
-        ))),
+        )),
         FarmMachineCategory("maize_sheller", "Maize sheller / groundnut decorticator", "Manual and powered shellers/decorticators", "Rotating rollers, belts, pinch points and thrown material", listOf(
             FarmMachineSymptom("poor_shell", "Poor shelling", listOf("Stop and isolate power before observing settings.", "Record crop moisture and model/setting.", "Do not reach into rollers or feed opening.")),
             FarmMachineSymptom("jam", "Jammed feed", listOf("Stop power and wait for all moving parts to stop.", "Keep hands and clothing away from rollers.", "Use the exact manual's safe clearing method or call a technician."), true, "Roller pinch points can crush fingers.")
