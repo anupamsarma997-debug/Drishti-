@@ -53,6 +53,7 @@ import com.vidya.safetyassistant.camera.CameraDetections
 import com.vidya.safetyassistant.camera.CameraPreview
 import com.vidya.safetyassistant.equipment.EquipmentLabelFacts
 import com.vidya.safetyassistant.equipment.EquipmentLabelParser
+import com.vidya.safetyassistant.equipment.EquipmentManualMatcher
 import com.vidya.safetyassistant.safety.SafetyController
 import com.vidya.safetyassistant.safety.SafetyEngine
 import com.vidya.safetyassistant.safety.SafetyStatus
@@ -96,6 +97,8 @@ private fun VidyaApp() {
     var detectorStatus by remember { mutableStateOf("Starting on-device object detector…") }
     var liveOcrText by remember { mutableStateOf("") }
     var equipmentFacts by remember { mutableStateOf(EquipmentLabelFacts()) }
+    var equipmentManualMatches by remember { mutableStateOf(emptyList<com.vidya.safetyassistant.equipment.EquipmentManualMatch>()) }
+    var equipmentMatchStatus by remember { mutableStateOf("Read a clear model number to search your imported manuals.") }
     val mainHandler = remember { Handler(Looper.getMainLooper()) }
     var arMode by remember { mutableStateOf(false) }
     var requestArAfterPermission by remember { mutableStateOf(false) }
@@ -346,6 +349,41 @@ private fun VidyaApp() {
                             equipmentFacts.power?.let { "Power: $it" }
                         ).forEach { fact ->
                             Text(fact, color = Color.White, style = MaterialTheme.typography.labelSmall)
+                        }
+                    }
+                    if (!equipmentFacts.model.isNullOrBlank()) {
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                val model = equipmentFacts.model.orEmpty()
+                                val manufacturer = equipmentFacts.manufacturer
+                                equipmentMatchStatus = "Searching local OCR index for exact model text…"
+                                manualExecutor.execute {
+                                    val candidates = manualIndexer.search(model, 40)
+                                    val matches = EquipmentManualMatcher.findMatches(manufacturer, model, candidates)
+                                    mainHandler.post {
+                                        equipmentManualMatches = matches
+                                        equipmentMatchStatus = if (matches.isEmpty()) {
+                                            "No exact model text found in indexed manuals. Check the model number and import the correct manufacturer's PDF."
+                                        } else {
+                                            "Found \${matches.size} page(s) containing this model text. Confirm the manual cover, manufacturer and full model before relying on it."
+                                        }
+                                    }
+                                }
+                            }
+                        ) { Text("Find this model in my manuals") }
+                        Text(equipmentMatchStatus, color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
+                        equipmentManualMatches.forEach { match ->
+                            Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                                Text(
+                                    "\${match.page.manualName} · Page \${match.page.pageNumber}" +
+                                        if (match.manufacturerMentioned) " · brand text also found" else " · brand not confirmed",
+                                    color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.labelMedium
+                                )
+                                Text(match.page.text.take(360), color = Color.White,
+                                    style = MaterialTheme.typography.bodySmall)
+                            }
                         }
                     }
                     Spacer(Modifier.height(12.dp))
