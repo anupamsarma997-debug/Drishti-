@@ -94,7 +94,7 @@ fun SafetyOverlay(
         }
 
         val label = when (status) {
-            SafetyStatus.SAFE -> "SAFE: Step Active*"
+            SafetyStatus.SAFE -> "SAFE: Step Active"
             SafetyStatus.CAUTION -> "CAUTION: Verify before proceeding"
             SafetyStatus.STOP -> "STOP: Danger Detected!"
         }
