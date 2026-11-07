@@ -93,3 +93,8 @@ The Android app includes a deterministic rural-machine selector for tractor, pow
 The user can enter brand, model/engine model, year and displayed fault code. The app can search only locally imported PDF manuals using those text clues; it does not yet decode farm-machine-specific fault codes or fetch a model-matched manual online. Safe guidance is observation-only and includes machine-specific stop-work warnings for PTO, rotating blades, feed rollers, chemicals, solar DC, exhaust, raised implements and electrical hazards.
 
 Official reference entry points include the North Eastern Region Farm Machinery Training & Testing Institute in Biswanath Chariali, KIRAN North-East farm tools/agricultural engineering pages, the Government of India's SMAM machinery guidelines and BIS farm-machinery standards. These sources ground the machine-category list and specifications; they are not treated as model-specific repair manuals. No copyrighted manual is mirrored or bundled.
+
+
+## Specialist machine expert routing
+
+`MachineExpertSystem` provides an offline deterministic router across vehicle, farm, home-appliance, motor/pump, workshop-tool and industrial specialist profiles. Each assessment returns possible symptom areas, conservative external observations, stop conditions, escalation notes and an explicit uncertainty statement. It does not claim a trained LLM, infer a failed component, or generate model-specific repair steps. The imported-manual index remains a separate source of locally searchable text; exact model/variant matching and human verification are required before any service instruction is trusted.
