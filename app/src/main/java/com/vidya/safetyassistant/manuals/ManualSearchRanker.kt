@@ -46,15 +46,21 @@ object ManualSearchRanker {
         val phraseMatch: Boolean
     )
 
-    private fun tokens(value: String): List<String> =
-        normalize(value).split(Regex("[^\\p{L}\\p{N}]+")).filter { it.length >= 2 }
+    private fun tokens(value: String): List<String> {
+        val base = normalize(value).split(Regex("[^\\p{L}\\p{N}]+")).filter { it.length >= 2 }
+        // Join adjacent tokens to match model identifiers such as AX-220 and AX 220.
+        val combined = base.indices.mapNotNull { index ->
+            if (index + 1 < base.size) base[index] + base[index + 1] else null
+        }
+        return base + combined
+    }
 
     private fun normalize(value: String): String =
         value.lowercase().replace(Regex("(?<=[\\p{L}\\p{N}])[-._/](?=[\\p{L}\\p{N}])"), "").replace(Regex("[^\\p{L}\\p{N}]+"), " ").trim()
 
     private fun containsToken(text: String, term: String): Boolean =
-        text.split(' ').any { it == term }
+        tokens(text).contains(term)
 
     private fun tokenFrequency(text: String, term: String): Int =
-        text.split(' ').count { it == term }
+        tokens(text).count { it == term }
 }
