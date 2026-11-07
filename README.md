@@ -66,6 +66,10 @@ Open-source Android AR repository comparison, licensing notes, reusable architec
 - `docs/`: product requirements, architecture, and safety policy.
 - `AGENTS.md`: engineering and safety instructions for coding agents.
 
+## Third-party notices
+
+The optional AR mode depends on SceneView 2.3.0, distributed under Apache License 2.0. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [third_party/SceneView-LICENSE.txt](third_party/SceneView-LICENSE.txt).
+
 ## License
 
 No project-wide license has been selected yet. Do not assume the repository is open-source licensed until a LICENSE file is added.
