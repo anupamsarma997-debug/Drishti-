@@ -16,7 +16,8 @@ Vidya is an Android-first, offline-oriented technical inspection assistant.
 - Stop event triggers local vibration and a Hindi TTS warning.
 - Android speech recognition adapter with on-device recognition preference where available.
 - UI language selector for Assamese, Hindi, English, Bengali, Tamil, Telugu, Marathi, Gujarati, Kannada, Malayalam, Punjabi, and Urdu (actual voice availability depends on installed device language packs).
-- Small deterministic offline safety FAQ for common electrical and moving-machinery questions.
+- Small deterministic offline safety FAQ for common electrical and moving-machinery questions (English and Hindi response text only).
+- Local PDF manual library using Android's document picker; stores document URI permission and page-count metadata, and opens the selected PDF in an installed viewer.
 - Unit tests for safety-engine policy and offline FAQ behavior.
 - GitHub Actions workflow to run unit tests and assemble a debug APK.
 
@@ -28,9 +29,10 @@ This is an early engineering MVP, **not a validated safety product**.
 - Detected object boxes are visual annotations only. They are not hazard boxes.
 - Real hazard classifications currently enter the SafetyEngine only through the manual test controls or a future trusted classifier adapter.
 - The green test state is simulated and must never be interpreted as a real inspection result or proof of safety.
-- Voice input currently uses Android's installed speech service; offline language availability depends on device language packs. The offline FAQ is rule-based, not a generative AI assistant.
+- Voice input currently uses Android's installed speech service; offline language availability depends on device language packs. The offline FAQ is rule-based, not a generative AI assistant. The language selector changes speech locale, but answer translation is currently limited to Hindi and English.
+- PDF import currently stores and opens manuals only. It does not extract PDF text, index pages, or answer manual-grounded questions.
 - The app can stop its own guidance workflow and alert the user. It cannot physically stop a machine, vehicle, or electrical circuit.
-- No ARCore world tracking, manufacturer-manual RAG, PDF extraction, equipment-specific model database, persistent inspection history, or validated multilingual translation is implemented yet.
+- No ARCore world tracking, PDF text extraction or manufacturer-manual RAG, equipment-specific model database, persistent inspection history, or validated multilingual translation is implemented yet.
 - A camera cannot establish whether a wire is energized or detect many hidden/internal faults.
 
 ## Build
