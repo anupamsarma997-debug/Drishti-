@@ -281,6 +281,28 @@ private fun VidyaApp() {
                 }
                 Text(voiceStatus, color = Color(0xFF9BAFC2),
                     style = MaterialTheme.typography.labelSmall)
+                Spacer(Modifier.height(8.dp))
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { pdfPicker.launch(arrayOf("application/pdf")) }
+                ) { Text("Import equipment PDF manual") }
+                Text(manualStatus, color = Color(0xFF9BAFC2),
+                    style = MaterialTheme.typography.labelSmall)
+                manuals.take(3).forEach { manual ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "${manual.displayName} · ${manual.pageCount} pages",
+                            color = Color.White,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.weight(1f)
+                        )
+                        TextButton(onClick = { openManual(context, manual) }) { Text("Open") }
+                    }
+                }
                 Spacer(Modifier.height(4.dp))
                 Text(
                     "A green result is not proof of safety. Never touch live wiring or moving machinery. For suspected danger, keep away and contact a qualified professional.",
