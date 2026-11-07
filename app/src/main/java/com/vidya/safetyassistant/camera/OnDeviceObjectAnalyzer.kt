@@ -7,7 +7,6 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
 import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
 import java.util.concurrent.atomic.AtomicInteger
@@ -29,8 +28,8 @@ data class CameraDetections(
 )
 
 /**
- * Bundled on-device ML Kit object detector. It detects generic object categories only;
- * it is NOT a wire-fault, electrical-risk, defect, or machine-safety classifier.
+ * Generic object labels and throttled OCR only. Neither detects hazards or certifies safety.
+ * ImageProxy remains open until every ML Kit task submitted for that frame completes.
  */
 class OnDeviceObjectAnalyzer(
     private val onDetections: (CameraDetections) -> Unit,
@@ -46,7 +45,9 @@ class OnDeviceObjectAnalyzer(
             .build()
     )
     private val latinRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-    private val devanagariRecognizer = TextRecognition.getClient(DevanagariTextRecognizerOptions.Builder().build())
+    private val devanagariRecognizer =
+        TextRecognition.getClient(DevanagariTextRecognizerOptions.Builder().build())
+
     private var lastSubmittedAt = 0L
     private var lastOcrSubmittedAt = 0L
     @Volatile private var closed = false
@@ -56,6 +57,7 @@ class OnDeviceObjectAnalyzer(
             imageProxy.close()
             return
         }
+
         val now = SystemClock.elapsedRealtime()
         if (now - lastSubmittedAt < 250L) {
             imageProxy.close()
@@ -73,6 +75,13 @@ class OnDeviceObjectAnalyzer(
         val uprightWidth = if (rotation == 90 || rotation == 270) imageProxy.height else imageProxy.width
         val uprightHeight = if (rotation == 90 || rotation == 270) imageProxy.width else imageProxy.height
         val input = InputImage.fromMediaImage(mediaImage, rotation)
+        val runOcr = now - lastOcrSubmittedAt >= 1_200L
+        if (runOcr) lastOcrSubmittedAt = now
+
+        val pendingTasks = AtomicInteger(if (runOcr) 3 else 1)
+        fun finishFrame() {
+            if (pendingTasks.decrementAndGet() == 0) imageProxy.close()
+        }
 
         detector.process(input)
             .addOnSuccessListener { detected ->
@@ -102,13 +111,33 @@ class OnDeviceObjectAnalyzer(
             .addOnFailureListener { error ->
                 if (!closed) onError(error.localizedMessage ?: "On-device object detection failed.")
             }
-            .addOnCompleteListener {
-                imageProxy.close()
-            }
+            .addOnCompleteListener { finishFrame() }
+
+        if (runOcr) {
+            latinRecognizer.process(input)
+                .addOnSuccessListener { result ->
+                    if (!closed && result.text.isNotBlank()) onTextRecognized(result.text.take(600))
+                }
+                .addOnFailureListener { error ->
+                    if (!closed) onError(error.localizedMessage ?: "Live text recognition failed.")
+                }
+                .addOnCompleteListener { finishFrame() }
+
+            devanagariRecognizer.process(input)
+                .addOnSuccessListener { result ->
+                    if (!closed && result.text.isNotBlank()) onTextRecognized(result.text.take(600))
+                }
+                .addOnFailureListener { error ->
+                    if (!closed) onError(error.localizedMessage ?: "Hindi text recognition failed.")
+                }
+                .addOnCompleteListener { finishFrame() }
+        }
     }
 
     override fun close() {
         closed = true
-        detector.close()\n        latinRecognizer.close()\n        devanagariRecognizer.close()
+        detector.close()
+        latinRecognizer.close()
+        devanagariRecognizer.close()
     }
 }
