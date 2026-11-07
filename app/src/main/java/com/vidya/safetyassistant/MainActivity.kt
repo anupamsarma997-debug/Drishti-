@@ -1,6 +1,8 @@
 package com.vidya.safetyassistant
 
 import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -40,6 +42,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.vidya.safetyassistant.manuals.LocalManual
+import com.vidya.safetyassistant.manuals.ManualLibrary
 import com.vidya.safetyassistant.camera.CameraDetections
 import com.vidya.safetyassistant.camera.CameraPreview
 import com.vidya.safetyassistant.safety.SafetyController
@@ -60,6 +64,9 @@ class MainActivity : ComponentActivity() {
 private fun VidyaApp() {
     val context = LocalContext.current
     val safetyController = remember { SafetyController(context, SafetyEngine()) }
+    val manualLibrary = remember { ManualLibrary(context) }
+    var manuals by remember { mutableStateOf(manualLibrary.list()) }
+    var manualStatus by remember { mutableStateOf("Manuals stay on this device.") }
     var cameraGranted by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
@@ -102,6 +109,23 @@ private fun VidyaApp() {
     val cameraPermission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted -> cameraGranted = granted }
+    val pdfPicker = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            try {
+                context.contentResolver.takePersistableUriPermission(
+                    uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+                manualLibrary.importPdf(uri)
+                manuals = manualLibrary.list()
+                manualStatus = "PDF imported locally. Text extraction and manual Q&A are not available yet."
+            } catch (error: Exception) {
+                manualStatus = error.localizedMessage ?: "Could not import this PDF."
+            }
+        }
+    }
+
     val microphonePermission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -265,5 +289,18 @@ private fun VidyaApp() {
                 )
             }
         }
+    }
+}
+
+
+private fun openManual(context: android.content.Context, manual: LocalManual) {
+    try {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(Uri.parse(manual.uri), "application/pdf")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        context.startActivity(intent)
+    } catch (_: Exception) {
+        // A compatible PDF viewer may not be installed on the device.
     }
 }
