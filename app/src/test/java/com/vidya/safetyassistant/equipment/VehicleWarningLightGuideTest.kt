@@ -11,7 +11,7 @@ class VehicleWarningLightGuideTest {
 
     @Test fun criticalWarningsAdviseStoppingOrSpecialistHelp() {
         assertTrue(VehicleWarningLightGuide.find("oil_pressure")!!.response.contains("switch the engine off"))
-        assertTrue(VehicleWarningLightGuide.find("ev_battery")!!.response.contains("orange"))
+        assertTrue(VehicleWarningLightGuide.find("ev_battery")!!.caveat.contains("orange"))
         assertTrue(VehicleWarningLightGuide.find("airbag")!!.response.contains("Do not probe"))
     }
 
