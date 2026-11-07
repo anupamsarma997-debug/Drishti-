@@ -195,8 +195,8 @@ private fun VidyaApp() {
                         }
                     }
                     Text(
-                        text = assessment.status.name,
-                        color = when (assessment.status) {
+                        text = if (arMode) "AR MODE" else assessment.status.name,
+                        color = if (arMode) Color(0xFF68E0FF) else when (assessment.status) {
                             SafetyStatus.SAFE -> Color(0xFF20D879)
                             SafetyStatus.CAUTION -> Color(0xFFFFC247)
                             SafetyStatus.STOP -> Color(0xFFFF5555)
@@ -277,31 +277,32 @@ private fun VidyaApp() {
                         style = MaterialTheme.typography.labelSmall
                     )
                 }
-                Text(
-                    assessment.reason,
-                    color = Color(0xFFD2DCE7),
-                    style = MaterialTheme.typography.bodySmall
-                )
-                Text(
-                    "On-device generic object recognition is active. It does not detect electrical faults or certify safety.",
-                    color = Color(0xFFFFC247),
-                    style = MaterialTheme.typography.labelSmall
-                )
-
-                Text(detectorStatus, color = Color(0xFF68E0FF),
-                    style = MaterialTheme.typography.labelSmall)
-                Spacer(Modifier.height(12.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        onClick = { safetyController.setManualTestState(true) },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF167B50))
-                    ) { Text("Test SAFE") }
-                    Button(
-                        modifier = Modifier.weight(1f),
-                        onClick = { safetyController.setManualTestState(false) },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB3261E))
-                    ) { Text("Test STOP") }
+                if (!arMode) {
+                    Text(
+                        assessment.reason,
+                        color = Color(0xFFD2DCE7),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Text(
+                        "On-device generic object recognition is active. It does not detect electrical faults or certify safety.",
+                        color = Color(0xFFFFC247),
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                    Text(detectorStatus, color = Color(0xFF68E0FF),
+                        style = MaterialTheme.typography.labelSmall)
+                    Spacer(Modifier.height(12.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Button(
+                            modifier = Modifier.weight(1f),
+                            onClick = { safetyController.setManualTestState(true) },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF167B50))
+                        ) { Text("Test SAFE") }
+                        Button(
+                            modifier = Modifier.weight(1f),
+                            onClick = { safetyController.setManualTestState(false) },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB3261E))
+                        ) { Text("Test STOP") }
+                    }
                 }
                 Spacer(Modifier.height(8.dp))
                 Button(
