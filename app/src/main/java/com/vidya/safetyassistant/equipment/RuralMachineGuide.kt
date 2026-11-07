@@ -72,11 +72,11 @@ object RuralMachineGuide {
         FarmMachineCategory("maize_sheller", "Maize sheller / groundnut decorticator", "Manual and powered shellers/decorticators", "Rotating rollers, belts, pinch points and thrown material", listOf(
             FarmMachineSymptom("poor_shell", "Poor shelling", listOf("Stop and isolate power before observing settings.", "Record crop moisture and model/setting.", "Do not reach into rollers or feed opening.")),
             FarmMachineSymptom("jam", "Jammed feed", listOf("Stop power and wait for all moving parts to stop.", "Keep hands and clothing away from rollers.", "Use the exact manual's safe clearing method or call a technician."), true, "Roller pinch points can crush fingers.")
-        ))),
+        )))),
         FarmMachineCategory("brush_cutter", "Brush cutter / grass trimmer", "Petrol, battery and electric types", "High-speed blade, thrown stones, fuel and noise", listOf(
             FarmMachineSymptom("not_start", "Not starting", listOf("Keep cutting head on the ground and away from people.", "Record model and visible switch position.", "Do not touch spark plug, fuel system or blade while hot.")),
             FarmMachineSymptom("vibration", "Strong vibration / damaged head", listOf("Stop engine and wait for the head to stop completely.", "Do not use a cracked blade, damaged guard or loose cutting head.", "Have the unit inspected before reuse."), true, "A damaged high-speed cutting attachment can break apart.")
-        ))),
+        )))),
         FarmMachineCategory("power_weeder", "Power weeder", "Walk-behind and mini power weeders", "Rotating tines, hot engine, loss of control", listOf(
             FarmMachineSymptom("poor_weeding", "Not removing weeds", listOf("Stop engine and wait for tines to stop.", "Record soil condition, working width and model.", "Do not remove weeds wrapped around tines by hand."), true, "Tines can rotate unexpectedly and cause severe injury."),
             FarmMachineSymptom("control", "Unstable movement", listOf("Stop in a clear area and release drive controls.", "Do not operate on steep or slippery ground.", "Arrange inspection of clutch, steering and wheels.")
@@ -84,15 +84,15 @@ object RuralMachineGuide {
         FarmMachineCategory("transplanter", "Paddy transplanter / seed drill", "Walk-behind and riding transplanters; seed/fertilizer drills", "Moving planting arms, pinch points, PTO and chemical/fertilizer contact", listOf(
             FarmMachineSymptom("uneven", "Uneven planting / seed spacing", listOf("Stop drive and engine before inspecting visible settings.", "Record crop, row setting and model.", "Keep hands away from planting arms and metering mechanisms.")),
             FarmMachineSymptom("jam", "Seedling or seed blockage", listOf("Stop and isolate all power; wait for moving parts to stop.", "Do not clear a blockage while the mechanism is moving.", "Follow exact manual or call trained service."), true, "Planting mechanisms can trap fingers.")
-        ))),
+        )))),
         FarmMachineCategory("solar_pump", "Solar water pump controller", "Solar irrigation pumps and inverter/controller units", "DC electrical shock, arc, water and high-voltage PV strings", listOf(
             FarmMachineSymptom("no_output", "Pump not running / controller error", listOf("Photograph the exact controller display and record pump/controller model.", "Observe only external status LEDs and water-source level.", "Do not open controller, disconnect PV wires or measure live DC terminals."), true, "Solar DC circuits can remain energised in daylight even when a switch is off."),
             FarmMachineSymptom("overheat", "Controller hot / burning smell", listOf("Keep clear and stop using the system only from its safe external isolator if dry and accessible.", "Keep water away from electrical equipment.", "Call a solar pump technician; do not open the enclosure."), true, "Burning smell or heat at electrical equipment requires stop-work.")
-        ))),
+        )))),
         FarmMachineCategory("generator", "Farm generator / genset", "Diesel, petrol and LPG generators", "Carbon monoxide, fuel, exhaust, hot surfaces and electricity", listOf(
             FarmMachineSymptom("no_start", "Not starting", listOf("Operate outdoors only, far from doors/windows and people.", "Record model, fuel type, display and indicator state.", "Never refuel while hot or running.")),
             FarmMachineSymptom("no_power", "No electrical output", listOf("Disconnect loads only using safe external controls as directed by the manual.", "Do not touch sockets, terminals or internal wiring.", "Arrange qualified electrical/generator service."), true, "Generator output can cause lethal electric shock.")
-        ))),
+        )))),
         FarmMachineCategory("winnower", "Winnower / grain cleaner / grader", "Manual, electric and engine-driven grain cleaning units", "Fans, belts, dust and rotating screens", listOf(
             FarmMachineSymptom("poor_cleaning", "Grain not cleaning evenly", listOf("Stop the machine before observing external airflow or feed settings.", "Record crop type, moisture and machine model.", "Keep hands away from fan, belts and screens while powered.")),
             FarmMachineSymptom("dust", "Excessive dust or vibration", listOf("Stop operation if dust becomes unsafe or vibration is unusual.", "Keep bystanders away and use suitable dust protection.", "Have fan, screen and bearings inspected by service staff."), true, "Dust exposure and rotating parts can injure operators.")
