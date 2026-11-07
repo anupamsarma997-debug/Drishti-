@@ -59,6 +59,7 @@ import com.vidya.safetyassistant.equipment.EquipmentLabelFacts
 import com.vidya.safetyassistant.equipment.EquipmentLabelParser
 import com.vidya.safetyassistant.equipment.EquipmentManualMatcher
 import com.vidya.safetyassistant.equipment.HomeTroubleshootingGuide
+import com.vidya.safetyassistant.equipment.MachineExpertSystem
 import com.vidya.safetyassistant.equipment.RuralMachineGuide
 import com.vidya.safetyassistant.equipment.FarmMachineBrandCatalog
 import com.vidya.safetyassistant.equipment.PartFailureGuide
@@ -111,6 +112,13 @@ private fun VidyaApp() {
     var equipmentManualMatches by remember { mutableStateOf(emptyList<com.vidya.safetyassistant.equipment.EquipmentManualMatch>()) }
     var equipmentMatchStatus by remember { mutableStateOf("Read a clear model number to search your imported manuals.") }
     var applianceMenuExpanded by remember { mutableStateOf(false) }
+    var expertMenuExpanded by remember { mutableStateOf(false) }
+    var selectedExpertMachineId by remember { mutableStateOf("bike") }
+    var expertBrand by remember { mutableStateOf("") }
+    var expertModel by remember { mutableStateOf("") }
+    var expertYear by remember { mutableStateOf("") }
+    var expertComplaint by remember { mutableStateOf("") }
+    var expertAssessment by remember { mutableStateOf<com.vidya.safetyassistant.equipment.ExpertAssessment?>(null) }
     var symptomMenuExpanded by remember { mutableStateOf(false) }
     var selectedApplianceId by remember { mutableStateOf(HomeTroubleshootingGuide.categories.first().id) }
     var selectedSymptomId by remember { mutableStateOf(HomeTroubleshootingGuide.categories.first().symptoms.first().id) }
@@ -273,6 +281,82 @@ private fun VidyaApp() {
                 }
 
                 Spacer(Modifier.height(12.dp))
+                Text("VIDYA SPECIALIST AI EXPERTS", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium)
+                Text("Select a machine expert. Describe the problem to get offline, safety-first troubleshooting clues.",
+                    color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                val expertMachineOptions = listOf(
+                    "bike" to "Motorcycle", "scooter" to "Scooter", "car" to "Car",
+                    "ev" to "Electric vehicle", "truck" to "Truck", "tractor" to "Tractor",
+                    "power_tiller" to "Power tiller", "pump" to "Water pump",
+                    "generator" to "Generator", "thresher" to "Thresher",
+                    "ac" to "Air conditioner", "tv" to "Television",
+                    "washer" to "Washing machine", "fridge" to "Refrigerator",
+                    "microwave" to "Microwave", "water_heater" to "Water heater",
+                    "motor" to "Electric motor", "power_tools" to "Power tools",
+                    "compressor" to "Air compressor", "welder" to "Welding machine",
+                    "forklift" to "Forklift", "excavator" to "Excavator",
+                    "conveyor" to "Conveyor", "hydraulic_press" to "Hydraulic press",
+                    "boiler" to "Boiler", "concrete_mixer" to "Concrete mixer",
+                    "crusher" to "Crusher", "cnc" to "CNC machine"
+                )
+                Box {
+                    TextButton(onClick = { expertMenuExpanded = true }) {
+                        Text("Machine: ${expertMachineOptions.first { it.first == selectedExpertMachineId }.second}",
+                            color = Color.White)
+                    }
+                    DropdownMenu(expanded = expertMenuExpanded,
+                        onDismissRequest = { expertMenuExpanded = false }) {
+                        expertMachineOptions.forEach { option ->
+                            DropdownMenuItem(text = { Text(option.second) }, onClick = {
+                                selectedExpertMachineId = option.first
+                                expertAssessment = null
+                                expertMenuExpanded = false
+                            })
+                        }
+                    }
+                }
+                OutlinedTextField(value = expertBrand, onValueChange = {
+                    expertBrand = it; expertAssessment = null
+                }, label = { Text("Brand / company") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = expertModel, onValueChange = {
+                    expertModel = it; expertAssessment = null
+                }, label = { Text("Exact model / variant") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = expertYear, onValueChange = {
+                    expertYear = it; expertAssessment = null
+                }, label = { Text("Year (if known)") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = expertComplaint, onValueChange = {
+                    expertComplaint = it; expertAssessment = null
+                }, label = { Text("What is happening? Describe sound, smell, warning or error code") },
+                    modifier = Modifier.fillMaxWidth(), minLines = 2)
+                Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                    val machineName = expertMachineOptions.first { it.first == selectedExpertMachineId }.second
+                    expertAssessment = MachineExpertSystem.assess(
+                        selectedExpertMachineId, machineName, expertBrand, expertModel,
+                        expertYear, expertComplaint
+                    )
+                }, enabled = expertComplaint.isNotBlank()) { Text("Ask selected machine expert") }
+                expertAssessment?.let { result ->
+                    Text(result.expert.name, color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold)
+                    Text(result.summary, color = if (result.stopConditions.firstOrNull()?.startsWith("STOP") == true)
+                        Color(0xFFFF7777) else Color.White)
+                    Text("POSSIBLE AREAS — NOT A DIAGNOSIS", color = Color(0xFFFFC247),
+                        fontWeight = FontWeight.Bold)
+                    result.possibleAreas.forEach { Text("• $it", color = Color.White) }
+                    Text("SAFE OBSERVATIONS", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold)
+                    result.safeChecks.forEachIndexed { index, item ->
+                        Text("${index + 1}. $item", color = Color.White,
+                            style = MaterialTheme.typography.bodySmall)
+                    }
+                    result.stopConditions.forEach { Text("• $it", color = Color(0xFFFF8D70),
+                        style = MaterialTheme.typography.bodySmall) }
+                    Text(result.escalation, color = Color(0xFFFFC247),
+                        style = MaterialTheme.typography.bodySmall)
+                    Text(result.confidenceNote, color = Color(0xFF9BAFC2),
+                        style = MaterialTheme.typography.labelSmall)
+                }
+
+                Spacer(Modifier.height(18.dp))
                 Text("HOME MACHINE HELP", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.labelLarge)
                 Text("Choose a machine and describe the symptom. Vidya gives cautious observation-only checks.",
