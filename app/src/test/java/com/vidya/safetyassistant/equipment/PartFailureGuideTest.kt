@@ -31,6 +31,24 @@ class PartFailureGuideTest {
         }
     }
 
+
+    @Test fun includesHouseholdWorkshopAndAllVehicleTypes() {
+        listOf("ac", "tv", "washer", "fridge", "microwave", "water_heater",
+            "power_tools", "motor", "bike", "scooter", "car", "ev", "truck").forEach { machineId ->
+            assertTrue("No part catalogue for $machineId",
+                PartFailureGuide.forMachine(machineId).size >= 3)
+        }
+    }
+
+    @Test fun homeApplianceAndVehicleComplaintRanksRelevantComponent() {
+        assertTrue(PartFailureGuide.match("washer", "water remains not draining")
+            .first().partName.contains("Drain", ignoreCase = true))
+        assertTrue(PartFailureGuide.match("bike", "weak braking brake noise")
+            .first().partName.contains("Brake", ignoreCase = true))
+        assertTrue(PartFailureGuide.match("ev", "traction battery BMS warning")
+            .first().partName.contains("Traction", ignoreCase = true))
+    }
+
     @Test fun unknownMachineReturnsNoGuessedParts() {
         assertTrue(PartFailureGuide.forMachine("unknown").isEmpty())
         assertTrue(PartFailureGuide.match("unknown", "smoke and noise").isEmpty())
