@@ -18,6 +18,8 @@ Vidya is an Android-first, offline-oriented technical inspection assistant.
 - UI language selector for Assamese, Hindi, English, Bengali, Tamil, Telugu, Marathi, Gujarati, Kannada, Malayalam, Punjabi, and Urdu (actual voice availability depends on installed device language packs).
 - Small deterministic offline safety FAQ for common electrical and moving-machinery questions (English and Hindi response text only).
 - Local PDF manual library using Android's document picker; stores document URI permission and page-count metadata, and opens the selected PDF in an installed viewer.
+- On-device OCR indexing for the first 40 pages of imported PDFs, using bundled ML Kit Latin and Devanagari recognizers; extracted text is stored privately on-device and searchable by keywords with manual name and page number.
+- Manual search is a retrieval aid only: OCR can misread technical labels, tables, units, or wiring diagrams. It does not validate instructions, identify the equipment model, or generate repair steps.
 - Optional ARCore mode using SceneView 2.3.0: tap a tracked horizontal plane to place a neutral 3D marker; normal CameraX mode remains available on devices without ARCore.
 - Unit tests for safety-engine policy and offline FAQ behavior.
 - GitHub Actions workflow to run unit tests and assemble a debug APK.
@@ -31,7 +33,7 @@ This is an early engineering MVP, **not a validated safety product**.
 - Real hazard classifications currently enter the SafetyEngine only through the manual test controls or a future trusted classifier adapter.
 - The green test state is simulated and must never be interpreted as a real inspection result or proof of safety.
 - Voice input currently uses Android's installed speech service; offline language availability depends on device language packs. The offline FAQ is rule-based, not a generative AI assistant. The language selector changes speech locale, but answer translation is currently limited to Hindi and English.
-- PDF import currently stores and opens manuals only. It does not extract PDF text, index pages, or answer manual-grounded questions.
+- PDF OCR indexing is limited to the first 40 pages and may misread scans, low-resolution text, tables, symbols, units, or diagrams. Search results are source snippets, not verified repair instructions. There is no model-number matching, manufacturer authenticity verification, or generated manual-grounded step-by-step repair guidance yet.
 - The app can stop its own guidance workflow and alert the user. It cannot physically stop a machine, vehicle, or electrical circuit.
 - AR mode currently performs plane tracking and neutral marker placement only. It does not identify equipment, localize components, show manual-grounded arrows, or detect hazards.
 - No PDF text extraction or manufacturer-manual RAG, equipment-specific model database, persistent inspection history, or validated multilingual translation is implemented yet.
@@ -61,7 +63,7 @@ Open-source Android AR repository comparison, licensing notes, reusable architec
 
 ## Project structure
 
-- `app/src/main`: Android application, CameraX preview/analyzer, optional ARCore/SceneView plane marker, safety engine/controller, Compose overlay, voice adapter, offline FAQ and local PDF library.
+- `app/src/main`: Android application, CameraX preview/analyzer, optional ARCore/SceneView plane marker, safety engine/controller, Compose overlay, voice adapter, offline FAQ, local PDF library and on-device OCR page index.
 - `app/src/test`: safety-engine and offline-FAQ unit tests.
 - `docs/`: product requirements, architecture, and safety policy.
 - `AGENTS.md`: engineering and safety instructions for coding agents.
