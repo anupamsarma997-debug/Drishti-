@@ -366,7 +366,7 @@ private fun VidyaApp() {
                                         equipmentMatchStatus = if (matches.isEmpty()) {
                                             "No exact model text found in indexed manuals. Check the model number and import the correct manufacturer's PDF."
                                         } else {
-                                            "Found \${matches.size} page(s) containing this model text. Confirm the manual cover, manufacturer and full model before relying on it."
+                                            "Found ${matches.size} page(s) containing this model text. Confirm the manual cover, manufacturer and full model before relying on it."
                                         }
                                     }
                                 }
@@ -376,7 +376,7 @@ private fun VidyaApp() {
                         equipmentManualMatches.forEach { match ->
                             Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                                 Text(
-                                    "\${match.page.manualName} · Page \${match.page.pageNumber}" +
+                                    "${match.page.manualName} · Page ${match.page.pageNumber}" +
                                         if (match.manufacturerMentioned) " · brand text also found" else " · brand not confirmed",
                                     color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold,
                                     style = MaterialTheme.typography.labelMedium
