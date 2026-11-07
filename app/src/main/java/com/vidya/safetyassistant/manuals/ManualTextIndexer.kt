@@ -12,6 +12,7 @@ import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
+import java.security.MessageDigest
 
 data class ManualPageText(val manualName: String, val pageNumber: Int, val text: String)
 
@@ -19,6 +20,14 @@ data class ManualPageText(val manualName: String, val pageNumber: Int, val text:
  * Local OCR index for user-imported manuals. Runs only on-device and stores extracted
  * page text in private app preferences. Scanned PDFs are rasterized page-by-page.
  */
+internal fun manualIndexStorageKey(uri: String): String {
+    val digest = MessageDigest.getInstance("SHA-256").digest(uri.toByteArray(Charsets.UTF_8))
+    return "manual_v2_" + digest.joinToString("") { "%02x".format(it) }
+}
+
+internal fun legacyManualIndexStorageKey(uri: String): String =
+    "manual_" + uri.hashCode().toUInt().toString(16)
+
 class ManualTextIndexer(context: Context) {
     private val app = context.applicationContext
     private val prefs = app.getSharedPreferences("vidya_manual_ocr", Context.MODE_PRIVATE)
@@ -26,6 +35,7 @@ class ManualTextIndexer(context: Context) {
     private val devanagari = TextRecognition.getClient(DevanagariTextRecognizerOptions.Builder().build())
 
     fun index(manual: LocalManual, maxPages: Int = 40): Int {
+        require(maxPages > 0) { "The page limit must be greater than zero." }
         val descriptor = app.contentResolver.openFileDescriptor(Uri.parse(manual.uri), "r")
             ?: error("The selected manual is no longer accessible.")
         val pages = mutableListOf<ManualPageText>()
@@ -67,7 +77,10 @@ class ManualTextIndexer(context: Context) {
         if (query.isBlank() || limit <= 0) return emptyList()
         val pages = mutableListOf<ManualPageText>()
         for (manual in ManualLibrary(app).list()) {
-            val raw = prefs.getString(key(manual.uri), null) ?: continue
+            // Read the previous hash-based key as a migration fallback for existing imports.
+            val raw = prefs.getString(key(manual.uri), null)
+                ?: prefs.getString(legacyManualIndexStorageKey(manual.uri), null)
+                ?: continue
             val array = try { JSONArray(raw) } catch (_: Exception) { continue }
             for (i in 0 until array.length()) {
                 val item = array.getJSONObject(i)
@@ -80,6 +93,14 @@ class ManualTextIndexer(context: Context) {
         return ManualSearchRanker.rank(query, pages, limit)
     }
 
+    /** Remove cached OCR text when a user removes a manual from the library. */
+    fun removeIndex(manualUri: String) {
+        prefs.edit()
+            .remove(key(manualUri))
+            .remove(legacyManualIndexStorageKey(manualUri))
+            .commit()
+    }
+
     fun close() {
         latin.close()
         devanagari.close()
@@ -88,5 +109,5 @@ class ManualTextIndexer(context: Context) {
     private fun recognize(recognizer: com.google.mlkit.vision.text.TextRecognizer, image: InputImage): String =
         Tasks.await(recognizer.process(image), 25, TimeUnit.SECONDS).text
 
-    private fun key(uri: String) = "manual_" + uri.hashCode().toUInt().toString(16)
+    private fun key(uri: String) = manualIndexStorageKey(uri)
 }
