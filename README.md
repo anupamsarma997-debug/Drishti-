@@ -18,7 +18,7 @@ Vidya is an Android-first, offline-oriented technical inspection assistant.
 - UI language selector for Assamese, Hindi, English, Bengali, Tamil, Telugu, Marathi, Gujarati, Kannada, Malayalam, Punjabi, and Urdu (actual voice availability depends on installed device language packs).
 - Small deterministic offline safety FAQ for common electrical and moving-machinery questions (English and Hindi response text only).
 - Local PDF manual library using Android's document picker; stores document URI permission and page-count metadata, and opens the selected PDF in an installed viewer.
-- On-device OCR indexing for the first 40 pages of imported PDFs, using bundled ML Kit Latin and Devanagari recognizers; extracted text is stored privately on-device and searchable by keywords with manual name and page number.
+- On-device OCR indexing for the first 40 pages of imported PDFs, using bundled ML Kit Latin and Devanagari recognizers; extracted text is stored privately on-device and searchable by keywords with manual name and page number. The two bundled script models add roughly 8 MB per device architecture, before APK packaging effects.
 - Manual search is a retrieval aid only: OCR can misread technical labels, tables, units, or wiring diagrams. It does not validate instructions, identify the equipment model, or generate repair steps.
 - Optional ARCore mode using SceneView 2.3.0: tap a tracked horizontal plane to place a neutral 3D marker; normal CameraX mode remains available on devices without ARCore.
 - Unit tests for safety-engine policy and offline FAQ behavior.
@@ -36,7 +36,7 @@ This is an early engineering MVP, **not a validated safety product**.
 - PDF OCR indexing is limited to the first 40 pages and may misread scans, low-resolution text, tables, symbols, units, or diagrams. Search results are source snippets, not verified repair instructions. There is no model-number matching, manufacturer authenticity verification, or generated manual-grounded step-by-step repair guidance yet.
 - The app can stop its own guidance workflow and alert the user. It cannot physically stop a machine, vehicle, or electrical circuit.
 - AR mode currently performs plane tracking and neutral marker placement only. It does not identify equipment, localize components, show manual-grounded arrows, or detect hazards.
-- No PDF text extraction or manufacturer-manual RAG, equipment-specific model database, persistent inspection history, or validated multilingual translation is implemented yet.
+- There is no semantic manual retrieval, equipment-model matching, manufacturer authenticity verification, verified repair-step generation, persistent inspection history, or validated multilingual translation yet.
 - A camera cannot establish whether a wire is energized or detect many hidden/internal faults.
 
 ## Build
