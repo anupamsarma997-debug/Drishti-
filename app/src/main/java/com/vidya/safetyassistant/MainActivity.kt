@@ -534,6 +534,26 @@ private fun VidyaApp() {
                     }
                     Text("Severity: ${result.severity}", color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
                     Text(result.limitation, color = Color(0xFFFF8D70), style = MaterialTheme.typography.labelSmall)
+                    val vehicleMachineId = vehicleType.lowercase()
+                    val vehicleParts = PartFailureGuide.match(vehicleMachineId, result.meaning + " " +
+                        result.possibleCauses.joinToString(" ") + " " + result.code)
+                    Text("POSSIBLE VEHICLE COMPONENTS — VERIFY BEFORE REPAIR",
+                        color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold)
+                    vehicleParts.forEachIndexed { index, part ->
+                        Text("${index + 1}. ${part.partName}", color = Color.White, fontWeight = FontWeight.Bold)
+                        Text("Failure clues: ${part.failureClues.joinToString(", ")}", color = Color(0xFF9BAFC2),
+                            style = MaterialTheme.typography.labelSmall)
+                        part.possibleCauses.forEach { Text("Possible causes: $it", color = Color.White,
+                            style = MaterialTheme.typography.bodySmall) }
+                        part.safeObservations.forEach { Text("Safe observation: $it", color = Color.White,
+                            style = MaterialTheme.typography.bodySmall) }
+                        Text("Technician inspection: ${part.technicianAction}", color = Color(0xFF9BAFC2),
+                            style = MaterialTheme.typography.bodySmall)
+                        Text("Do not: ${part.neverDo}", color = Color(0xFFFF8D70),
+                            style = MaterialTheme.typography.labelSmall)
+                    }
+                    Text("Vehicle parts list is a general triage reference, not an exact fitment or diagnosis. EV high-voltage systems and brakes require qualified service.",
+                        color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
                     Button(modifier = Modifier.fillMaxWidth(), onClick = {
                         manualQuery = result.code
                         manualExecutor.execute {
