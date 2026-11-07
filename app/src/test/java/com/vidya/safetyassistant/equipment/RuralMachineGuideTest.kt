@@ -8,7 +8,7 @@ class RuralMachineGuideTest {
         val labels = RuralMachineGuide.categories.map { it.label }
         listOf("Tractor", "Power tiller / walking tractor", "Irrigation / water pump", "Paddy / multi-crop thresher",
             "Chaff / fodder cutter", "Rice mill / huller / polisher", "Brush cutter / grass trimmer",
-            "Solar water pump controller", "Dairy milking machine / milk chiller", "Tea leaf plucker / tea garden machine", "Areca nut / orchard harvester", "Potato / ginger / turmeric digger", "Grain dryer / seed dryer", "Winnower / grain cleaner / grader").forEach { expected ->
+            "Solar water pump controller", "Dairy milking machine / milk chiller", "Tea leaf plucker / tea garden machine", "Areca nut / orchard harvester", "Potato / ginger / turmeric digger", "Grain dryer / seed dryer", "Winnower / grain cleaner / grader", "Plough / harrow / cultivator / land leveller", "Seed drill / planter / potato planter", "Fodder harvester / forage chopper", "Mulcher / straw baler").forEach { expected ->
             assertTrue("Missing $expected", labels.contains(expected))
         }
     }
@@ -29,6 +29,11 @@ class RuralMachineGuideTest {
         val advice = RuralMachineGuide.advice("solar_pump", "no_output")
         assertTrue(advice!!.stopWork)
         assertTrue(advice.warning.contains("DC circuits"))
+    }
+
+    @Test fun dangerousHydraulicAndBalerHazardsRequireStopWork() {
+        assertTrue(RuralMachineGuide.advice("tillage_implements", "hydraulic")!!.stopWork)
+        assertTrue(RuralMachineGuide.advice("mulcher_baler", "baler_blockage")!!.stopWork)
     }
 
     @Test fun unknownMachineOrSymptomIsNotGuessed() {
