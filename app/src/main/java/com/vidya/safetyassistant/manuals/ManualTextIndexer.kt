@@ -4,10 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
 import android.net.Uri
-import android.os.ParcelFileDescriptor
 import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
@@ -36,7 +34,7 @@ class ManualTextIndexer(context: Context) {
                 val count = minOf(renderer.pageCount, maxPages)
                 for (i in 0 until count) {
                     renderer.openPage(i).use { page ->
-                        val scale = minOf(1.0, 1400.0 / maxOf(page.width, page.height))
+                        val scale = minOf(2.0, 1800.0 / maxOf(page.width, page.height))
                         val width = (page.width * scale).toInt().coerceAtLeast(1)
                         val height = (page.height * scale).toInt().coerceAtLeast(1)
                         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
