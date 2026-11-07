@@ -906,7 +906,9 @@ private fun VidyaApp() {
                         Text(result.text.take(420), color = Color.White, style = MaterialTheme.typography.bodySmall)
                     }
                 }
-                manuals.take(3).forEach { manual ->
+                Text("IMPORTED MANUALS (${manuals.size})", color = Color(0xFF68E0FF),
+                    fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                manuals.forEach { manual ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -919,6 +921,14 @@ private fun VidyaApp() {
                             modifier = Modifier.weight(1f)
                         )
                         TextButton(onClick = { openManual(context, manual) }) { Text("Open") }
+                        TextButton(onClick = {
+                            manualLibrary.remove(manual.uri)
+                            manualIndexer.removeIndex(manual.uri)
+                            manuals = manualLibrary.list()
+                            manualResults = manualResults.filterNot { it.manualName == manual.displayName }
+                            manualStatus = "Removed ${manual.displayName} and its local search index."
+                            indexStatus = "Manual list updated."
+                        }) { Text("Remove") }
                     }
                 }
                 Spacer(Modifier.height(4.dp))
