@@ -93,6 +93,30 @@ object RuralMachineGuide {
             FarmMachineSymptom("no_start", "Not starting", listOf("Operate outdoors only, far from doors/windows and people.", "Record model, fuel type, display and indicator state.", "Never refuel while hot or running.")),
             FarmMachineSymptom("no_power", "No electrical output", listOf("Disconnect loads only using safe external controls as directed by the manual.", "Do not touch sockets, terminals or internal wiring.", "Arrange qualified electrical/generator service."), true, "Generator output can cause lethal electric shock.")
         ))),
+        FarmMachineCategory("winnower", "Winnower / grain cleaner / grader", "Manual, electric and engine-driven grain cleaning units", "Fans, belts, dust and rotating screens", listOf(
+            FarmMachineSymptom("poor_cleaning", "Grain not cleaning evenly", listOf("Stop the machine before observing external airflow or feed settings.", "Record crop type, moisture and machine model.", "Keep hands away from fan, belts and screens while powered.")),
+            FarmMachineSymptom("dust", "Excessive dust or vibration", listOf("Stop operation if dust becomes unsafe or vibration is unusual.", "Keep bystanders away and use suitable dust protection.", "Have fan, screen and bearings inspected by service staff."), true, "Dust exposure and rotating parts can injure operators.")
+        )),
+        FarmMachineCategory("grain_dryer", "Grain dryer / seed dryer", "Batch, flat-bed and mechanical grain dryers", "Hot air, burners, fuel, electricity and fire", listOf(
+            FarmMachineSymptom("not_drying", "Grain not drying evenly", listOf("Record crop, initial/final moisture readings and controller display.", "Observe only external air inlet/outlet and alarms.", "Do not open burner, heater or electrical compartments.")),
+            FarmMachineSymptom("overheat", "High temperature / smoke", listOf("Stop the dryer using the safe external control and move people away.", "Do not open hot chambers or add water to electrical/burner equipment.", "Call trained service before restarting."), true, "Smoke, flame or overheating is an immediate fire risk.")
+        )),
+        FarmMachineCategory("feed_mixer", "Feed grinder / hammer mill / mixer", "Small farm feed mills and grinder-cum-mixer units", "High-speed hammers, belts, dust and electrical motors", listOf(
+            FarmMachineSymptom("poor_grind", "Feed not grinding properly", listOf("Stop and isolate power before checking external feed settings.", "Record material type and machine model.", "Never reach into hopper, grinder or discharge chute.")),
+            FarmMachineSymptom("jam", "Machine jam or loud impact", listOf("Stop power and wait for every moving part to stop.", "Do not open the grinding chamber or remove guards.", "Arrange inspection by a trained operator/technician."), true, "Hammer mills can retain dangerous rotational energy.")
+        )),
+        FarmMachineCategory("root_digger", "Potato / ginger / turmeric digger", "Tractor, power-tiller and animal-drawn diggers", "PTO, rotating chains, digging blades and raised implements", listOf(
+            FarmMachineSymptom("poor_digging", "Crop not lifting / digging unevenly", listOf("Stop drive and PTO before observing working depth or soil condition.", "Record crop, soil condition and implement model.", "Do not adjust blades or chains while connected to power.")),
+            FarmMachineSymptom("noise", "Chain noise or vibration", listOf("Stop tractor/engine, remove key and wait for all movement to stop.", "Keep clear of chains, blades and raised parts.", "Have the driveline and digging assembly inspected."), true, "Chains and blades can trap or cut hands.")
+        )),
+        FarmMachineCategory("areca_harvester", "Areca nut / orchard harvester", "Pole-mounted and powered climbing/harvesting equipment", "Falls from height, falling fruit, blades and electrical equipment", listOf(
+            FarmMachineSymptom("not_working", "Harvester not working", listOf("Keep the equipment on the ground and away from overhead power lines.", "Record model and visible fault indicators.", "Do not climb or use improvised ladders to inspect the unit.")),
+            FarmMachineSymptom("damage", "Cable, pole or cutting head damage", listOf("Stop use and keep people away from the drop zone.", "Do not operate with cracked poles, damaged ropes or exposed conductors.", "Arrange trained inspection before use."), true, "Falls and falling objects can cause fatal injury.")
+        )),
+        FarmMachineCategory("tea_harvester", "Tea leaf plucker / tea garden machine", "Handheld and ride-on tea pruning/harvesting equipment", "Rotating blades, sharp cutters, fuel and uneven terrain", listOf(
+            FarmMachineSymptom("uneven_cut", "Uneven plucking / cutting", listOf("Stop the machine and wait for all cutting parts to stop.", "Record crop row, cutting height setting and model.", "Do not adjust cutter blades while powered.")),
+            FarmMachineSymptom("fuel_smell", "Fuel smell / smoke / overheating", listOf("Stop if safe, move away from ignition sources and keep clear of hot parts.", "Do not refuel while running or hot.", "Arrange qualified service before restart."), true, "Fuel leaks and hot engines can cause fire.")
+        )),
         FarmMachineCategory("dairy", "Dairy milking machine / milk chiller", "Vacuum pump, milking cluster and bulk milk cooler", "Electrical equipment near water, vacuum, rotating pumps and hygiene", listOf(
             FarmMachineSymptom("low_vacuum", "Low vacuum / weak suction", listOf("Stop milking if animal welfare or equipment safety is affected.", "Record gauge reading and visible alarms.", "Do not open vacuum pump or electrical panels; clean only parts specified by the hygiene manual.")),
             FarmMachineSymptom("not_cooling", "Milk chiller not cooling", listOf("Keep milk handling hygienic and follow food-safety procedures.", "Record temperature display and alarm code.", "Do not open refrigerant circuits or electrical covers; arrange service."), true, "Milk temperature failure can create food-safety risks.")
