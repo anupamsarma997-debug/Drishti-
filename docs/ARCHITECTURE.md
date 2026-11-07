@@ -58,3 +58,10 @@ Current code is still a single Gradle :app module with packages for camera, safe
 9. Next: specialist equipment-specific vision models and verified hazard datasets; never infer safety from generic labels.
 10. Next: step-by-step manual-grounded AR arrows only after exact model/part localization is validated.
 11. Required before safety claims: controlled field testing, false-negative analysis, low-end device profiling, and independent safety review.
+
+
+## Home-appliance model lookup (current implementation)
+
+The camera OCR nameplate parser can extract explicitly labelled model/manufacturer clues. When a model clue exists, the UI can search the local OCR index of imported PDFs for an exact model string. The matcher tolerates common separators (space, dot, underscore, slash, hyphen), rejects longer alphanumeric substring matches, and ranks pages that also contain manufacturer text.
+
+This is a text-presence lookup only. It does not prove that the imported PDF is genuine, that the physical appliance is the same model, or that an instruction is safe/applicable. The user must verify the manual cover and complete model against the physical nameplate. No automatic repair instructions are generated from these matches.
