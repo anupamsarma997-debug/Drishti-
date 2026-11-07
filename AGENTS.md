@@ -33,4 +33,4 @@ Build an Android-first technical safety assistant that helps users understand eq
 6. Keep documentation synchronized with implementation.
 
 ## Current status
-This repository is a project foundation. The Android application source and real-world safety validation have not yet been implemented.
+This repository now contains an early Android MVP source: CameraX preview + ML Kit generic on-device object boxes, Compose safety overlay, manual-only safety-engine inputs, vibration/TTS stop alerts, Android speech adapter, and a rule-based offline safety FAQ. Generic object recognition is NOT hazard detection. No specialized electrical/mechanical hazard model, ARCore guidance, PDF/manual RAG, or real-world safety validation is implemented. Do not mark the UI SAFE based only on generic object detection.
