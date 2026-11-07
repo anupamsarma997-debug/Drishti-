@@ -63,7 +63,7 @@ object RuralMachineGuide {
         ))),
         FarmMachineCategory("chaff_cutter", "Chaff / fodder cutter", "Manual, electric motor, engine or tractor PTO driven", "Sharp blades, feed rollers and entanglement", listOf(
             FarmMachineSymptom("not_cutting", "Fodder not cutting", listOf("Stop and isolate the power source; wait for all parts to stop.", "Never push fodder with hands or feet.", "Use only the supplied feed tool and procedure in the exact manual."), true, "Feed rollers can pull hands or clothing into the cutter."),
-            FarmMachineSymptom("jam", "Machine jammed", listOf("Stop power, isolate and prevent accidental restart.", "Do not reach into the feed chute or blade housing.", "Call a trained operator/technician for clearing.")
+            FarmMachineSymptom("jam", "Machine jammed", listOf("Stop power, isolate and prevent accidental restart.", "Do not reach into the feed chute or blade housing.", "Call a trained operator/technician for clearing."), true, "A jam can leave stored mechanical energy in the cutter and feed mechanism.")
         ))),
         FarmMachineCategory("rice_mill", "Rice mill / huller / polisher", "Mini rice mill, huller and polishing units", "Belts, rollers, dust, electrical motors and hot bearings", listOf(
             FarmMachineSymptom("poor_polish", "Poor milling / polishing", listOf("Stop machine before inspecting external feed settings.", "Record crop moisture, feed rate setting and model.", "Do not open roller or huller housing while connected to power.")),
