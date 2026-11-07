@@ -43,6 +43,7 @@ import com.vidya.safetyassistant.safety.SafetyController
 import com.vidya.safetyassistant.safety.SafetyEngine
 import com.vidya.safetyassistant.safety.SafetyStatus
 import com.vidya.safetyassistant.ui.SafetyOverlay
+import com.vidya.safetyassistant.voice.OfflineSafetyGuide
 import com.vidya.safetyassistant.voice.VoiceAssistant
 
 class MainActivity : ComponentActivity() {
@@ -78,7 +79,9 @@ private fun VidyaApp() {
             context = context,
             onRecognizedText = { text ->
                 heardQuestion = text
-                voiceStatus = "Offline speech captured. No AI knowledge model is connected yet."
+                val answer = OfflineSafetyGuide.answer(text, safetyController.assessment)
+                voiceStatus = "Offline safety guide replied. This is general guidance, not equipment-specific repair advice."
+                voiceAssistant.speak(answer)
             },
             onError = { message -> voiceStatus = message }
         )
