@@ -343,6 +343,13 @@ private fun VidyaApp() {
                     }
                     Text("Severity: ${result.severity}", color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
                     Text(result.limitation, color = Color(0xFFFF8D70), style = MaterialTheme.typography.labelSmall)
+                    Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                        manualQuery = result.code
+                        manualExecutor.execute {
+                            val pages = manualIndexer.search(result.code, 20)
+                            mainHandler.post { manualResults = pages }
+                        }
+                    }) { Text("Find this code in my imported manuals") }
                 }
                 Text("Important: dashboard warning text, manufacturer-specific codes, motorcycle blink codes and EV high-voltage faults may not follow generic OBD-II definitions. Never probe orange high-voltage cables, bypass safety systems or work under an unsupported vehicle. A code is not a confirmed failed part.",
                     color = Color(0xFFFF8D70), style = MaterialTheme.typography.labelSmall)
