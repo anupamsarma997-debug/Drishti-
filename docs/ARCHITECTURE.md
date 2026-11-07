@@ -70,3 +70,10 @@ This is a text-presence lookup only. It does not prove that the imported PDF is 
 ## Home appliance triage selector
 
 The Android UI now exposes a local deterministic category/symptom selector for AC, TV, washing machine, motor, pump, refrigerator, generator, microwave, geyser and power tools. Its advice is limited to safe external observations, simple control/settings checks and escalation. High-risk symptoms such as shock, sparks, smoke, burning smell, exposed wiring, fuel/exhaust hazards and water near electricity are treated as stop conditions. This is not fault diagnosis and must not instruct users to open housings, probe live circuits, bypass interlocks or service refrigerant systems.
+
+
+## Vehicle diagnostic code lookup (starter implementation)
+
+The app now provides a vehicle context form for bike, scooter, car, EV and truck. It requires manufacturer, exact model, model year and a five-character OBD-style DTC. A small explicit dictionary covers selected generic codes (P0101, P0171, P0300, P0420, P0128, P0455, P0500 and U0100). Unknown codes are not guessed; manufacturer-reserved codes are explicitly flagged as requiring an exact manufacturer/model/year/control-module source.
+
+This is not a complete DTC database and does not establish that a code is supported by a given vehicle. Many motorcycle warning systems use proprietary blink sequences or manufacturer diagnostics; EV high-voltage faults require trained service. The next data milestone is a source-attributed catalogue of official manuals/service bulletins and exact variant applicability, with a user-imported PDF fallback. Do not scrape, redistribute or bundle copyrighted workshop manuals without permission. Generic DTC standard references include SAE J2012 and ISO 15031-6; the standard also reserves code ranges for manufacturer-specific usage.
