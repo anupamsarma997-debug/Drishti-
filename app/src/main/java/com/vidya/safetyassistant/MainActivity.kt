@@ -270,7 +270,8 @@ private fun VidyaApp() {
                                     "On-device objects: " + frame.objects.take(3).joinToString { it.label }
                                 }
                             },
-                            onDetectionError = { detectorStatus = it }
+                            onDetectionError = { detectorStatus = it },
+                            onTextRecognized = { text -> liveOcrText = text }
                         )
                         SafetyOverlay(
                             status = assessment.status,
@@ -316,6 +317,10 @@ private fun VidyaApp() {
                     )
                     Text(detectorStatus, color = Color(0xFF68E0FF),
                         style = MaterialTheme.typography.labelSmall)
+                    Text("Live camera OCR · Latin + Hindi · approximately once per second", color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                    if (liveOcrText.isNotBlank()) {
+                        Text("Camera text: ${liveOcrText.take(280)}", color = Color.White, style = MaterialTheme.typography.bodySmall)
+                    }
                     Spacer(Modifier.height(12.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Button(
