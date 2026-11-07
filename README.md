@@ -18,6 +18,7 @@ Vidya is an Android-first, offline-oriented technical inspection assistant.
 - UI language selector for Assamese, Hindi, English, Bengali, Tamil, Telugu, Marathi, Gujarati, Kannada, Malayalam, Punjabi, and Urdu (actual voice availability depends on installed device language packs).
 - Small deterministic offline safety FAQ for common electrical and moving-machinery questions (English and Hindi response text only).
 - Local PDF manual library using Android's document picker; stores document URI permission and page-count metadata, and opens the selected PDF in an installed viewer.
+- Optional ARCore mode using SceneView 2.3.0: tap a tracked horizontal plane to place a neutral 3D marker; normal CameraX mode remains available on devices without ARCore.
 - Unit tests for safety-engine policy and offline FAQ behavior.
 - GitHub Actions workflow to run unit tests and assemble a debug APK.
 
@@ -32,7 +33,8 @@ This is an early engineering MVP, **not a validated safety product**.
 - Voice input currently uses Android's installed speech service; offline language availability depends on device language packs. The offline FAQ is rule-based, not a generative AI assistant. The language selector changes speech locale, but answer translation is currently limited to Hindi and English.
 - PDF import currently stores and opens manuals only. It does not extract PDF text, index pages, or answer manual-grounded questions.
 - The app can stop its own guidance workflow and alert the user. It cannot physically stop a machine, vehicle, or electrical circuit.
-- No ARCore world tracking, PDF text extraction or manufacturer-manual RAG, equipment-specific model database, persistent inspection history, or validated multilingual translation is implemented yet.
+- AR mode currently performs plane tracking and neutral marker placement only. It does not identify equipment, localize components, show manual-grounded arrows, or detect hazards.
+- No PDF text extraction or manufacturer-manual RAG, equipment-specific model database, persistent inspection history, or validated multilingual translation is implemented yet.
 - A camera cannot establish whether a wire is energized or detect many hidden/internal faults.
 
 ## Build
@@ -59,7 +61,7 @@ Open-source Android AR repository comparison, licensing notes, reusable architec
 
 ## Project structure
 
-- `app/src/main`: Android application, CameraX preview/analyzer, safety engine/controller, Compose overlay, voice adapter and offline FAQ.
+- `app/src/main`: Android application, CameraX preview/analyzer, optional ARCore/SceneView plane marker, safety engine/controller, Compose overlay, voice adapter, offline FAQ and local PDF library.
 - `app/src/test`: safety-engine and offline-FAQ unit tests.
 - `docs/`: product requirements, architecture, and safety policy.
 - `AGENTS.md`: engineering and safety instructions for coding agents.
