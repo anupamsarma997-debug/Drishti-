@@ -37,10 +37,10 @@ This is an early engineering MVP, **not a validated safety product**.
 - The green test state is simulated and must never be interpreted as a real inspection result or proof of safety.
 - Voice input currently uses Android's installed speech service; offline language availability depends on device language packs. The offline FAQ is rule-based, not a generative AI assistant. The language selector changes speech locale, but answer translation is currently limited to Hindi and English.
 - Live camera OCR is throttled to about one pass every 1.2 seconds and may miss small, blurred, angled, or poorly lit text. It does not identify equipment or detect faults.
-- PDF OCR indexing is limited to the first 40 pages and may misread scans, low-resolution text, tables, symbols, units, or diagrams. Search results are source snippets, not verified repair instructions. There is no model-number matching, manufacturer authenticity verification, or generated manual-grounded step-by-step repair guidance yet.
+- PDF OCR indexing is limited to the first 40 pages and may misread scans, low-resolution text, tables, symbols, units, or diagrams. Exact model-text search can find candidate pages, including common punctuation variations, but search results are source snippets rather than verified repair instructions. Manufacturer authenticity verification and generated manual-grounded step-by-step repair guidance are not implemented yet.
 - The app can stop its own guidance workflow and alert the user. It cannot physically stop a machine, vehicle, or electrical circuit.
 - AR mode currently performs plane tracking and neutral marker placement only. It does not identify equipment, localize components, show manual-grounded arrows, or detect hazards.
-- There is no semantic manual retrieval, equipment-model matching, manufacturer authenticity verification, verified repair-step generation, persistent inspection history, or validated multilingual translation yet.
+- There is no semantic manual retrieval, manufacturer authenticity verification, verified repair-step generation, persistent inspection history, or validated multilingual translation yet.
 - A camera cannot establish whether a wire is energized or detect many hidden/internal faults.
 
 ## Build
