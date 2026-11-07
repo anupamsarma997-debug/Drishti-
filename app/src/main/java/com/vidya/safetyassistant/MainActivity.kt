@@ -20,6 +20,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -74,6 +77,14 @@ private fun VidyaApp() {
     var voiceStatus by remember { mutableStateOf("Voice assistant is ready when you tap the microphone.") }
     var heardQuestion by remember { mutableStateOf("") }
     var answerToSpeak by remember { mutableStateOf("") }
+    var selectedLanguage by remember { mutableStateOf("Hindi") }
+    var languageMenuExpanded by remember { mutableStateOf(false) }
+    val languages = listOf(
+        "Assamese" to "as-IN", "Hindi" to "hi-IN", "English" to "en-IN",
+        "Bengali" to "bn-IN", "Tamil" to "ta-IN", "Telugu" to "te-IN",
+        "Marathi" to "mr-IN", "Gujarati" to "gu-IN", "Kannada" to "kn-IN",
+        "Malayalam" to "ml-IN", "Punjabi" to "pa-IN", "Urdu" to "ur-IN"
+    )
 
     val voiceAssistant = remember {
         VoiceAssistant(
@@ -130,6 +141,26 @@ private fun VidyaApp() {
                             style = MaterialTheme.typography.headlineSmall)
                         Text("Offline Technical Safety Assistant", color = Color(0xFF9BAFC2),
                             style = MaterialTheme.typography.labelMedium)
+                        Box {
+                            TextButton(onClick = { languageMenuExpanded = true }) {
+                                Text("Language: $selectedLanguage", color = Color(0xFF68E0FF))
+                            }
+                            DropdownMenu(
+                                expanded = languageMenuExpanded,
+                                onDismissRequest = { languageMenuExpanded = false }
+                            ) {
+                                languages.forEach { (name, tag) ->
+                                    DropdownMenuItem(
+                                        text = { Text(name) },
+                                        onClick = {
+                                            selectedLanguage = name
+                                            voiceAssistant.setLanguage(tag)
+                                            languageMenuExpanded = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
                     }
                     Text(
                         text = assessment.status.name,
