@@ -50,9 +50,10 @@ Current code is still a single Gradle :app module with packages for camera, safe
 1. Implemented: Compose app shell, camera permission, CameraX preview, low-resolution throttled analysis.
 2. Implemented: bundled ML Kit generic object detection with Canvas bounding boxes; no camera frame upload.
 3. Implemented: conservative safety state machine with manual test classifications, vibration, and TTS warnings.
-4. Implemented: Android speech adapter, language selector, and limited rule-based offline safety FAQ.
-5. Next: validate Gradle build and device camera behavior; add automated tests for camera lifecycle and permissions.
-6. Next: local PDF import and searchable manual text with source/page references.
-7. Next: specialist equipment-specific vision models and verified hazard datasets; never infer safety from generic labels.
-8. Next: step-by-step manual-grounded guidance, then ARCore on supported devices.
-9. Required before safety claims: controlled field testing, false-negative analysis, low-end device profiling, and independent safety review.
+4. Implemented: Android speech adapter, 12-option language selector, and limited rule-based offline safety FAQ (Hindi/English answers only).
+5. Implemented: local PDF picker/library with persisted URI access, page-count metadata, and open-in-viewer action; no text extraction or RAG yet.
+6. Next: validate Gradle build and device camera behavior; add automated tests for camera lifecycle and permissions.
+7. Next: PDF text extraction, local indexing, and manual-grounded answers with source/page references.
+8. Next: specialist equipment-specific vision models and verified hazard datasets; never infer safety from generic labels.
+9. Next: step-by-step manual-grounded guidance, then ARCore on supported devices.
+10. Required before safety claims: controlled field testing, false-negative analysis, low-end device profiling, and independent safety review.
