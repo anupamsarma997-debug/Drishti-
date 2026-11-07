@@ -58,6 +58,7 @@ import com.vidya.safetyassistant.equipment.EquipmentManualMatcher
 import com.vidya.safetyassistant.equipment.HomeTroubleshootingGuide
 import com.vidya.safetyassistant.equipment.VehicleDiagnosticLookup
 import com.vidya.safetyassistant.equipment.VehicleDiagnosticResult
+import com.vidya.safetyassistant.equipment.VehicleWarningLightGuide
 import com.vidya.safetyassistant.safety.SafetyController
 import com.vidya.safetyassistant.safety.SafetyEngine
 import com.vidya.safetyassistant.safety.SafetyStatus
@@ -114,6 +115,8 @@ private fun VidyaApp() {
     var vehicleYear by remember { mutableStateOf("") }
     var vehicleCode by remember { mutableStateOf("") }
     var vehicleResult by remember { mutableStateOf<VehicleDiagnosticResult?>(null) }
+    var warningMenuExpanded by remember { mutableStateOf(false) }
+    var selectedWarningId by remember { mutableStateOf(VehicleWarningLightGuide.entries.first().id) }
     val mainHandler = remember { Handler(Looper.getMainLooper()) }
     var arMode by remember { mutableStateOf(false) }
     var requestArAfterPermission by remember { mutableStateOf(false) }
@@ -351,6 +354,31 @@ private fun VidyaApp() {
                             mainHandler.post { manualResults = pages }
                         }
                     }) { Text("Find this code in my imported manuals") }
+                }
+                Spacer(Modifier.height(12.dp))
+                Text("DASHBOARD WARNING LIGHT GUIDE", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.labelLarge)
+                Text("Choose the closest indicator description. Confirm the exact symbol in your vehicle's owner's manual.",
+                    color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                Box {
+                    TextButton(onClick = { warningMenuExpanded = true }) {
+                        Text(VehicleWarningLightGuide.find(selectedWarningId)?.label ?: "Select warning light",
+                            color = Color.White)
+                    }
+                    DropdownMenu(expanded = warningMenuExpanded, onDismissRequest = { warningMenuExpanded = false }) {
+                        VehicleWarningLightGuide.entries.forEach { item ->
+                            DropdownMenuItem(text = { Text(item.label) }, onClick = {
+                                selectedWarningId = item.id
+                                warningMenuExpanded = false
+                            })
+                        }
+                    }
+                }
+                VehicleWarningLightGuide.find(selectedWarningId)?.let { warning ->
+                    Text(warning.meaning, color = Color.White, style = MaterialTheme.typography.bodySmall)
+                    Text("What to do: ${warning.urgency}", color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
+                    Text(warning.response, color = Color.White, style = MaterialTheme.typography.bodySmall)
+                    Text(warning.caveat, color = Color(0xFFFF8D70), style = MaterialTheme.typography.labelSmall)
                 }
                 Text("Important: dashboard warning text, manufacturer-specific codes, motorcycle blink codes and EV high-voltage faults may not follow generic OBD-II definitions. Never probe orange high-voltage cables, bypass safety systems or work under an unsupported vehicle. A code is not a confirmed failed part.",
                     color = Color(0xFFFF8D70), style = MaterialTheme.typography.labelSmall)
