@@ -20,7 +20,7 @@
 - feature-visualization: labels, arrows, and optional AR presentation
 - data: repositories and network/local data sources
 
-Current code is still a single Gradle :app module with packages for camera, safety, UI, and voice. CameraX preview and a bundled ML Kit generic object detector are implemented in the app. The generic detector is not a specialist hazard model. The proposed feature-module split remains future refactoring.
+Current code is still a single Gradle :app module with packages for camera, safety, UI, and voice. CameraX preview and a bundled ML Kit generic object detector are implemented in the app. An optional ARCore/SceneView 2.3.0 view can place a neutral sphere marker on a user-tapped tracked horizontal plane. The generic detector is not a specialist hazard model, and AR plane tracking does not identify machine components. The proposed feature-module split remains future refactoring.
 
 ## AI request pipeline
 1. User explicitly captures an image and selects an equipment/task context.
@@ -52,8 +52,9 @@ Current code is still a single Gradle :app module with packages for camera, safe
 3. Implemented: conservative safety state machine with manual test classifications, vibration, and TTS warnings.
 4. Implemented: Android speech adapter, 12-option language selector, and limited rule-based offline safety FAQ (Hindi/English answers only).
 5. Implemented: local PDF picker/library with persisted URI access, page-count metadata, and open-in-viewer action; no text extraction or RAG yet.
-6. Next: validate Gradle build and device camera behavior; add automated tests for camera lifecycle and permissions.
-7. Next: PDF text extraction, local indexing, and manual-grounded answers with source/page references.
-8. Next: specialist equipment-specific vision models and verified hazard datasets; never infer safety from generic labels.
-9. Next: step-by-step manual-grounded guidance, then ARCore on supported devices.
-10. Required before safety claims: controlled field testing, false-negative analysis, low-end device profiling, and independent safety review.
+6. Implemented: optional ARCore plane tracking and tap-to-place neutral marker using SceneView 2.3.0 View API; devices without ARCore retain CameraX mode.
+7. Next: validate Gradle build and device camera/AR lifecycle on a physical supported phone; add automated tests for camera lifecycle and permissions.
+8. Next: PDF text extraction, local indexing, and manual-grounded answers with source/page references.
+9. Next: specialist equipment-specific vision models and verified hazard datasets; never infer safety from generic labels.
+10. Next: step-by-step manual-grounded AR arrows only after exact model/part localization is validated.
+11. Required before safety claims: controlled field testing, false-negative analysis, low-end device profiling, and independent safety review.
