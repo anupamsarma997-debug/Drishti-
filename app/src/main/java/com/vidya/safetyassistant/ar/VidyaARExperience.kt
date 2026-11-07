@@ -9,7 +9,6 @@ import com.google.ar.core.Plane
 import com.google.ar.core.TrackingState
 import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.ar.node.AnchorNode
-import io.github.sceneview.math.Color as SceneColor
 import io.github.sceneview.node.SphereNode
 
 /**
