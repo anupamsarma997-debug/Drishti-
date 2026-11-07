@@ -193,7 +193,10 @@ private fun VidyaApp() {
                     style = MaterialTheme.typography.labelSmall
                 )
 
-                Text(detectorStatus, color = Color(0xFF68E0FF),\n                    style = MaterialTheme.typography.labelSmall)\n                Spacer(Modifier.height(12.dp))\n                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(detectorStatus, color = Color(0xFF68E0FF),
+                    style = MaterialTheme.typography.labelSmall)
+                Spacer(Modifier.height(12.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(
                         modifier = Modifier.weight(1f),
                         onClick = { safetyController.setManualTestState(true) },
