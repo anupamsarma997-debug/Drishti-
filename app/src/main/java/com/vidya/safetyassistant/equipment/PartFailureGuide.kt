@@ -168,7 +168,7 @@ object PartFailureGuide {
         val query = complaint.lowercase().trim()
         if (query.isBlank()) return entries.take(3)
         val matches = entries.filter { item ->
-            (item.failureClues + item.partName + item.possibleCauses.flatten())
+            (item.failureClues + item.partName + item.possibleCauses)
                 .any { clue -> clue.lowercase().split(Regex("[^a-z0-9]+")).filter { it.length > 2 }
                     .any { token -> query.contains(token) } }
         }
