@@ -52,12 +52,14 @@ import com.vidya.safetyassistant.manuals.LocalManual
 import com.vidya.safetyassistant.manuals.ManualLibrary
 import com.vidya.safetyassistant.manuals.ManualTextIndexer
 import com.vidya.safetyassistant.manuals.OfficialManualSources
+import com.vidya.safetyassistant.manuals.FarmManualSources
 import com.vidya.safetyassistant.camera.CameraDetections
 import com.vidya.safetyassistant.camera.CameraPreview
 import com.vidya.safetyassistant.equipment.EquipmentLabelFacts
 import com.vidya.safetyassistant.equipment.EquipmentLabelParser
 import com.vidya.safetyassistant.equipment.EquipmentManualMatcher
 import com.vidya.safetyassistant.equipment.HomeTroubleshootingGuide
+import com.vidya.safetyassistant.equipment.RuralMachineGuide
 import com.vidya.safetyassistant.equipment.VehicleDiagnosticLookup
 import com.vidya.safetyassistant.equipment.VehicleDiagnosticResult
 import com.vidya.safetyassistant.equipment.VehicleWarningLightGuide
@@ -111,6 +113,15 @@ private fun VidyaApp() {
     var selectedApplianceId by remember { mutableStateOf(HomeTroubleshootingGuide.categories.first().id) }
     var selectedSymptomId by remember { mutableStateOf(HomeTroubleshootingGuide.categories.first().symptoms.first().id) }
     var troubleshootingAdvice by remember { mutableStateOf<com.vidya.safetyassistant.equipment.TroubleshootingAdvice?>(null) }
+    var farmMachineMenuExpanded by remember { mutableStateOf(false) }
+    var farmSymptomMenuExpanded by remember { mutableStateOf(false) }
+    var selectedFarmMachineId by remember { mutableStateOf(RuralMachineGuide.categories.first().id) }
+    var selectedFarmSymptomId by remember { mutableStateOf(RuralMachineGuide.categories.first().symptoms.first().id) }
+    var farmAdvice by remember { mutableStateOf<com.vidya.safetyassistant.equipment.TroubleshootingAdvice?>(null) }
+    var farmBrand by remember { mutableStateOf("") }
+    var farmModel by remember { mutableStateOf("") }
+    var farmYear by remember { mutableStateOf("") }
+    var farmErrorCode by remember { mutableStateOf("") }
     var vehicleType by remember { mutableStateOf("Car") }
     var vehicleBrand by remember { mutableStateOf("") }
     var vehicleModel by remember { mutableStateOf("") }
@@ -304,6 +315,92 @@ private fun VidyaApp() {
                     Text(advice.warning, color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
                 }
                 Text(HomeTroubleshootingGuide.universalHazardWarning(), color = Color(0xFFFF8D70),
+                    style = MaterialTheme.typography.labelSmall)
+
+                Spacer(Modifier.height(16.dp))
+                Text("VILLAGE & FARM MACHINE HELP", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.labelLarge)
+                Text("Tractors, pumps, paddy machines, threshers, rice mills, sprayers and other rural equipment. Guidance is limited to safe observations and escalation.",
+                    color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                Box {
+                    TextButton(onClick = { farmMachineMenuExpanded = true }) {
+                        Text("Machine: ${RuralMachineGuide.category(selectedFarmMachineId)?.label ?: "Select machine"}",
+                            color = Color.White)
+                    }
+                    DropdownMenu(expanded = farmMachineMenuExpanded, onDismissRequest = { farmMachineMenuExpanded = false }) {
+                        RuralMachineGuide.categories.forEach { category ->
+                            DropdownMenuItem(text = { Text(category.label) }, onClick = {
+                                selectedFarmMachineId = category.id
+                                selectedFarmSymptomId = category.symptoms.first().id
+                                farmAdvice = null
+                                farmMachineMenuExpanded = false
+                            })
+                        }
+                    }
+                }
+                val activeFarmCategory = RuralMachineGuide.category(selectedFarmMachineId)!!
+                Text("Examples: ${activeFarmCategory.examples}", color = Color(0xFF9BAFC2),
+                    style = MaterialTheme.typography.labelSmall)
+                Text("Main hazards: ${activeFarmCategory.hazards}", color = Color(0xFFFF8D70),
+                    style = MaterialTheme.typography.labelSmall)
+                Box {
+                    TextButton(onClick = { farmSymptomMenuExpanded = true }) {
+                        Text("Problem: ${activeFarmCategory.symptoms.first { it.id == selectedFarmSymptomId }.label}",
+                            color = Color.White)
+                    }
+                    DropdownMenu(expanded = farmSymptomMenuExpanded, onDismissRequest = { farmSymptomMenuExpanded = false }) {
+                        activeFarmCategory.symptoms.forEach { symptom ->
+                            DropdownMenuItem(text = { Text(symptom.label) }, onClick = {
+                                selectedFarmSymptomId = symptom.id
+                                farmAdvice = null
+                                farmSymptomMenuExpanded = false
+                            })
+                        }
+                    }
+                }
+                OutlinedTextField(value = farmBrand, onValueChange = { farmBrand = it },
+                    modifier = Modifier.fillMaxWidth(), label = { Text("Farm machine company / brand") }, singleLine = true)
+                OutlinedTextField(value = farmModel, onValueChange = { farmModel = it },
+                    modifier = Modifier.fillMaxWidth(), label = { Text("Machine model / engine model") }, singleLine = true)
+                OutlinedTextField(value = farmYear, onValueChange = { farmYear = it },
+                    modifier = Modifier.fillMaxWidth(), label = { Text("Year (if known)") }, singleLine = true)
+                OutlinedTextField(value = farmErrorCode, onValueChange = { farmErrorCode = it },
+                    modifier = Modifier.fillMaxWidth(), label = { Text("Display error / fault code (if any)") }, singleLine = true)
+                Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                    farmAdvice = RuralMachineGuide.advice(selectedFarmMachineId, selectedFarmSymptomId)
+                }) { Text("Show safe farm-machine checks") }
+                farmAdvice?.let { advice ->
+                    Text(advice.title, color = if (advice.stopWork) Color(0xFFFF5555) else Color(0xFF68E0FF),
+                        fontWeight = FontWeight.Bold)
+                    advice.steps.forEachIndexed { index, step ->
+                        Text("${index + 1}. $step", color = Color.White, style = MaterialTheme.typography.bodySmall)
+                    }
+                    Text(advice.warning, color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
+                }
+                Button(modifier = Modifier.fillMaxWidth(), enabled = farmBrand.isNotBlank() || farmModel.isNotBlank() || farmErrorCode.isNotBlank(),
+                    onClick = {
+                        val query = listOf(farmBrand, farmModel, farmYear, farmErrorCode)
+                            .filter { it.isNotBlank() }.joinToString(" ")
+                        manualQuery = query
+                        manualExecutor.execute {
+                            val pages = manualIndexer.search(query, 20)
+                            mainHandler.post { manualResults = pages }
+                        }
+                    }) { Text("Search my imported farm manuals") }
+                Text("OFFICIAL FARM MACHINERY REFERENCES", color = Color(0xFF68E0FF),
+                    fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                FarmManualSources.entries.forEach { source ->
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(source.name, color = Color.White, fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.bodySmall)
+                        Text(source.description, color = Color(0xFF9BAFC2),
+                            style = MaterialTheme.typography.labelSmall)
+                        TextButton(onClick = { openOfficialManualSource(context, source.url) }) {
+                            Text("Open official reference")
+                        }
+                    }
+                }
+                Text(RuralMachineGuide.universalSafetyNote(), color = Color(0xFFFF8D70),
                     style = MaterialTheme.typography.labelSmall)
 
                 Spacer(Modifier.height(16.dp))
