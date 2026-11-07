@@ -62,6 +62,9 @@ dependencies {
 
     // Bundled on-device model: runs locally; no image upload or API key required.
     implementation("com.google.mlkit:object-detection:17.0.2")
+    // On-device OCR for English/Latin and Hindi/Devanagari technical labels.
+    implementation("com.google.mlkit:text-recognition:16.0.1")
+    implementation("com.google.mlkit:text-recognition-devanagari:16.0.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
