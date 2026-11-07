@@ -89,3 +89,10 @@ The optional AR mode depends on SceneView 2.3.0, distributed under Apache Licens
 ## License
 
 No project-wide license has been selected yet. Do not assume the repository is open-source licensed until a LICENSE file is added.
+
+
+## Offline specialist machine experts (v1)
+
+Vidya now includes a deterministic specialist router for motorcycle/scooter/car/EV/truck, farm machinery, home appliances, motors and pumps, workshop tools, and selected industrial equipment. The user selects a machine category, enters brand/model/year and describes the symptom. The local rule-based expert returns possible inspection areas, safe external observations, stop-use conditions and escalation guidance.
+
+This is an offline knowledge-based first version, **not a trained generative AI model**, not a confirmed fault diagnosis, and not an equipment safety certification. Model-specific repair procedures must come from the exact verified manufacturer manual. High-voltage, electrical, gas, refrigerant, pressure, hydraulic, braking and moving-part work remains technician-only.
