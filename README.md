@@ -53,6 +53,10 @@ GitHub Actions runs unit tests and builds a debug APK on pushes and pull request
 - Follow the manufacturer's verified manual and use qualified professionals for hazardous work.
 - Do not treat AI output or a camera view as a substitute for professional inspection.
 
+## AR research
+
+Open-source Android AR repository comparison, licensing notes, reusable architecture patterns and Vidya integration roadmap: [docs/AR_RESEARCH_AND_INTEGRATION.md](docs/AR_RESEARCH_AND_INTEGRATION.md).
+
 ## Project structure
 
 - `app/src/main`: Android application, CameraX preview/analyzer, safety engine/controller, Compose overlay, voice adapter and offline FAQ.
