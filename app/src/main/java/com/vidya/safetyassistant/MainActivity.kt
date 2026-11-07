@@ -25,6 +25,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -45,6 +46,7 @@ import androidx.core.content.ContextCompat
 import com.vidya.safetyassistant.ar.VidyaARExperience
 import com.vidya.safetyassistant.manuals.LocalManual
 import com.vidya.safetyassistant.manuals.ManualLibrary
+import com.vidya.safetyassistant.manuals.ManualTextIndexer
 import com.vidya.safetyassistant.camera.CameraDetections
 import com.vidya.safetyassistant.camera.CameraPreview
 import com.vidya.safetyassistant.safety.SafetyController
@@ -53,6 +55,7 @@ import com.vidya.safetyassistant.safety.SafetyStatus
 import com.vidya.safetyassistant.ui.SafetyOverlay
 import com.vidya.safetyassistant.voice.OfflineSafetyGuide
 import com.vidya.safetyassistant.voice.VoiceAssistant
+import java.util.concurrent.Executors
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +69,11 @@ private fun VidyaApp() {
     val context = LocalContext.current
     val safetyController = remember { SafetyController(context, SafetyEngine()) }
     val manualLibrary = remember { ManualLibrary(context) }
+    val manualIndexer = remember { ManualTextIndexer(context) }
+    val manualExecutor = remember { Executors.newSingleThreadExecutor() }
+    var manualQuery by remember { mutableStateOf("") }
+    var manualResults by remember { mutableStateOf(emptyList<com.vidya.safetyassistant.manuals.ManualPageText>()) }
+    var indexStatus by remember { mutableStateOf("Imported manuals can be indexed locally for page search.") }
     var manuals by remember { mutableStateOf(manualLibrary.list()) }
     var manualStatus by remember { mutableStateOf("Manuals stay on this device.") }
     var cameraGranted by remember {
@@ -329,7 +337,7 @@ private fun VidyaApp() {
                 ) { Text("Import equipment PDF manual") }
                 Text(manualStatus, color = Color(0xFF9BAFC2),
                     style = MaterialTheme.typography.labelSmall)
-                manuals.take(3).forEach { manual ->
+                OutlinedTextField(\n                    value = manualQuery,\n                    onValueChange = { manualQuery = it },\n                    modifier = Modifier.fillMaxWidth(),\n                    label = { Text("Search imported manuals") },\n                    singleLine = true\n                )\n                Button(\n                    modifier = Modifier.fillMaxWidth(),\n                    onClick = {\n                        manualExecutor.execute { manualResults = manualIndexer.search(manualQuery) }\n                    },\n                    enabled = manualQuery.isNotBlank()\n                ) { Text("Search manual pages") }\n                Text(indexStatus, color = Color(0xFF68E0FF), style = MaterialTheme.typography.labelSmall)\n                manualResults.forEach { result ->\n                    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {\n                        Text("${result.manualName} · Page ${result.pageNumber}", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelMedium)\n                        Text(result.text.take(420), color = Color.White, style = MaterialTheme.typography.bodySmall)\n                    }\n                }\n                manuals.take(3).forEach { manual ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -346,7 +354,7 @@ private fun VidyaApp() {
                 }
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "A green result is not proof of safety. Never touch live wiring or moving machinery. For suspected danger, keep away and contact a qualified professional.",
+                    "Manual OCR is a text search aid, not a verified repair procedure. Check the exact equipment model and confirm instructions against the manufacturer source. A green result is not proof of safety. Never touch live wiring or moving machinery.",
                     color = Color(0xFFFFC247),
                     style = MaterialTheme.typography.labelSmall
                 )
