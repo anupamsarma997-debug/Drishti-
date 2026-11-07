@@ -21,7 +21,7 @@ Vidya is an Android-first, offline-oriented technical inspection assistant.
 - Small deterministic offline safety FAQ for common electrical and moving-machinery questions (English and Hindi response text only).
 - Local PDF manual library using Android's document picker; stores document URI permission and page-count metadata, and opens the selected PDF in an installed viewer.
 - On-device OCR indexing for the first 40 pages of imported PDFs, using bundled ML Kit Latin and Devanagari recognizers; extracted text is stored privately on-device and searchable by keywords with manual name and page number. The two bundled script models add roughly 8 MB per device architecture, before APK packaging effects.
-- Manual search is a retrieval aid only: OCR can misread technical labels, tables, units, or wiring diagrams. It does not validate instructions, identify the equipment model, or generate repair steps.
+- Exact model-text search across indexed manual pages, ranked with a separate manufacturer-text clue. A match means only that the model string appears in OCR text; it does not authenticate the PDF, confirm the physical appliance, validate instructions, or generate repair steps.
 - Optional ARCore mode using SceneView 2.3.0: tap a tracked horizontal plane to place a neutral 3D marker; normal CameraX mode remains available on devices without ARCore.
 - Unit tests for safety-engine policy and offline FAQ behavior.
 - GitHub Actions workflow to run unit tests and assemble a debug APK.
