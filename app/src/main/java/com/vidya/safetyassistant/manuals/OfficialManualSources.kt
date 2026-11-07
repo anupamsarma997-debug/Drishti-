@@ -23,7 +23,10 @@ object OfficialManualSources {
         OfficialManualSource("Royal Enfield", setOf("Bike"), "Motorcycle owner's manuals; some downloads require form submission.", "https://www.royalenfield.com/in/en/support/owners-manual/"),
         OfficialManualSource("Maruti Suzuki", setOf("Car"), "Arena car manuals with model and powertrain variants.", "https://www.marutisuzuki.com/arena/car-manuals"),
         OfficialManualSource("Hyundai India", setOf("Car", "EV"), "Owner manuals grouped by model and model-year period.", "https://www.hyundai.com/in/en/connect-to-service/hyundai-service/owners-manual"),
-        OfficialManualSource("Mahindra", setOf("Car", "EV", "Truck"), "Public owner manuals; technical workshop material may require authorized access.", "https://mahindra-tis.com/en/"),
+        OfficialManualSource("Tata Motors Cars", setOf("Car"), "Official owner manual entry point for passenger vehicles; confirm exact model and variant.", "https://cars.tatamotors.com/service/owners/owners-manual"),
+        OfficialManualSource("Tata.ev", setOf("Car", "EV"), "Official Tata electric vehicle support and owner manual catalogue.", "https://ev.tata.cars/support.html"),
+        OfficialManualSource("Mahindra Owner Manuals", setOf("Car", "EV"), "Public model-wise owner manual portal; workshop technical data may have separate access rules.", "https://mvault.mahindra.com/owners_manual"),
+        OfficialManualSource("Mahindra TIS", setOf("Car", "EV", "Truck"), "Owner manuals and technical service information; some technical material is access-restricted.", "https://mahindra-tis.com/en/"),
         OfficialManualSource("Government of India — Right to Repair", setOf("Bike", "Scooter", "Car", "EV"), "Department of Consumer Affairs portal for registered-brand repair/support information.", "https://doca.gov.in/r2r-dbim/index.php")
     )
 
