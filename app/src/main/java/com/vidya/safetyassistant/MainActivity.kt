@@ -42,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.vidya.safetyassistant.ar.VidyaARExperience
 import com.vidya.safetyassistant.manuals.LocalManual
 import com.vidya.safetyassistant.manuals.ManualLibrary
 import com.vidya.safetyassistant.camera.CameraDetections
@@ -81,6 +82,9 @@ private fun VidyaApp() {
     }
     var detections by remember { mutableStateOf<CameraDetections?>(null) }
     var detectorStatus by remember { mutableStateOf("Starting on-device object detector…") }
+    var arMode by remember { mutableStateOf(false) }
+    var requestArAfterPermission by remember { mutableStateOf(false) }
+    var arStatus by remember { mutableStateOf("AR mode is optional and requires an ARCore-supported phone.") }
     var voiceStatus by remember { mutableStateOf("Voice assistant is ready when you tap the microphone.") }
     var heardQuestion by remember { mutableStateOf("") }
     var answerToSpeak by remember { mutableStateOf("") }
@@ -108,7 +112,11 @@ private fun VidyaApp() {
 
     val cameraPermission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { granted -> cameraGranted = granted }
+    ) { granted ->
+        cameraGranted = granted
+        if (granted && requestArAfterPermission) arMode = true
+        requestArAfterPermission = false
+    }
     val pdfPicker = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
@@ -198,12 +206,34 @@ private fun VidyaApp() {
                 }
 
                 Spacer(Modifier.height(12.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = { arMode = false }
+                    ) { Text("Camera inspection") }
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            if (cameraGranted) {
+                                arMode = true
+                            } else {
+                                requestArAfterPermission = true
+                                cameraPermission.launch(Manifest.permission.CAMERA)
+                            }
+                        }
+                    ) { Text("AR guide") }
+                }
 
                 Box(
                     modifier = Modifier.weight(1f).fillMaxWidth()
                         .background(Color(0xFF101923), RoundedCornerShape(20.dp))
                 ) {
-                    if (cameraGranted) {
+                    if (cameraGranted && arMode) {
+                        VidyaARExperience(
+                            modifier = Modifier.fillMaxSize(),
+                            onStatus = { arStatus = it }
+                        )
+                    } else if (cameraGranted) {
                         CameraPreview(
                             modifier = Modifier.fillMaxSize(),
                             onDetections = { frame ->
@@ -237,6 +267,16 @@ private fun VidyaApp() {
                 }
 
                 Spacer(Modifier.height(12.dp))
+                if (arMode) {
+                    Text(arStatus, color = Color(0xFF68E0FF),
+                        style = MaterialTheme.typography.labelSmall)
+                    TextButton(onClick = { arMode = false }) { Text("Return to camera inspection") }
+                    Text(
+                        "AR plane tracking only places a neutral marker on a flat surface. It does not identify machine parts or detect hazards.",
+                        color = Color(0xFFFFC247),
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
                 Text(
                     assessment.reason,
                     color = Color(0xFFD2DCE7),
