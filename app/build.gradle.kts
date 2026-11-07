@@ -57,7 +57,7 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:$cameraX")
     implementation("androidx.camera:camera-view:$cameraX")
 
-    // Optional AR mode: Compose-native ARCore scene rendering and plane tracking.
+    // Optional ARCore plane-tracking view hosted inside the Compose screen.
     implementation("io.github.sceneview:arsceneview:2.3.0")
 
     // Bundled on-device model: runs locally; no image upload or API key required.
