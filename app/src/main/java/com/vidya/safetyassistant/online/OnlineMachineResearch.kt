@@ -19,6 +19,7 @@ object OnlineMachineResearch {
     fun search(query: String, maxResults: Int = 5): List<OnlineMachineResult> {
         require(query.isNotBlank()) { "Enter a machine name or model." }
         require(maxResults in 1..10) { "Result limit must be between 1 and 10." }
+
         val encoded = URLEncoder.encode(query.trim(), "UTF-8")
         val endpoint = URL(
             "https://en.wikipedia.org/w/api.php?action=query&generator=search" +
@@ -29,13 +30,30 @@ object OnlineMachineResearch {
             requestMethod = "GET"
             connectTimeout = 8000
             readTimeout = 10000
-            setRequestProperty("User-Agent", "VidyaAndroid/0.1 (machine information discovery)")
+            // Wikimedia asks API clients to identify themselves with a meaningful User-Agent.
+            setRequestProperty(
+                "User-Agent",
+                "VidyaAndroid/0.1 (https://github.com/anupamsarma997-debug/Drishti-)"
+            )
             setRequestProperty("Accept", "application/json")
         }
+
         try {
-            if (connection.responseCode !in 200..299) {
-                throw IllegalStateException("Online source returned HTTP ${connection.responseCode}.")
+            val status = connection.responseCode
+            if (status == HttpURLConnection.HTTP_TOO_MANY_REQUESTS) {
+                val retryAfter = connection.getHeaderField("Retry-After")
+                throw IllegalStateException(
+                    if (retryAfter.isNullOrBlank()) {
+                        "Online source is rate-limiting requests. Please wait before trying again."
+                    } else {
+                        "Online source asked us to wait $retryAfter seconds. Please try again later."
+                    }
+                )
             }
+            if (status !in 200..299) {
+                throw IllegalStateException("Online source returned HTTP $status.")
+            }
+
             val body = connection.inputStream.bufferedReader().use { it.readText() }
             val root = JSONObject(body)
             val pages = root.optJSONObject("query")?.optJSONObject("pages")
