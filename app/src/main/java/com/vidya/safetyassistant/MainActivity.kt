@@ -55,6 +55,8 @@ import com.vidya.safetyassistant.equipment.EquipmentLabelFacts
 import com.vidya.safetyassistant.equipment.EquipmentLabelParser
 import com.vidya.safetyassistant.equipment.EquipmentManualMatcher
 import com.vidya.safetyassistant.equipment.HomeTroubleshootingGuide
+import com.vidya.safetyassistant.equipment.VehicleDiagnosticLookup
+import com.vidya.safetyassistant.equipment.VehicleDiagnosticResult
 import com.vidya.safetyassistant.safety.SafetyController
 import com.vidya.safetyassistant.safety.SafetyEngine
 import com.vidya.safetyassistant.safety.SafetyStatus
@@ -105,6 +107,12 @@ private fun VidyaApp() {
     var selectedApplianceId by remember { mutableStateOf(HomeTroubleshootingGuide.categories.first().id) }
     var selectedSymptomId by remember { mutableStateOf(HomeTroubleshootingGuide.categories.first().symptoms.first().id) }
     var troubleshootingAdvice by remember { mutableStateOf<com.vidya.safetyassistant.equipment.TroubleshootingAdvice?>(null) }
+    var vehicleType by remember { mutableStateOf("Car") }
+    var vehicleBrand by remember { mutableStateOf("") }
+    var vehicleModel by remember { mutableStateOf("") }
+    var vehicleYear by remember { mutableStateOf("") }
+    var vehicleCode by remember { mutableStateOf("") }
+    var vehicleResult by remember { mutableStateOf<VehicleDiagnosticResult?>(null) }
     val mainHandler = remember { Handler(Looper.getMainLooper()) }
     var arMode by remember { mutableStateOf(false) }
     var requestArAfterPermission by remember { mutableStateOf(false) }
@@ -291,6 +299,53 @@ private fun VidyaApp() {
                 }
                 Text(HomeTroubleshootingGuide.universalHazardWarning(), color = Color(0xFFFF8D70),
                     style = MaterialTheme.typography.labelSmall)
+
+                Spacer(Modifier.height(16.dp))
+                Text("BIKE & CAR ERROR CODE HELP", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.labelLarge)
+                Text("Enter the exact vehicle details and code. Bike, scooter, car, EV and truck fields are supported; code coverage is currently a small generic OBD-II starter dictionary.",
+                    color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    listOf("Bike", "Scooter", "Car", "EV", "Truck").forEach { type ->
+                        TextButton(onClick = { vehicleType = type; vehicleResult = null }) {
+                            Text(if (vehicleType == type) "✓ $type" else type,
+                                color = if (vehicleType == type) Color(0xFF68E0FF) else Color.White)
+                        }
+                    }
+                }
+                OutlinedTextField(value = vehicleBrand, onValueChange = { vehicleBrand = it; vehicleResult = null },
+                    modifier = Modifier.fillMaxWidth(), label = { Text("Company / brand (e.g. Honda)") }, singleLine = true)
+                OutlinedTextField(value = vehicleModel, onValueChange = { vehicleModel = it; vehicleResult = null },
+                    modifier = Modifier.fillMaxWidth(), label = { Text("Exact model / variant") }, singleLine = true)
+                OutlinedTextField(value = vehicleYear, onValueChange = { vehicleYear = it; vehicleResult = null },
+                    modifier = Modifier.fillMaxWidth(), label = { Text("Model year") }, singleLine = true)
+                OutlinedTextField(value = vehicleCode, onValueChange = { vehicleCode = it; vehicleResult = null },
+                    modifier = Modifier.fillMaxWidth(), label = { Text("Error / DTC code (e.g. P0300)") }, singleLine = true)
+                Button(modifier = Modifier.fillMaxWidth(), enabled = vehicleBrand.isNotBlank() &&
+                    vehicleModel.isNotBlank() && vehicleYear.isNotBlank() && vehicleCode.isNotBlank(),
+                    onClick = {
+                        vehicleResult = VehicleDiagnosticLookup.lookup(
+                            vehicleType, vehicleBrand, vehicleModel, vehicleYear, vehicleCode
+                        )
+                    }) { Text("Explain vehicle error code") }
+                vehicleResult?.let { result ->
+                    Text("${result.code} · ${result.title}",
+                        color = if (result.severity.contains("urgent", true)) Color(0xFFFF5555) else Color(0xFF68E0FF),
+                        fontWeight = FontWeight.Bold)
+                    Text(result.meaning, color = Color.White, style = MaterialTheme.typography.bodySmall)
+                    if (result.possibleCauses.isNotEmpty()) {
+                        Text("Possible causes (not confirmed):", color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
+                        result.possibleCauses.forEach { Text("• $it", color = Color.White, style = MaterialTheme.typography.bodySmall) }
+                    }
+                    Text("Safe next steps:", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold)
+                    result.safeChecks.forEachIndexed { index, step ->
+                        Text("${index + 1}. $step", color = Color.White, style = MaterialTheme.typography.bodySmall)
+                    }
+                    Text("Severity: ${result.severity}", color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
+                    Text(result.limitation, color = Color(0xFFFF8D70), style = MaterialTheme.typography.labelSmall)
+                }
+                Text("Important: dashboard warning text, manufacturer-specific codes, motorcycle blink codes and EV high-voltage faults may not follow generic OBD-II definitions. Never probe orange high-voltage cables, bypass safety systems or work under an unsupported vehicle. A code is not a confirmed failed part.",
+                    color = Color(0xFFFF8D70), style = MaterialTheme.typography.labelSmall)
                 Spacer(Modifier.height(12.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(
