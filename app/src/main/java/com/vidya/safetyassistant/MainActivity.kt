@@ -49,6 +49,7 @@ import com.vidya.safetyassistant.ar.VidyaARExperience
 import com.vidya.safetyassistant.manuals.LocalManual
 import com.vidya.safetyassistant.manuals.ManualLibrary
 import com.vidya.safetyassistant.manuals.ManualTextIndexer
+import com.vidya.safetyassistant.manuals.OfficialManualSources
 import com.vidya.safetyassistant.camera.CameraDetections
 import com.vidya.safetyassistant.camera.CameraPreview
 import com.vidya.safetyassistant.equipment.EquipmentLabelFacts
@@ -353,6 +354,26 @@ private fun VidyaApp() {
                 }
                 Text("Important: dashboard warning text, manufacturer-specific codes, motorcycle blink codes and EV high-voltage faults may not follow generic OBD-II definitions. Never probe orange high-voltage cables, bypass safety systems or work under an unsupported vehicle. A code is not a confirmed failed part.",
                     color = Color(0xFFFF8D70), style = MaterialTheme.typography.labelSmall)
+
+                Spacer(Modifier.height(10.dp))
+                Text("OFFICIAL MANUAL SOURCES", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.labelLarge)
+                Text("Open the manufacturer's website to select the exact model, year and variant. These are source links, not a guarantee that every model is listed.",
+                    color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                OfficialManualSources.forVehicleType(vehicleType).forEach { source ->
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(source.brand, color = Color.White, fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodySmall)
+                            Text(source.description, color = Color(0xFF9BAFC2),
+                                style = MaterialTheme.typography.labelSmall)
+                        }
+                        TextButton(onClick = { openOfficialManualSource(context, source.url) }) {
+                            Text("Open")
+                        }
+                    }
+                }
                 Spacer(Modifier.height(12.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(
@@ -602,5 +623,13 @@ private fun openManual(context: android.content.Context, manual: LocalManual) {
         context.startActivity(intent)
     } catch (_: Exception) {
         // A compatible PDF viewer may not be installed on the device.
+    }
+}
+
+private fun openOfficialManualSource(context: android.content.Context, url: String) {
+    try {
+        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    } catch (_: Exception) {
+        // No browser or handler is available for this link.
     }
 }
