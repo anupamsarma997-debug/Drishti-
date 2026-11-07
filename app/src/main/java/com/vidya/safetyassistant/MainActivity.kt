@@ -54,6 +54,7 @@ import com.vidya.safetyassistant.camera.CameraPreview
 import com.vidya.safetyassistant.equipment.EquipmentLabelFacts
 import com.vidya.safetyassistant.equipment.EquipmentLabelParser
 import com.vidya.safetyassistant.equipment.EquipmentManualMatcher
+import com.vidya.safetyassistant.equipment.HomeTroubleshootingGuide
 import com.vidya.safetyassistant.safety.SafetyController
 import com.vidya.safetyassistant.safety.SafetyEngine
 import com.vidya.safetyassistant.safety.SafetyStatus
@@ -99,6 +100,11 @@ private fun VidyaApp() {
     var equipmentFacts by remember { mutableStateOf(EquipmentLabelFacts()) }
     var equipmentManualMatches by remember { mutableStateOf(emptyList<com.vidya.safetyassistant.equipment.EquipmentManualMatch>()) }
     var equipmentMatchStatus by remember { mutableStateOf("Read a clear model number to search your imported manuals.") }
+    var applianceMenuExpanded by remember { mutableStateOf(false) }
+    var symptomMenuExpanded by remember { mutableStateOf(false) }
+    var selectedApplianceId by remember { mutableStateOf(HomeTroubleshootingGuide.categories.first().id) }
+    var selectedSymptomId by remember { mutableStateOf(HomeTroubleshootingGuide.categories.first().symptoms.first().id) }
+    var troubleshootingAdvice by remember { mutableStateOf<com.vidya.safetyassistant.equipment.TroubleshootingAdvice?>(null) }
     val mainHandler = remember { Handler(Looper.getMainLooper()) }
     var arMode by remember { mutableStateOf(false) }
     var requestArAfterPermission by remember { mutableStateOf(false) }
@@ -237,6 +243,54 @@ private fun VidyaApp() {
                     )
                 }
 
+                Spacer(Modifier.height(12.dp))
+                Text("HOME MACHINE HELP", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.labelLarge)
+                Text("Choose a machine and describe the symptom. Vidya gives cautious observation-only checks.",
+                    color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                Box {
+                    TextButton(onClick = { applianceMenuExpanded = true }) {
+                        Text("Machine: ${HomeTroubleshootingGuide.categories.first { it.id == selectedApplianceId }.label}", color = Color.White)
+                    }
+                    DropdownMenu(expanded = applianceMenuExpanded, onDismissRequest = { applianceMenuExpanded = false }) {
+                        HomeTroubleshootingGuide.categories.forEach { category ->
+                            DropdownMenuItem(text = { Text(category.label) }, onClick = {
+                                selectedApplianceId = category.id
+                                selectedSymptomId = category.symptoms.first().id
+                                troubleshootingAdvice = null
+                                applianceMenuExpanded = false
+                            })
+                        }
+                    }
+                }
+                val activeCategory = HomeTroubleshootingGuide.categories.first { it.id == selectedApplianceId }
+                Box {
+                    TextButton(onClick = { symptomMenuExpanded = true }) {
+                        Text("Problem: ${activeCategory.symptoms.first { it.id == selectedSymptomId }.label}", color = Color.White)
+                    }
+                    DropdownMenu(expanded = symptomMenuExpanded, onDismissRequest = { symptomMenuExpanded = false }) {
+                        activeCategory.symptoms.forEach { symptom ->
+                            DropdownMenuItem(text = { Text(symptom.label) }, onClick = {
+                                selectedSymptomId = symptom.id
+                                troubleshootingAdvice = null
+                                symptomMenuExpanded = false
+                            })
+                        }
+                    }
+                }
+                Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                    troubleshootingAdvice = HomeTroubleshootingGuide.advice(selectedApplianceId, selectedSymptomId)
+                }) { Text("Show safe checks") }
+                troubleshootingAdvice?.let { advice ->
+                    Text(advice.title, color = if (advice.stopWork) Color(0xFFFF5555) else Color(0xFF68E0FF),
+                        fontWeight = FontWeight.Bold)
+                    advice.steps.forEachIndexed { index, step ->
+                        Text("${index + 1}. $step", color = Color.White, style = MaterialTheme.typography.bodySmall)
+                    }
+                    Text(advice.warning, color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
+                }
+                Text(HomeTroubleshootingGuide.universalHazardWarning(), color = Color(0xFFFF8D70),
+                    style = MaterialTheme.typography.labelSmall)
                 Spacer(Modifier.height(12.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(
