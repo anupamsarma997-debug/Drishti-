@@ -61,6 +61,7 @@ import com.vidya.safetyassistant.equipment.EquipmentManualMatcher
 import com.vidya.safetyassistant.equipment.HomeTroubleshootingGuide
 import com.vidya.safetyassistant.equipment.RuralMachineGuide
 import com.vidya.safetyassistant.equipment.FarmMachineBrandCatalog
+import com.vidya.safetyassistant.equipment.PartFailureGuide
 import com.vidya.safetyassistant.equipment.VehicleDiagnosticLookup
 import com.vidya.safetyassistant.equipment.VehicleDiagnosticResult
 import com.vidya.safetyassistant.equipment.VehicleWarningLightGuide
@@ -124,6 +125,7 @@ private fun VidyaApp() {
     var farmModel by remember { mutableStateOf("") }
     var farmYear by remember { mutableStateOf("") }
     var farmErrorCode by remember { mutableStateOf("") }
+    var farmProblemDetails by remember { mutableStateOf("") }
     var vehicleType by remember { mutableStateOf("Car") }
     var vehicleBrand by remember { mutableStateOf("") }
     var vehicleModel by remember { mutableStateOf("") }
@@ -385,9 +387,12 @@ private fun VidyaApp() {
                     modifier = Modifier.fillMaxWidth(), label = { Text("Year (if known)") }, singleLine = true)
                 OutlinedTextField(value = farmErrorCode, onValueChange = { farmErrorCode = it },
                     modifier = Modifier.fillMaxWidth(), label = { Text("Display error / fault code (if any)") }, singleLine = true)
+                OutlinedTextField(value = farmProblemDetails, onValueChange = { farmProblemDetails = it },
+                    modifier = Modifier.fillMaxWidth(), label = { Text("Describe exactly what is happening (sound, smoke, leak, vibration, when it occurs)") },
+                    minLines = 2, maxLines = 4)
                 Button(modifier = Modifier.fillMaxWidth(), onClick = {
                     farmAdvice = RuralMachineGuide.advice(selectedFarmMachineId, selectedFarmSymptomId)
-                }) { Text("Show safe farm-machine checks") }
+                }) { Text("Analyse symptoms and show safe checks") }
                 farmAdvice?.let { advice ->
                     Text(advice.title, color = if (advice.stopWork) Color(0xFFFF5555) else Color(0xFF68E0FF),
                         fontWeight = FontWeight.Bold)
@@ -395,6 +400,26 @@ private fun VidyaApp() {
                         Text("${index + 1}. $step", color = Color.White, style = MaterialTheme.typography.bodySmall)
                     }
                     Text(advice.warning, color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
+                    val complaint = listOf(advice.title, farmProblemDetails, farmErrorCode).filter { it.isNotBlank() }.joinToString(" ")
+                    val partFindings = PartFailureGuide.match(selectedFarmMachineId, complaint)
+                    Text("POSSIBLE PARTS TO CHECK — NOT A CONFIRMED DIAGNOSIS",
+                        color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.labelLarge)
+                    partFindings.forEachIndexed { index, part ->
+                        Text("${index + 1}. ${part.partName}", color = Color.White, fontWeight = FontWeight.Bold)
+                        Text("Clues: ${part.failureClues.joinToString(", ")}", color = Color(0xFF9BAFC2),
+                            style = MaterialTheme.typography.labelSmall)
+                        part.possibleCauses.forEach { Text("Possible causes: $it", color = Color.White,
+                            style = MaterialTheme.typography.bodySmall) }
+                        part.safeObservations.forEach { Text("Safe observation: $it", color = Color.White,
+                            style = MaterialTheme.typography.bodySmall) }
+                        Text("Technician should: ${part.technicianAction}", color = Color(0xFF9BAFC2),
+                            style = MaterialTheme.typography.bodySmall)
+                        Text("Do not: ${part.neverDo}", color = Color(0xFFFF8D70),
+                            style = MaterialTheme.typography.labelSmall)
+                    }
+                    Text("Vidya cannot confirm a failed component from text alone. Use the exact make/model/year service manual; internal repair and disassembly must be done by a trained technician.",
+                        color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
                 }
                 Button(modifier = Modifier.fillMaxWidth(), enabled = farmBrand.isNotBlank() || farmModel.isNotBlank() || farmErrorCode.isNotBlank(),
                     onClick = {
