@@ -72,6 +72,8 @@ import com.vidya.safetyassistant.safety.SafetyStatus
 import com.vidya.safetyassistant.ui.SafetyOverlay
 import com.vidya.safetyassistant.voice.OfflineSafetyGuide
 import com.vidya.safetyassistant.voice.VoiceAssistant
+import com.vidya.safetyassistant.online.OnlineMachineResearch
+import com.vidya.safetyassistant.online.OnlineMachineResult
 import java.util.concurrent.Executors
 
 class MainActivity : ComponentActivity() {
@@ -90,6 +92,8 @@ private fun VidyaApp() {
     val manualExecutor = remember { Executors.newSingleThreadExecutor() }
     var manualQuery by remember { mutableStateOf("") }
     var manualResults by remember { mutableStateOf(emptyList<com.vidya.safetyassistant.manuals.ManualPageText>()) }
+    var onlineMachineResults by remember { mutableStateOf(emptyList<OnlineMachineResult>()) }
+    var onlineResearchStatus by remember { mutableStateOf("Online machine discovery is optional; verify all technical instructions against the exact official manual.") }
     var indexStatus by remember { mutableStateOf("Imported manuals can be indexed locally for page search.") }
     var manuals by remember { mutableStateOf(manualLibrary.list()) }
     var manualStatus by remember { mutableStateOf("Manuals stay on this device.") }
@@ -899,6 +903,53 @@ private fun VidyaApp() {
                     },
                     enabled = manualQuery.isNotBlank()
                 ) { Text("Search manual pages") }
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        val query = manualQuery.trim()
+                        onlineResearchStatus = "Searching public online reference…"
+                        onlineMachineResults = emptyList()
+                        manualExecutor.execute {
+                            try {
+                                val results = OnlineMachineResearch.search(query)
+                                mainHandler.post {
+                                    onlineMachineResults = results
+                                    onlineResearchStatus = if (results.isEmpty())
+                                        "No public overview found. Try the exact machine name or model."
+                                    else "Found ${results.size} public overview result(s). These are discovery references, not verified repair instructions."
+                                }
+                            } catch (error: Exception) {
+                                mainHandler.post {
+                                    onlineResearchStatus = error.localizedMessage ?: "Online lookup failed. Check internet connection and try again."
+                                }
+                            }
+                        }
+                    },
+                    enabled = manualQuery.isNotBlank()
+                ) { Text("Find machine information online") }
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        val query = Uri.encode("${manualQuery.trim()} official manufacturer service manual troubleshooting error code")
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/search?q=$query"))
+                        runCatching { context.startActivity(intent) }
+                            .onFailure { onlineResearchStatus = "Could not open a browser on this device." }
+                    },
+                    enabled = manualQuery.isNotBlank()
+                ) { Text("Search official manuals & error codes on web") }
+                Text(onlineResearchStatus, color = Color(0xFFFFC247),
+                    style = MaterialTheme.typography.labelSmall)
+                onlineMachineResults.forEach { result ->
+                    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp)) {
+                        Text(result.title, color = Color(0xFF68E0FF),
+                            fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelMedium)
+                        Text(result.summary, color = Color.White,
+                            style = MaterialTheme.typography.bodySmall)
+                        TextButton(onClick = {
+                            runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(result.url))) }
+                        }) { Text("Open source: Wikipedia") }
+                    }
+                }
                 Text(indexStatus, color = Color(0xFF68E0FF), style = MaterialTheme.typography.labelSmall)
                 manualResults.forEach { result ->
                     Column(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
