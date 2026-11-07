@@ -1,6 +1,7 @@
 package com.vidya.safetyassistant.camera
 
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -13,9 +14,14 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import java.util.concurrent.Executors
 
 @Composable
-fun CameraPreview(modifier: Modifier = Modifier) {
+fun CameraPreview(
+    modifier: Modifier = Modifier,
+    onDetections: (CameraDetections) -> Unit,
+    onDetectionError: (String) -> Unit
+) {
     val context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val previewView = remember {
@@ -27,32 +33,46 @@ fun CameraPreview(modifier: Modifier = Modifier) {
 
     DisposableEffect(lifecycleOwner, previewView) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-        val executor = ContextCompat.getMainExecutor(context)
+        val mainExecutor = ContextCompat.getMainExecutor(context)
+        val analysisExecutor = Executors.newSingleThreadExecutor()
+        val analyzer = OnDeviceObjectAnalyzer(onDetections, onDetectionError)
         var provider: ProcessCameraProvider? = null
-        val listener = Runnable {
+        var disposed = false
+
+        cameraProviderFuture.addListener({
+            if (disposed) return@addListener
             try {
                 provider = cameraProviderFuture.get()
                 val preview = Preview.Builder().build().also {
                     it.surfaceProvider = previewView.surfaceProvider
                 }
+                val analysis = ImageAnalysis.Builder()
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .setTargetResolution(android.util.Size(640, 480))
+                    .build()
+                    .also { it.setAnalyzer(analysisExecutor, analyzer) }
+
                 provider?.unbindAll()
                 provider?.bindToLifecycle(
                     lifecycleOwner,
                     CameraSelector.DEFAULT_BACK_CAMERA,
-                    preview
+                    preview,
+                    analysis
                 )
-            } catch (_: Exception) {
-                // The host screen displays permission/device guidance if camera setup fails.
+            } catch (error: Exception) {
+                onDetectionError(error.localizedMessage ?: "Camera could not be started.")
             }
-        }
-        cameraProviderFuture.addListener(listener, executor)
+        }, mainExecutor)
 
         onDispose {
+            disposed = true
             try {
                 provider?.unbindAll()
             } catch (_: Exception) {
-                // Camera may already be released by the lifecycle.
+                // The lifecycle may already have released the camera.
             }
+            analyzer.close()
+            analysisExecutor.shutdown()
         }
     }
 
