@@ -317,6 +317,25 @@ private fun VidyaApp() {
                         Text("${index + 1}. $step", color = Color.White, style = MaterialTheme.typography.bodySmall)
                     }
                     Text(advice.warning, color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
+                    val applianceParts = PartFailureGuide.match(selectedApplianceId, advice.title)
+                    Text("POSSIBLE COMPONENTS — NOT A CONFIRMED DIAGNOSIS",
+                        color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.labelLarge)
+                    applianceParts.forEachIndexed { index, part ->
+                        Text("${index + 1}. ${part.partName}", color = Color.White, fontWeight = FontWeight.Bold)
+                        Text("Clues: ${part.failureClues.joinToString(", ")}", color = Color(0xFF9BAFC2),
+                            style = MaterialTheme.typography.labelSmall)
+                        part.possibleCauses.forEach { Text("Possible causes: $it", color = Color.White,
+                            style = MaterialTheme.typography.bodySmall) }
+                        part.safeObservations.forEach { Text("Safe observation: $it", color = Color.White,
+                            style = MaterialTheme.typography.bodySmall) }
+                        Text("Technician inspection: ${part.technicianAction}", color = Color(0xFF9BAFC2),
+                            style = MaterialTheme.typography.bodySmall)
+                        Text("Do not: ${part.neverDo}", color = Color(0xFFFF8D70),
+                            style = MaterialTheme.typography.labelSmall)
+                    }
+                    Text("Part suggestions are possibilities only. Do not dismantle electrical, gas, refrigerant or moving assemblies.",
+                        color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
                 }
                 Text(HomeTroubleshootingGuide.universalHazardWarning(), color = Color(0xFFFF8D70),
                     style = MaterialTheme.typography.labelSmall)
