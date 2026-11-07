@@ -64,7 +64,7 @@ class ManualTextIndexer(context: Context) {
     }
 
     fun search(query: String, limit: Int = 8): List<ManualPageText> {
-        val terms = query.lowercase().split(Regex("\\s+")).filter { it.length >= 2 }.distinct()
+        val terms = query.lowercase().split(Regex("[^\\p{L}\\p{N}]+")).filter { it.length >= 2 }.distinct()
         if (terms.isEmpty()) return emptyList()
         return buildList {
             for (manual in ManualLibrary(app).list()) {
