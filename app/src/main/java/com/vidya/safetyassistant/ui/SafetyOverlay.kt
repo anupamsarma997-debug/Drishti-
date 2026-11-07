@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import com.vidya.safetyassistant.safety.SafetyStatus
@@ -59,10 +60,11 @@ fun SafetyOverlay(status: SafetyStatus, modifier: Modifier = Modifier) {
                 this.color = color.copy(alpha = activeAlpha).toArgb()
                 style = Paint.Style.FILL
             }
-            val labelWidth = paint.measureText(label) + 28.dp.toPx()
+            val labelWidth = (paint.measureText(label) + 28.dp.toPx())
+                .coerceAtMost(size.width * 0.76f)
             val labelHeight = 36.dp.toPx()
             drawRoundRect(
-                RectF(left, top - labelHeight, left + labelWidth, top),
+                RectF(left, (top - labelHeight).coerceAtLeast(0f), left + labelWidth, top),
                 8.dp.toPx(), 8.dp.toPx(), bg
             )
             drawText(label, left + 14.dp.toPx(), top - 12.dp.toPx(), paint)
