@@ -9,6 +9,8 @@ Vidya is an Android-first, offline-oriented technical inspection assistant.
 - Kotlin + Jetpack Compose Android app.
 - CameraX live preview with a 640×480 analysis stream and keep-latest backpressure.
 - Bundled ML Kit on-device generic object detection; no image upload or API key is used for this detector.
+- Throttled live camera OCR using bundled ML Kit Latin and Devanagari recognizers (roughly one OCR pass per 1.2 seconds while the camera analyzer is active); no image upload is used.
+- Conservative nameplate field extraction for explicitly labelled manufacturer, model, voltage, current, frequency, and power text. These are OCR-derived clues only, not verified equipment identity or electrical measurements.
 - Live bounding boxes and generic object labels drawn over the camera preview.
 - Safety overlay states: SAFE, CAUTION, and flashing STOP.
 - Manual SAFE/STOP controls for UI and policy testing.
@@ -30,9 +32,11 @@ This is an early engineering MVP, **not a validated safety product**.
 
 - ML Kit's generic object detector recognizes broad object categories. It does **not** identify incorrect wire connections, energized conductors, high-voltage proximity, unsafe tool angles, hidden defects, internal machine faults, or accident probability.
 - Detected object boxes are visual annotations only. They are not hazard boxes.
+- Live OCR may misread digits, decimal points, units, and labels. Nameplate parsing only extracts nearby labelled text; users must compare every value with the physical plate or official manufacturer documentation.
 - Real hazard classifications currently enter the SafetyEngine only through the manual test controls or a future trusted classifier adapter.
 - The green test state is simulated and must never be interpreted as a real inspection result or proof of safety.
 - Voice input currently uses Android's installed speech service; offline language availability depends on device language packs. The offline FAQ is rule-based, not a generative AI assistant. The language selector changes speech locale, but answer translation is currently limited to Hindi and English.
+- Live camera OCR is throttled to about one pass every 1.2 seconds and may miss small, blurred, angled, or poorly lit text. It does not identify equipment or detect faults.
 - PDF OCR indexing is limited to the first 40 pages and may misread scans, low-resolution text, tables, symbols, units, or diagrams. Search results are source snippets, not verified repair instructions. There is no model-number matching, manufacturer authenticity verification, or generated manual-grounded step-by-step repair guidance yet.
 - The app can stop its own guidance workflow and alert the user. It cannot physically stop a machine, vehicle, or electrical circuit.
 - AR mode currently performs plane tracking and neutral marker placement only. It does not identify equipment, localize components, show manual-grounded arrows, or detect hazards.
@@ -63,8 +67,8 @@ Open-source Android AR repository comparison, licensing notes, reusable architec
 
 ## Project structure
 
-- `app/src/main`: Android application, CameraX preview/analyzer, optional ARCore/SceneView plane marker, safety engine/controller, Compose overlay, voice adapter, offline FAQ, local PDF library and on-device OCR page index.
-- `app/src/test`: safety-engine and offline-FAQ unit tests.
+- `app/src/main`: Android application, CameraX preview/analyzer, optional ARCore/SceneView plane marker, safety engine/controller, Compose overlay, voice adapter, offline FAQ, local PDF library, live OCR, nameplate text parser and on-device OCR page index.
+- `app/src/test`: safety-engine, offline-FAQ and equipment-nameplate parser unit tests.
 - `docs/`: product requirements, architecture, and safety policy.
 - `AGENTS.md`: engineering and safety instructions for coding agents.
 
