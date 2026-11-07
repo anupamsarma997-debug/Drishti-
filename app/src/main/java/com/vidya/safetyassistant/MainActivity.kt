@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -90,6 +92,8 @@ private fun VidyaApp() {
     }
     var detections by remember { mutableStateOf<CameraDetections?>(null) }
     var detectorStatus by remember { mutableStateOf("Starting on-device object detector…") }
+    var liveOcrText by remember { mutableStateOf("") }
+    val mainHandler = remember { Handler(Looper.getMainLooper()) }
     var arMode by remember { mutableStateOf(false) }
     var requestArAfterPermission by remember { mutableStateOf(false) }
     var arStatus by remember { mutableStateOf("AR mode is optional and requires an ARCore-supported phone.") }
@@ -139,9 +143,9 @@ private fun VidyaApp() {
                 manualExecutor.execute {
                     try {
                         val pages = manualIndexer.index(imported)
-                        indexStatus = "Indexed $pages pages with on-device OCR (maximum first 40 pages)."
+                        mainHandler.post { indexStatus = "Indexed $pages pages with on-device OCR (maximum first 40 pages)." }
                     } catch (error: Exception) {
-                        indexStatus = error.localizedMessage ?: "Could not index this manual."
+                        mainHandler.post { indexStatus = error.localizedMessage ?: "Could not index this manual." }
                     }
                 }
             } catch (error: Exception) {
@@ -362,7 +366,7 @@ private fun VidyaApp() {
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         val query = manualQuery
-                        manualExecutor.execute { manualResults = manualIndexer.search(query) }
+                        manualExecutor.execute {\n                            val results = manualIndexer.search(query)\n                            mainHandler.post { manualResults = results }\n                        }
                     },
                     enabled = manualQuery.isNotBlank()
                 ) { Text("Search manual pages") }
