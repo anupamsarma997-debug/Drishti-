@@ -165,13 +165,22 @@ object PartFailureGuide {
     fun match(machineId: String, complaint: String): List<MachinePartFinding> {
         val entries = forMachine(machineId)
         if (entries.isEmpty()) return emptyList()
-        val query = complaint.lowercase().trim()
-        if (query.isBlank()) return entries.take(3)
-        val matches = entries.filter { item ->
-            (item.failureClues + item.partName + item.possibleCauses)
-                .any { clue -> clue.lowercase().split(Regex("[^a-z0-9]+")).filter { it.length > 2 }
-                    .any { token -> query.contains(token) } }
-        }
-        return (matches + entries.filterNot { it in matches }).take(4)
+        val queryTokens = complaint.lowercase()
+            .split(Regex("[^a-z0-9]+"))
+            .filter { it.length > 2 }
+            .toSet()
+        if (queryTokens.isEmpty()) return entries.take(3)
+        val ranked = entries.map { item ->
+            val referenceTokens = (item.failureClues + item.partName + item.possibleCauses)
+                .flatMap { it.lowercase().split(Regex("[^a-z0-9]+")) }
+                .filter { it.length > 2 }
+                .toSet()
+            item to queryTokens.intersect(referenceTokens).size
+        }.filter { it.second > 0 }
+            .sortedByDescending { it.second }
+            .map { it.first }
+            .take(4)
+        // When the complaint has no known keyword, show a small general shortlist rather than guessing.
+        return ranked.ifEmpty { entries.take(3) }
     }
 }
