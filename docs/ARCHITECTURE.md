@@ -77,3 +77,10 @@ The Android UI now exposes a local deterministic category/symptom selector for A
 The app now provides a vehicle context form for bike, scooter, car, EV and truck. It requires manufacturer, exact model, model year and a five-character OBD-style DTC. A small explicit dictionary covers selected generic codes (P0101, P0171, P0300, P0420, P0128, P0455, P0500 and U0100). Unknown codes are not guessed; manufacturer-reserved codes are explicitly flagged as requiring an exact manufacturer/model/year/control-module source.
 
 This is not a complete DTC database and does not establish that a code is supported by a given vehicle. Many motorcycle warning systems use proprietary blink sequences or manufacturer diagnostics; EV high-voltage faults require trained service. The next data milestone is a source-attributed catalogue of official manuals/service bulletins and exact variant applicability, with a user-imported PDF fallback. Do not scrape, redistribute or bundle copyrighted workshop manuals without permission. Generic DTC standard references include SAE J2012 and ISO 15031-6; the standard also reserves code ranges for manufacturer-specific usage.
+
+
+## Official manual source directory and dashboard warning guide
+
+A curated directory links to official India-market manual pages for Honda 2Wheelers, Hero MotoCorp, TVS, Bajaj, Suzuki Motorcycle India, Royal Enfield, Maruti Suzuki, Hyundai India and Mahindra, plus the Government of India's Right to Repair portal. The app opens the source in the browser and does not download, mirror or bundle copyrighted manuals. The selected vehicle type filters the displayed sources; users must still confirm exact model, year, variant, market and powertrain on the manufacturer's site.
+
+A dashboard warning guide provides conservative general explanations for common oil-pressure, coolant-temperature, brake, charging, check-engine, ABS, SRS/airbag, TPMS, EV/hybrid battery and low-fuel indicators. It explicitly tells users to confirm symbols in their exact owner's manual. It is not a substitute for model-specific instrument-cluster documentation or a physical inspection.
