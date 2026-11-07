@@ -51,6 +51,8 @@ import com.vidya.safetyassistant.manuals.ManualLibrary
 import com.vidya.safetyassistant.manuals.ManualTextIndexer
 import com.vidya.safetyassistant.camera.CameraDetections
 import com.vidya.safetyassistant.camera.CameraPreview
+import com.vidya.safetyassistant.equipment.EquipmentLabelFacts
+import com.vidya.safetyassistant.equipment.EquipmentLabelParser
 import com.vidya.safetyassistant.safety.SafetyController
 import com.vidya.safetyassistant.safety.SafetyEngine
 import com.vidya.safetyassistant.safety.SafetyStatus
@@ -93,6 +95,7 @@ private fun VidyaApp() {
     var detections by remember { mutableStateOf<CameraDetections?>(null) }
     var detectorStatus by remember { mutableStateOf("Starting on-device object detector…") }
     var liveOcrText by remember { mutableStateOf("") }
+    var equipmentFacts by remember { mutableStateOf(EquipmentLabelFacts()) }
     val mainHandler = remember { Handler(Looper.getMainLooper()) }
     var arMode by remember { mutableStateOf(false) }
     var requestArAfterPermission by remember { mutableStateOf(false) }
@@ -271,7 +274,11 @@ private fun VidyaApp() {
                                 }
                             },
                             onDetectionError = { detectorStatus = it },
-                            onTextRecognized = { text -> liveOcrText = text }
+                            onTextRecognized = { text ->
+                                liveOcrText = text
+                                val parsed = EquipmentLabelParser.parse(text)
+                                if (parsed.hasAnyFact) equipmentFacts = parsed
+                            }
                         )
                         SafetyOverlay(
                             status = assessment.status,
@@ -320,6 +327,19 @@ private fun VidyaApp() {
                     Text("Live camera OCR · Latin + Hindi · approximately once per second", color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
                     if (liveOcrText.isNotBlank()) {
                         Text("Camera text: ${liveOcrText.take(280)}", color = Color.White, style = MaterialTheme.typography.bodySmall)
+                    }
+                    if (equipmentFacts.hasAnyFact) {
+                        Text("Nameplate text clues · verify against the physical label", color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
+                        listOfNotNull(
+                            equipmentFacts.manufacturer?.let { "Manufacturer: $it" },
+                            equipmentFacts.model?.let { "Model: $it" },
+                            equipmentFacts.voltage?.let { "Voltage: $it" },
+                            equipmentFacts.current?.let { "Current: $it" },
+                            equipmentFacts.frequency?.let { "Frequency: $it" },
+                            equipmentFacts.power?.let { "Power: $it" }
+                        ).forEach { fact ->
+                            Text(fact, color = Color.White, style = MaterialTheme.typography.labelSmall)
+                        }
                     }
                     Spacer(Modifier.height(12.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
