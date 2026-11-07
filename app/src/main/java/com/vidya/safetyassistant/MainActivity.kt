@@ -400,6 +400,31 @@ private fun VidyaApp() {
                         }
                     }
                 }
+                farmAdvice?.let { advice ->
+                    Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                        val report = buildString {
+                            appendLine("VIDYA — FARM MACHINE SERVICE REPORT")
+                            appendLine("Machine: ${activeFarmCategory.label}")
+                            appendLine("Brand: ${farmBrand.ifBlank { "Not provided" }}")
+                            appendLine("Model: ${farmModel.ifBlank { "Not provided" }}")
+                            appendLine("Year: ${farmYear.ifBlank { "Not provided" }}")
+                            appendLine("Displayed fault code: ${farmErrorCode.ifBlank { "Not provided" }}")
+                            appendLine("Reported problem: ${advice.title}")
+                            appendLine()
+                            appendLine("Safe observations shown by Vidya:")
+                            advice.steps.forEachIndexed { index, step -> appendLine("${index + 1}. $step") }
+                            appendLine()
+                            appendLine("Safety note: ${advice.warning}")
+                            appendLine("This is not a confirmed diagnosis or repair instruction. Technician must verify the exact make, model, variant and manufacturer manual.")
+                        }
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_SUBJECT, "Vidya farm machine service report")
+                            putExtra(Intent.EXTRA_TEXT, report)
+                        }
+                        context.startActivity(Intent.createChooser(shareIntent, "Share report with mechanic"))
+                    }) { Text("Share report with mechanic") }
+                }
                 Text(RuralMachineGuide.universalSafetyNote(), color = Color(0xFFFF8D70),
                     style = MaterialTheme.typography.labelSmall)
 
