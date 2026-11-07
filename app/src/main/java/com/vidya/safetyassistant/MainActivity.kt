@@ -60,6 +60,7 @@ import com.vidya.safetyassistant.equipment.EquipmentLabelParser
 import com.vidya.safetyassistant.equipment.EquipmentManualMatcher
 import com.vidya.safetyassistant.equipment.HomeTroubleshootingGuide
 import com.vidya.safetyassistant.equipment.RuralMachineGuide
+import com.vidya.safetyassistant.equipment.FarmMachineBrandCatalog
 import com.vidya.safetyassistant.equipment.VehicleDiagnosticLookup
 import com.vidya.safetyassistant.equipment.VehicleDiagnosticResult
 import com.vidya.safetyassistant.equipment.VehicleWarningLightGuide
@@ -114,6 +115,7 @@ private fun VidyaApp() {
     var selectedSymptomId by remember { mutableStateOf(HomeTroubleshootingGuide.categories.first().symptoms.first().id) }
     var troubleshootingAdvice by remember { mutableStateOf<com.vidya.safetyassistant.equipment.TroubleshootingAdvice?>(null) }
     var farmMachineMenuExpanded by remember { mutableStateOf(false) }
+    var farmBrandMenuExpanded by remember { mutableStateOf(false) }
     var farmSymptomMenuExpanded by remember { mutableStateOf(false) }
     var selectedFarmMachineId by remember { mutableStateOf(RuralMachineGuide.categories.first().id) }
     var selectedFarmSymptomId by remember { mutableStateOf(RuralMachineGuide.categories.first().symptoms.first().id) }
@@ -358,8 +360,25 @@ private fun VidyaApp() {
                         }
                     }
                 }
-                OutlinedTextField(value = farmBrand, onValueChange = { farmBrand = it },
-                    modifier = Modifier.fillMaxWidth(), label = { Text("Farm machine company / brand") }, singleLine = true)
+                Box {
+                    OutlinedTextField(value = farmBrand, onValueChange = {
+                        farmBrand = it
+                        farmBrandMenuExpanded = true
+                    }, modifier = Modifier.fillMaxWidth(),
+                        label = { Text("Farm machine company / brand") }, singleLine = true)
+                    val brandSuggestions = FarmMachineBrandCatalog.suggestions(selectedFarmMachineId, farmBrand)
+                    DropdownMenu(expanded = farmBrandMenuExpanded && brandSuggestions.isNotEmpty(),
+                        onDismissRequest = { farmBrandMenuExpanded = false }) {
+                        brandSuggestions.take(8).forEach { brand ->
+                            DropdownMenuItem(text = { Text(brand) }, onClick = {
+                                farmBrand = brand
+                                farmBrandMenuExpanded = false
+                            })
+                        }
+                    }
+                }
+                Text("Brand suggestions are examples only. Choose the exact make from its nameplate or enter any local brand; suggestions do not confirm model compatibility.",
+                    color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
                 OutlinedTextField(value = farmModel, onValueChange = { farmModel = it },
                     modifier = Modifier.fillMaxWidth(), label = { Text("Machine model / engine model") }, singleLine = true)
                 OutlinedTextField(value = farmYear, onValueChange = { farmYear = it },
