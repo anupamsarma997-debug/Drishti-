@@ -20,7 +20,8 @@ import java.util.concurrent.Executors
 fun CameraPreview(
     modifier: Modifier = Modifier,
     onDetections: (CameraDetections) -> Unit,
-    onDetectionError: (String) -> Unit
+    onDetectionError: (String) -> Unit,
+    onTextRecognized: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
@@ -35,7 +36,7 @@ fun CameraPreview(
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
         val mainExecutor = ContextCompat.getMainExecutor(context)
         val analysisExecutor = Executors.newSingleThreadExecutor()
-        val analyzer = OnDeviceObjectAnalyzer(onDetections, onDetectionError)
+        val analyzer = OnDeviceObjectAnalyzer(onDetections, onDetectionError, onTextRecognized)
         var provider: ProcessCameraProvider? = null
         var disposed = false
 
