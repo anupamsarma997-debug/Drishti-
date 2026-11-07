@@ -136,7 +136,7 @@ object RuralMachineGuide {
         FarmMachineCategory("dairy", "Dairy milking machine / milk chiller", "Vacuum pump, milking cluster and bulk milk cooler", "Electrical equipment near water, vacuum, rotating pumps and hygiene", listOf(
             FarmMachineSymptom("low_vacuum", "Low vacuum / weak suction", listOf("Stop milking if animal welfare or equipment safety is affected.", "Record gauge reading and visible alarms.", "Do not open vacuum pump or electrical panels; clean only parts specified by the hygiene manual.")),
             FarmMachineSymptom("not_cooling", "Milk chiller not cooling", listOf("Keep milk handling hygienic and follow food-safety procedures.", "Record temperature display and alarm code.", "Do not open refrigerant circuits or electrical covers; arrange service."), true, "Milk temperature failure can create food-safety risks.")
-        )))
+        ))
     )
 
     fun category(id: String): FarmMachineCategory? = categories.firstOrNull { it.id == id }
