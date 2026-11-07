@@ -73,6 +73,7 @@ private fun VidyaApp() {
     var detectorStatus by remember { mutableStateOf("Starting on-device object detector…") }
     var voiceStatus by remember { mutableStateOf("Voice assistant is ready when you tap the microphone.") }
     var heardQuestion by remember { mutableStateOf("") }
+    var answerToSpeak by remember { mutableStateOf("") }
 
     val voiceAssistant = remember {
         VoiceAssistant(
@@ -81,7 +82,7 @@ private fun VidyaApp() {
                 heardQuestion = text
                 val answer = OfflineSafetyGuide.answer(text, safetyController.assessment)
                 voiceStatus = "Offline safety guide replied. This is general guidance, not equipment-specific repair advice."
-                voiceAssistant.speak(answer)
+                answerToSpeak = answer
             },
             onError = { message -> voiceStatus = message }
         )
@@ -102,6 +103,9 @@ private fun VidyaApp() {
     }
 
     val assessment = safetyController.assessment
+    LaunchedEffect(answerToSpeak) {
+        if (answerToSpeak.isNotBlank()) voiceAssistant.speak(answerToSpeak)
+    }
     LaunchedEffect(assessment.evaluatedAtMillis) {
         assessment.voiceWarning?.let(voiceAssistant::speak)
     }
