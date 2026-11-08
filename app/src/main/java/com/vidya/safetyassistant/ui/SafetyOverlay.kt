@@ -97,12 +97,12 @@ fun SafetyOverlay(
         focusHint?.takeIf { it.isNotBlank() }?.let { partName ->
             val hint = "POSSIBLE PART: $partName · NOT VISUALLY VERIFIED"
             val hintPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color = android.graphics.Color.BLACK
+                this.color = android.graphics.Color.BLACK
                 textSize = 11.dp.toPx()
                 style = Paint.Style.FILL
             }
             val hintBg = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color = android.graphics.Color.YELLOW
+                this.color = android.graphics.Color.YELLOW
                 style = Paint.Style.FILL
             }
             val hintWidth = (hintPaint.measureText(hint) + 20.dp.toPx())
