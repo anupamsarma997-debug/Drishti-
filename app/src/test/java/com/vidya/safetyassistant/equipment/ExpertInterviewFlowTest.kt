@@ -23,6 +23,13 @@ class ExpertInterviewFlowTest {
     }
 
     @Test
+    fun stopsInterviewForBrakeFailureAndFuelLeakPhrases() {
+        assertNull(ExpertInterviewFlow.nextQuestion("car", "brake pedal goes to floor", 0))
+        assertNull(ExpertInterviewFlow.nextQuestion("tractor", "diesel leak", 0))
+        assertNull(ExpertInterviewFlow.nextQuestion("motor", "battery swollen", 0))
+    }
+
+    @Test
     fun limitsNumberOfFollowUpRounds() {
         assertNull(ExpertInterviewFlow.nextQuestion("car", "engine vibration", 3))
     }

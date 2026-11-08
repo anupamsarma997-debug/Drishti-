@@ -12,7 +12,11 @@ object ExpertInterviewFlow {
         val urgent = listOf(
             "smoke", "fire", "spark", "burning smell", "electric shock", "shock",
             "fuel leak", "gas leak", "brake fail", "brake failure", "battery swelling",
-            "battery hot", "orange cable"
+            "battery hot", "battery swollen", "battery swelling", "battery bulging",
+            "petrol leak", "diesel leak", "gas smell", "burnt smell",
+            "brake not working", "brakes not working", "brake pedal soft",
+            "brake pedal goes to floor", "current aa raha", "current lag raha",
+            "wire exposed", "orange cable"
         )
         if (urgent.any { it in text }) return null
 
