@@ -1,6 +1,10 @@
 name: Global I3D cross-shard duplicate audit
 
 on:
+  push:
+    paths:
+      - "research/tools/audit_i3d_cross_shard.py"
+      - ".github/workflows/audit-i3d-global-dedup.yml"
   workflow_dispatch:
 
 permissions:
