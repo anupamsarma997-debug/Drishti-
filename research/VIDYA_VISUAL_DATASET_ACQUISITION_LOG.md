@@ -92,4 +92,4 @@ This log separates downloaded archives from extracted/validated images, and both
 
 ### I3D shard 00002 — acquisition pending
 - Workflow is configured to download and audit `train-00002-of-00012.parquet` from the official Hugging Face repository.
-- This shard is not yet counted as acquired; only add image/annotation totals after the workflow succeeds and the audit JSON is reviewed.
+- The workflow path filter was corrected; a new run will start when this log is updated. This shard is not counted as acquired until its download, audit and artifact upload all succeed.
