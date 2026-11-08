@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit exact primary-image duplicates and annotation conflicts across I3D shards."""
+"""Audit exact primary-image duplicates, annotation conflicts, and global counts across all I3D shards."""
 from __future__ import annotations
 
 import argparse
@@ -12,7 +12,9 @@ import pyarrow.parquet as pq
 from audit_i3d_tools_parquet import image_bytes, parse_yolo_annotation
 
 def normalized_label(value):
-    if not value or not value.strip():\n        return ()\n    boxes = parse_yolo_annotation(value)
+    if not value or not value.strip():
+        return ()
+    boxes = parse_yolo_annotation(value)
     return tuple(sorted((c, round(x, 8), round(y, 8), round(w, 8), round(h, 8))
                         for c, x, y, w, h in boxes))
 
