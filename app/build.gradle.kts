@@ -63,7 +63,8 @@ dependencies {
     // Bundled on-device model: runs locally; no image upload or API key required.
     implementation("com.google.mlkit:object-detection:17.0.2")
     // Optional on-device Gemini Nano direct model access; runtime availability is checked per device.
-    implementation("com.google.mlkit:genai-prompt:1.0.0-beta4")
+    implementation("com.google.mlkit:genai-prompt:1.0.0-beta5")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0")
     // On-device OCR for English/Latin and Hindi/Devanagari technical labels.
     implementation("com.google.mlkit:text-recognition:16.0.1")
     implementation("com.google.mlkit:text-recognition-devanagari:16.0.1")
