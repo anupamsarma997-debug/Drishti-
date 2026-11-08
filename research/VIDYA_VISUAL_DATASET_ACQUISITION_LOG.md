@@ -212,3 +212,10 @@ This log separates downloaded archives from extracted/validated images, and both
 - Downloads all 12 audited Parquet artifacts, then runs `prepare_i3d_yolo_dataset.py` to deduplicate by primary-image SHA-256, reject conflicting labels, write YOLO image/label folders, and produce deterministic hash-based train/validation/test splits plus YAML, manifest, and preparation report.
 - All 12 artifact downloads completed successfully; the preparation step was still running at the time of this log update. No prepared-dataset artifact is claimed until the workflow completes and upload succeeds.
 - Latest Android CI after adding cross-shard tests and preparation workflow passed; APK artifact ID `13623971048` (80,372,565 bytes), run https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42496477305.
+
+
+### Dataset card and real-world validation protocol
+- Added `research/VIDYA_I3D_DATASET_CARD.md` documenting the 16-class map, synthetic-data limitation, source attribution/licensing cautions, data audit, preparation approach, and explicit no-training/no-accuracy status.
+- Added `research/VIDYA_REAL_WORLD_VALIDATION_PROTOCOL.md` defining image permission/privacy checks, instance-level split rules, annotation QA, per-class metrics, device benchmarking, and safety release gates.
+- Latest Android CI run after these documentation updates: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42496789952 — passed; debug APK artifact ID `13623602150` (80,372,565 bytes).
+- Full 12-shard dataset preparation run `42496477259` had downloaded all source artifacts and remained in its preparation step at the last status check; upload and final report are not yet confirmed.
