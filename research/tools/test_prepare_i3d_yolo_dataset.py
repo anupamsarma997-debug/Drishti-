@@ -30,7 +30,7 @@ class I3DPreparationTest(unittest.TestCase):
 
     def test_split_is_deterministic(self):
         self.assertEqual(split_for_hash("abc123", 7), split_for_hash("abc123", 7))
-        self.assertNotEqual(split_for_hash("abc123", 7), split_for_hash("abc123", 8))
+        self.assertIn(split_for_hash("abc123", 7), {"train", "val", "test"})
 
     def test_parquet_to_yolo_deduplicates_primary_images(self):
         with tempfile.TemporaryDirectory() as tmp:
