@@ -27,7 +27,7 @@ The Android domain model is in `app/src/main/java/com/vidya/safetyassistant/know
 |---|---|---|---|---|
 | Repair history | Open Repair Alliance ORDS v0.3 — https://openrepair.org/open-data/downloads/ | Product category, brand/year, problem and repair outcome taxonomy | CC BY-SA 4.0; community repair logs, not verified repair instructions; download/version and attribution must be handled | Candidate for analysis/import after download audit |
 | Generic vehicle identity | NHTSA vPIC — https://vpic.nhtsa.dot.gov/api/ | Manufacturer-submitted VIN decoding and vehicle descriptors | US-market reporting system; coverage cannot be assumed for Indian-market two-wheelers/tractors; API rate control | Reference only; market coverage gate |
-| Generic OBD-II | OBDex — https://github.com/foerbsnavi/obdex | Generic DTC and PID data | Data CC0-1.0, tooling MIT according to project; generic only; independently validate each row and source | Candidate for schema-validated import |
+| Generic OBD-II | OBDex — https://github.com/foerbsnavi/obdex | Generic DTC and PID data; JSON endpoint can be cached locally | Project declares CC0 data and MIT tooling; maintainer says imported DTC identifiers/titles derive from Wal33D/dtc-database under MIT; retain MIT notice and source links; generic only | Candidate for validated offline cache; no repair procedure/cost import |
 | Industrial audio | MIMII DG — https://zenodo.org/records/6529888 | Normal/abnormal audio for fans, gearboxes, bearings, slide rails and valves | CC BY-NC-SA 4.0; 4.4 GB; no commercial training/use without permission; laboratory domain shift | Research-only / HOLD for commercial product |
 | Indian agricultural machine curriculum | DGT Mechanic Agricultural Machinery CTS 2.0 — https://www.dgt.gov.in/sites/default/files/2023-12/Mech.%20Agricultural%20Machinery_CTS2.0_NSQF-4.pdf | Training topics and machine-category vocabulary | Curriculum, not OEM service manual; check reuse terms | Link-out / taxonomy reference |
 | Indian farm machinery catalogue | ICAR Agricultural Engineering catalogue — https://icar.org.in/sites/default/files/inline-files/AgriculturalEngineering_1.pdf | Indian machine and implement category discovery | Catalogue, not repair procedure; no blanket permission to reproduce | Link-out / taxonomy reference |
@@ -82,3 +82,20 @@ These are discovery links to manufacturers' own portals. The app should deep-lin
 | Bajaj Auto | https://www.bajajauto.com/customer-service/owners-manual | Owner manuals for listed models | Owner documentation, not automatically a workshop service manual |
 
 **Coverage warning:** these portals do not constitute a complete make/model/year/variant database. A portal entry is not a parsed manual, verified parts catalogue, or approved repair instruction. Store selected document title, exact applicability, revision and page citation only after the individual document is inspected.
+
+
+## OBDex offline reference import — implementation status
+
+The Android app now has an explicit user-triggered download action for the OBDex generic DTC JSON endpoint:
+https://foerbsnavi.github.io/OBDex/generic.min.json
+
+- It downloads only after the user taps the update button; it does not silently fetch on app launch.
+- It rejects empty/oversized payloads, invalid code identifiers, duplicate DTCs and snapshots with fewer than 1,000 valid entries.
+- A successful validated snapshot is stored under the app's private files directory and can be queried offline on later use.
+- It imports English titles/descriptions, component names, cause labels, symptoms and source URLs only. Repair-cost estimates and repair instructions are deliberately not imported.
+- Each returned record preserves up to five HTTPS source links and displays them in the app.
+- The data is generic; exact vehicle/year/engine/ECU compatibility remains unverified. The database cannot diagnose a failed part or authorize a repair.
+
+**Provenance note:** the OBDex maintainer's response to a provenance question says bulk-imported DTC identifiers/titles came from Wal33D/dtc-database under MIT; other description/cause/repair prose was independently authored and is covered by the project's CC0 data declaration. Preserve the MIT copyright/permission notice when distributing imported title data and inspect each row's source links. Discussion: https://github.com/foerbsnavi/OBDex/issues/8
+
+This is a first-run online download followed by offline cache, not a prebundled 9,533-code APK database. No live vehicle scan or exact OEM compatibility has been validated.

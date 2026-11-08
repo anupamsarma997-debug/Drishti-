@@ -704,3 +704,27 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - Open Repair Alliance ORDS is explicitly a standard for small electricals and consumer electronics. Its repair logs can inform appliance repair-history taxonomy, but must not be treated as evidence for motorcycles, cars, tractors, pumps or industrial machines. The standard removed the model field due to data-quality problems. Keep it out of exact-model machine fitment and repair-procedure claims.
 - The official portals above are link-out sources, not permission to bulk download, mirror, train on, or redistribute manuals. Individual licences and document-level applicability must be reviewed.
 - No OEM manual PDFs were copied into the app and no new dataset was downloaded or trained in this pass.
+
+
+## Fifteenth research pass — OBDex provenance and offline cache
+
+81. OBDex maintainer clarification — imported title provenance and data rights
+    Primary source: https://github.com/foerbsnavi/OBDex/issues/8
+    In the maintainer response, DTC identifiers and English titles from bulk-import waves are attributed to Wal33D/dtc-database under MIT; other description/cause/repair prose is described as independently authored and covered by OBDex's CC0 data declaration.
+    Vidya use: retain upstream MIT notice for imported identifiers/titles, keep per-record source URLs, and avoid treating the repository's CC0 label as a reason to omit third-party attribution.
+    Limits: maintainer clarification is useful provenance evidence but not a substitute for legal review or row-level source audit. The imported text is not OEM-verified and does not establish exact India model/ECU compatibility.
+    Priority: P0 for licence/provenance handling; record-level audit remains required.
+
+82. OBDex static generic DTC JSON endpoint
+    Primary source: https://foerbsnavi.github.io/OBDex/generic.min.json
+    Repository source: https://github.com/foerbsnavi/obdex
+    Project README describes a machine-readable generic OBD-II DTC database and a JSON endpoint suitable for embedding; schema requires code/category/title/source fields and accepts optional model/year applicability metadata.
+    Vidya use: explicit user-triggered download and validated private-device cache, with source links retained for records. The app does not import repair-cost estimates or procedural repair instructions.
+    Limits: generic database only; exact vehicle/year/engine/ECU support is not proven. Initial download requires internet; later cached lookups can work offline. Download size and schema are checked at runtime.
+    Priority: P0 candidate for cached reference use; CI and device download test pending.
+
+## Fifteenth-pass implementation notes
+- Added a download/update action to the vehicle DTC screen. It fetches the generic JSON only when the user taps, validates a minimum record count, identifier format, duplicate codes and a 25 MiB upper size bound, then stores it in app-private storage.
+- Subsequent code lookups consult the local cached snapshot in the background and fall back to the existing built-in dictionary when no cache entry is available.
+- The app preserves up to five HTTPS record source links and displays them as tappable references.
+- OBDex data is not a diagnostic authority: code meanings/cause lists remain candidate references; no repair step or cost estimate is imported. Model/engine/ECU compatibility and actual vehicle behaviour require exact OEM evidence.
