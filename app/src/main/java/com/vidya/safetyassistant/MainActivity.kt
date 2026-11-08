@@ -322,7 +322,9 @@ private fun VidyaApp() {
                 val expertMachineOptions = listOf(
                     "bike" to "Motorcycle", "scooter" to "Scooter", "car" to "Car",
                     "ev" to "Electric vehicle", "truck" to "Truck", "tractor" to "Tractor",
-                    "power_tiller" to "Power tiller", "pump" to "Water pump",
+                    "power_tiller" to "Power tiller", "rotavator" to "Rotavator",
+                    "combine" to "Combine harvester", "sprayer" to "Agricultural sprayer",
+                    "diesel_engine" to "Diesel engine", "pump" to "Water pump",
                     "generator" to "Generator", "thresher" to "Thresher",
                     "ac" to "Air conditioner", "tv" to "Television",
                     "washer" to "Washing machine", "fridge" to "Refrigerator",
