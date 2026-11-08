@@ -319,3 +319,77 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - Keep generic OBD-II data separate from make/model-specific signal definitions and OEM DTCs.
 - Pump/motor datasets are for research and controlled evaluation; no classifier is ready for field diagnosis.
 - No new external dataset has been added to the Android APK or used to train a model in this pass.
+
+
+## Fourth research pass — visual inspection, India vehicle support and fault-signal datasets
+
+34. VisA (Visual Anomaly dataset)
+   Official discovery/source: https://registry.opendata.aws/visa/ and https://github.com/amazon-research/spot-diff
+   10,821 industrial inspection images across 12 object categories with image-level labels and pixel-level masks; reported CC BY 4.0 at the official registry.
+   Vidya use: visual anomaly localization research for manufactured parts and surface defects; possible pretraining/benchmarking after original registry license confirmation.
+   Limits: not a machine-repair dataset; categories are not representative of every vehicle, farm machine or domestic appliance. Must keep source attribution and original split.
+   Priority: P1, verify official registry terms before download.
+
+35. KolektorSDD2
+   Discovery: https://litebites.github.io/data/
+   Surface-defect segmentation dataset; third-party catalogue reports 3,336 images and CC BY-SA 4.0.
+   Vidya use: experiment with fine surface defect localization.
+   Limits: catalogue is not the primary license authority; obtain original publisher/repository record and verify exact terms before any use.
+   Priority: HOLD pending primary-source license confirmation.
+
+36. NEU Surface Defect Database
+   Discovery: https://github.com/IEEE-IES-Industrial-AI-Lab/industrial-ai-hub/blob/main/_pages/datasets.md
+   1,800 grayscale hot-rolled steel images, six defect categories; accessible through public research repositories.
+   Vidya use: steel surface defect research only.
+   Limits: exact original dataset license and redistribution rights were not confirmed in this pass; industrial steel images do not teach general repair diagnosis.
+   Priority: HOLD pending original license.
+
+37. MVTec LOCO AD
+   Official page: https://www.mvtec.com/research-teaching/datasets/mvtec-loco
+   3,644 images across five categories with structural and logical anomalies; reported CC BY-NC-SA 4.0.
+   Vidya use: benchmark logical/structural anomaly localization.
+   Limits: non-commercial restriction; not approved for a commercial product without written permission.
+   Priority: research-only/HOLD for commercial model training.
+
+38. AeBAD — Aero-engine Blade Anomaly Detection
+   Discovery: https://openruwei.org/en/resources/
+   Real blade images/videos and annotations; reported CC BY 4.0 in the catalogue.
+   Vidya use: specialized blade-surface anomaly research.
+   Limits: verify original dataset record, specimen-vs-in-service defect context and all subset licenses before use.
+   Priority: P2 pending primary-source review.
+
+39. Universal Machinery Fault Diagnosis Dataset (UMFDD)
+   Source: https://data.mendeley.com/datasets/3bz24t6tf4/1
+   Published 2 April 2026. A standardized multi-signal repository combining public and experimental signals; categories include healthy, bearing faults, gearbox faults and induction-motor faults.
+   Vidya use: investigate cross-dataset unit normalization and cross-domain evaluation.
+   Limits: composite datasets inherit component-source constraints; exact license and provenance of every constituent dataset must be inspected before use. Do not treat the combined dataset as one unrestricted license.
+   Priority: P1 for provenance audit; no training until component rights are cleared.
+
+40. IoT-Integrated Predictive Maintenance Dataset
+   Discovery: https://www.indatlas.com/datasets/iot-integrated-predictive-maintenance-dataset/
+   Third-party catalogue describes simulated vibration, acoustic, temperature and current channels, CC0 1.0.
+   Vidya use: software pipeline tests, synthetic signal handling and sensor-fusion prototyping only.
+   Limits: simulated records are not field evidence and cannot validate real fault detection.
+   Priority: P2; original Kaggle record/license must be confirmed before download.
+
+41. Right to Repair India — registered automobile brands directory
+   Official source: https://doca.gov.in/r2r-dbim/index.php/swise-companies/4
+   Lists participating automobile support brands including Honda Motorcycle & Scooter India, Hero MotoCorp, TVS, Maruti Suzuki, Suzuki Motorcycle India, Hyundai, Volkswagen, Yamaha and others.
+   Vidya use: official link-out directory for model/product support and customer-care routes.
+   Limits: listing does not guarantee a freely downloadable workshop manual, diagnostic code table or right to redistribute brand documents.
+   Priority: P0 as official discovery links.
+
+42. Hero MotoCorp — service and maintenance
+   Official source: https://www.heromotocorp.com/en-in/services/service-and-maintenance.html
+   Official service, maintenance and warranty information.
+   Vidya use: link users to current official maintenance and authorized-service information; use model-specific owner manuals where published.
+   Limits: service policy page is not a full workshop manual; do not derive repair procedures from warranty statements.
+   Priority: P1 as official support source.
+
+## Fourth-pass decisions
+- VisA may be a stronger candidate for general industrial visual anomaly research than non-commercial MVTec/MPDD, but it is still not a general repair dataset.
+- MVTec AD, LOCO AD and MPDD remain blocked for commercial training unless the rightsholder grants permission.
+- UMFDD is a composite signal dataset; audit each constituent source before use.
+- Simulated predictive-maintenance data is suitable for pipeline testing, not field-performance claims.
+- Official Indian brand portals are link-out sources. Do not scrape or redistribute proprietary manuals without permission.
+- No new dataset has been downloaded, bundled into the APK, or used to train a Vidya model in this pass.
