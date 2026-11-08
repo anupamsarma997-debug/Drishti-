@@ -158,3 +158,8 @@ python research/tools/audit_electrocom61.py --root /path/to/ElectroCom61
 ```
 
 The auditor checks the three split folders, matching image/label stems, YOLO row syntax, class IDs 0–60, normalized box coordinates, image SHA-256 duplicates across splits, and per-class box counts. It does not train a model, verify semantic class names, decode image pixels, prove commercial rights beyond the declared CC BY 4.0 record, or establish machine-fault recognition. No dataset images are bundled in Vidya.
+
+
+### ElectroCom61 class-name reference
+
+See [research/ELECTROCOM61_CLASS_REFERENCE.md](research/ELECTROCOM61_CLASS_REFERENCE.md) for a secondary class-name cross-reference and the exact mapping/training gate. A public mirror's captured list exposes only 60 names while claiming 61 classes; Vidya deliberately does not invent the missing name or assume class-ID order. The primary archive's own configuration and metadata must resolve this before training.
