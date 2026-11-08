@@ -89,3 +89,7 @@ This log separates downloaded archives from extracted/validated images, and both
 - 3,065 YOLO annotation rows; 3,065 valid boxes; zero malformed annotations. Shard class ID counts: 1: 935, 2: 2,000, 3: 130.
 - Combined I3D shards 00000 and 00001: 6,130 primary images, 6,130 unique primary image hashes, 6,130 valid boxes; still only 2 of 12 shards. Do not claim the whole dataset has been acquired.
 - The two shards have overlapping class IDs and are consistent with sequentially numbered categories, but the official zero-based class mapping must be confirmed from the source metadata before producing a final class map.
+
+### I3D shard 00002 — acquisition pending
+- Workflow is configured to download and audit `train-00002-of-00012.parquet` from the official Hugging Face repository.
+- This shard is not yet counted as acquired; only add image/annotation totals after the workflow succeeds and the audit JSON is reviewed.
