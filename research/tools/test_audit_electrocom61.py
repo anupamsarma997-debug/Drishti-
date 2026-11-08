@@ -27,24 +27,24 @@ class ElectroCom61AuditTest(unittest.TestCase):
         self.assertEqual(1, report["observed_class_ids"])
 
     def test_invalid_class_id(self):
-        (self.root / "Train" / "Label" / "sample.txt").write_text("61 0.5 0.5 0.2 0.2\n", encoding="utf-8")
+        (self.root / "Train" / "Label" / "train_sample.txt").write_text("61 0.5 0.5 0.2 0.2\n", encoding="utf-8")
         errors, _ = audit(self.root)
         self.assertTrue(any("class_id" in error for error in errors))
 
     def test_invalid_box_coordinates(self):
-        (self.root / "Valid" / "Label" / "sample.txt").write_text("2 1.2 0.5 0.2 0.2\n", encoding="utf-8")
+        (self.root / "Valid" / "Label" / "valid_sample.txt").write_text("2 1.2 0.5 0.2 0.2\n", encoding="utf-8")
         errors, _ = audit(self.root)
         self.assertTrue(any("within [0, 1]" in error for error in errors))
 
     def test_missing_and_orphan_label_pairs(self):
-        (self.root / "Train" / "Label" / "sample.txt").unlink()
+        (self.root / "Train" / "Label" / "train_sample.txt").unlink()
         (self.root / "Test" / "Label" / "orphan.txt").write_text("1 0.5 0.5 0.2 0.2\n", encoding="utf-8")
         errors, _ = audit(self.root)
         self.assertTrue(any("no matching label file" in error for error in errors))
         self.assertTrue(any("no matching image" in error for error in errors))
 
     def test_duplicate_image_bytes_across_splits(self):
-        (self.root / "Valid" / "Image" / "sample.jpg").write_bytes(b"image-Train")
+        (self.root / "Valid" / "Image" / "valid_sample.jpg").write_bytes(b"image-Train")
         errors, _ = audit(self.root)
         self.assertTrue(any("cross splits" in error for error in errors))
 
@@ -55,14 +55,14 @@ class ElectroCom61AuditTest(unittest.TestCase):
         self.assertTrue(any("missing split directory" in error for error in errors))
 
     def test_duplicate_image_stems_are_rejected(self):
-        duplicate = self.root / "Train" / "Image" / "nested" / "sample.png"
+        duplicate = self.root / "Train" / "Image" / "nested" / "train_sample.png"
         duplicate.parent.mkdir()
         duplicate.write_bytes(b"different image")
         errors, _ = audit(self.root)
         self.assertTrue(any("duplicate image filename stem" in error for error in errors))
 
     def test_duplicate_label_stems_are_rejected(self):
-        duplicate = self.root / "Valid" / "Label" / "nested" / "sample.txt"
+        duplicate = self.root / "Valid" / "Label" / "nested" / "valid_sample.txt"
         duplicate.parent.mkdir()
         duplicate.write_text("1 0.5 0.5 0.2 0.2\n", encoding="utf-8")
         errors, _ = audit(self.root)
@@ -72,9 +72,9 @@ class ElectroCom61AuditTest(unittest.TestCase):
         metadata = self.root / "Metadata_ElectroCom61.csv"
         metadata.write_text(
             "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\n"
-            "sample.jpg,1,1_Resistor,white,Phone,Train\n"
-            "sample.jpg,1,1_Resistor,white,Phone,Valid\n"
-            "sample.jpg,1,1_Resistor,white,Phone,Test\n",
+            "train_sample.jpg,1,1_Resistor,white,Phone,Train\n"
+            "valid_sample.jpg,1,1_Resistor,white,Phone,Valid\n"
+            "test_sample.jpg,1,1_Resistor,white,Phone,Test\n",
             encoding="utf-8",
         )
         errors, report = audit(self.root)
@@ -86,7 +86,7 @@ class ElectroCom61AuditTest(unittest.TestCase):
         metadata = self.root / "Metadata_ElectroCom61.csv"
         metadata.write_text(
             "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\n"
-            "sample.jpg,1,1_Resistor,white,Phone,Test\n",
+            "test_sample.jpg,1,1_Resistor,white,Phone,Test\n",
             encoding="utf-8",
         )
         errors, _ = audit(self.root)
@@ -94,7 +94,7 @@ class ElectroCom61AuditTest(unittest.TestCase):
         self.assertTrue(any("row count" in error for error in errors))
 
     def test_empty_label_file_is_valid_negative_sample(self):
-        (self.root / "Train" / "Label" / "sample.txt").write_text("", encoding="utf-8")
+        (self.root / "Train" / "Label" / "train_sample.txt").write_text("", encoding="utf-8")
         errors, report = audit(self.root)
         self.assertEqual([], errors)
         self.assertEqual(2, report["bounding_boxes"])
