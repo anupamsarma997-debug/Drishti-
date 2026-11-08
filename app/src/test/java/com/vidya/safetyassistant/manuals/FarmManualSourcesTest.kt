@@ -9,6 +9,11 @@ class FarmManualSourcesTest {
         assertTrue(FarmManualSources.entries.all { it.url.startsWith("https://") && it.name.isNotBlank() })
     }
 
+    @Test fun includesOfficialAgriculturalMachineryTrainingReferences() {
+        assertTrue(FarmManualSources.entries.any { it.name.contains("Directorate General of Training") })
+        assertTrue(FarmManualSources.entries.any { it.name.contains("ICAR — Agricultural Engineering machinery catalogue") })
+    }
+
     @Test fun includesNorthEastFarmMachineryInstitute() {
         assertTrue(FarmManualSources.entries.any { it.name.contains("North Eastern Region") })
     }
