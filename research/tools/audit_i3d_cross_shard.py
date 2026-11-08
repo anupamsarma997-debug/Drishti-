@@ -12,7 +12,7 @@ import pyarrow.parquet as pq
 from audit_i3d_tools_parquet import image_bytes, parse_yolo_annotation
 
 def normalized_label(value):
-    boxes = parse_yolo_annotation(value or "")
+    if not value or not value.strip():\n        return ()\n    boxes = parse_yolo_annotation(value)
     return tuple(sorted((c, round(x, 8), round(y, 8), round(w, 8), round(h, 8))
                         for c, x, y, w, h in boxes))
 
