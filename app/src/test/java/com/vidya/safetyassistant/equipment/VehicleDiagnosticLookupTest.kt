@@ -28,6 +28,7 @@ class VehicleDiagnosticLookupTest {
         val result = VehicleDiagnosticLookup.lookup("Car", "Brand", "Model", "2020", "ENGINE HOT")
         assertNotNull(result)
         assertEquals("Code format not recognized", result!!.title)
+        assertFalse(result.manufacturerSpecific)
     }
 
     @Test fun standardizedP2RangeIsNotMisclassifiedAsManufacturerSpecific() {
@@ -42,6 +43,22 @@ class VehicleDiagnosticLookupTest {
         assertNotNull(result)
         assertTrue(result!!.manufacturerSpecific)
         assertTrue(result.title.contains("Manufacturer-specific"))
+    }
+
+    @Test fun classifiesGenericAndManufacturerControlledRangesAcrossDtcFamilies() {
+        val genericCodes = listOf("P0123", "P2123", "B0123", "C0123", "U0123")
+        val manufacturerCodes = listOf("P1123", "P3123", "B1123", "C1123", "U1123")
+
+        genericCodes.forEach { code ->
+            val result = VehicleDiagnosticLookup.lookup("Car", "Example", "Model", "2022", code)
+            assertNotNull("Expected result for $code", result)
+            assertFalse("$code should not be manufacturer-specific", result!!.manufacturerSpecific)
+        }
+        manufacturerCodes.forEach { code ->
+            val result = VehicleDiagnosticLookup.lookup("Car", "Example", "Model", "2022", code)
+            assertNotNull("Expected result for $code", result)
+            assertTrue("$code should be manufacturer-specific", result!!.manufacturerSpecific)
+        }
     }
 
     @Test fun doesNotClaimUnknownGenericCodeIsKnown() {
