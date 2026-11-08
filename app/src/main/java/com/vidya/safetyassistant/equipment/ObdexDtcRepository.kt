@@ -3,6 +3,7 @@ package com.vidya.safetyassistant.equipment
 import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
@@ -29,7 +30,7 @@ class ObdexDtcRepository(context: Context) {
             check(connection.responseCode == HttpURLConnection.HTTP_OK) {
                 "OBDex source returned HTTP ${connection.responseCode}"
             }
-            val bytes = connection.inputStream.use { it.readBytes() }
+            val bytes = connection.inputStream.use { readBounded(it, MAX_DOWNLOAD_BYTES) }
             require(bytes.isNotEmpty() && bytes.size <= MAX_DOWNLOAD_BYTES) {
                 "OBDex data size is outside the allowed limit"
             }
@@ -80,6 +81,20 @@ class ObdexDtcRepository(context: Context) {
         if (!cacheFile.isFile || cacheFile.length() !in 1..MAX_DOWNLOAD_BYTES.toLong()) return emptyMap()
         return runCatching { parseEntries(cacheFile.readText(Charsets.UTF_8)).associateBy { it.code } }
             .getOrDefault(emptyMap())
+    }
+
+    private fun readBounded(input: java.io.InputStream, maximumBytes: Int): ByteArray {
+        val output = ByteArrayOutputStream()
+        val buffer = ByteArray(16 * 1024)
+        var total = 0
+        while (true) {
+            val count = input.read(buffer)
+            if (count < 0) break
+            total += count
+            require(total <= maximumBytes) { "OBDex download exceeds the 25 MiB safety limit" }
+            output.write(buffer, 0, count)
+        }
+        return output.toByteArray()
     }
 
     private fun parseEntries(json: String): List<ObdexDtcEntry> {

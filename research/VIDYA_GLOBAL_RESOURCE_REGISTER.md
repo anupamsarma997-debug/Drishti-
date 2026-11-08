@@ -721,10 +721,11 @@ This is a curated shortlist, not a complete census of worldwide public resources
     Project README describes a machine-readable generic OBD-II DTC database and a JSON endpoint suitable for embedding; schema requires code/category/title/source fields and accepts optional model/year applicability metadata.
     Vidya use: explicit user-triggered download and validated private-device cache, with source links retained for records. The app does not import repair-cost estimates or procedural repair instructions.
     Limits: generic database only; exact vehicle/year/engine/ECU support is not proven. Initial download requires internet; later cached lookups can work offline. Download size and schema are checked at runtime.
-    Priority: P0 candidate for cached reference use; CI and device download test pending.
+    Priority: P0 for optional cached generic-reference use; latest CI passed, but real-device download and offline verification remain pending.
 
 ## Fifteenth-pass implementation notes
 - Added a download/update action to the vehicle DTC screen. It fetches the generic JSON only when the user taps, validates a minimum record count, identifier format, duplicate codes and a 25 MiB upper size bound, then stores it in app-private storage.
 - Subsequent code lookups consult the local cached snapshot in the background and fall back to the existing built-in dictionary when no cache entry is available.
 - The app preserves up to five HTTPS record source links and displays them as tappable references.
-- OBDex data is not a diagnostic authority: code meanings/cause lists remain candidate references; no repair step or cost estimate is imported. Model/engine/ECU compatibility and actual vehicle behaviour require exact OEM evidence.
+- OBDex data is not a diagnostic authority: code meanings, cause labels and qualitative likelihood tags remain candidate references; no repair step or cost estimate is imported. The app preserves symptoms, affected components, related codes and source URLs when available. Model/engine/ECU compatibility and actual vehicle behaviour require exact OEM evidence.
+- The first successful GitHub Actions build after the downloader integration passed. A later pass preserves additional schema fields (category, cause likelihood tags, symptoms, affected components and related DTCs) and bounds download streaming to 25 MiB; its CI run is pending. No physical Android download/offline test has been performed.
