@@ -51,13 +51,17 @@ class SafetyEngine(
         val confidenceInvalid = !frame.confidence.isFinite() ||
             frame.confidence !in minimumConfidence..1.0f
         val c = frame.context
+        val equipmentLabel = frame.equipmentLabel.trim()
+        val equipmentIdentityInvalid = equipmentLabel.isEmpty() ||
+            equipmentLabel.equals("unknown", ignoreCase = true) ||
+            equipmentLabel.equals("unidentified", ignoreCase = true)
 
         val hardStopHazard = frame.hazards.firstOrNull { it in HARD_STOP_HAZARDS }
         if (hardStopHazard != null) {
             return stopAssessment(hardStopHazard, nowMillis)
         }
 
-        if (stale || confidenceInvalid || !c.timeValid || !c.roiValid ||
+        if (stale || confidenceInvalid || equipmentIdentityInvalid || !c.timeValid || !c.roiValid ||
             !c.contentValid || !c.actionPermitted || !c.logicConsistent ||
             !c.predictiveSafetyValid
         ) {

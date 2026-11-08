@@ -27,6 +27,17 @@ class SafetyEngineTest {
         assertEquals(SafetyStatus.CAUTION, result.status)
     }
 
+    @Test fun blankEquipmentIdentityCannotBeMarkedSafe() {
+        val result = engine.evaluate(frame().copy(equipmentLabel = "  "), 10_000L)
+        assertEquals(SafetyStatus.CAUTION, result.status)
+        assertTrue(result.reason.contains("cannot confirm"))
+    }
+
+    @Test fun unknownEquipmentIdentityCannotBeMarkedSafe() {
+        val result = engine.evaluate(frame().copy(equipmentLabel = "Unknown"), 10_000L)
+        assertEquals(SafetyStatus.CAUTION, result.status)
+    }
+
     @Test fun completeClearClassificationIsOnlyNoFlagSafe() {
         val result = engine.evaluate(frame(), 10_000L)
         assertEquals(SafetyStatus.SAFE, result.status)
