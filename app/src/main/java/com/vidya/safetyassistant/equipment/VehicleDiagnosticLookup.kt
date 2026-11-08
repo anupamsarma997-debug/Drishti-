@@ -78,7 +78,15 @@ object VehicleDiagnosticLookup {
         if (known != null) return known.copy(
             limitation = "Generic OBD-II reference only. Confirm that this vehicle/year and control module support this code definition. $manufacturer $model ($year) compatibility has not been verified."
         )
-        val manufacturerSpecific = code[1] == '1' || code[1] == '3'
+        // SAE J2012 allocates the 1xxx/2xxx ranges differently by DTC family:
+        // P1 and P3 are manufacturer-controlled (P3 also includes reserved space);
+        // B/C/U use 1xxx and 2xxx for manufacturer-controlled codes, while 3xxx
+        // is reserved. Unknown/reserved codes still remain unverified below.
+        val manufacturerSpecific = when (code[0]) {
+            'P' -> code[1] == '1' || code[1] == '3'
+            'B', 'C', 'U' -> code[1] == '1' || code[1] == '2'
+            else -> false
+        }
         return VehicleDiagnosticResult(
             code,
             if (manufacturerSpecific) "Manufacturer-specific code — exact lookup required" else "Code not in Vidya's current reference",
