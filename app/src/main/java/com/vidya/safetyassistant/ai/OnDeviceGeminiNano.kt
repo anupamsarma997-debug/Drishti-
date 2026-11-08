@@ -72,8 +72,6 @@ class OnDeviceGeminiNano {
     }
 
     fun close() {
-        if (true) {
-            runCatching { model.close() }
-        }
+        runCatching { model.close() }
     }
 }
