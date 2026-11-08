@@ -253,3 +253,69 @@ This register is a starting catalogue, not a claim that every public resource ha
 
 ## Research status after pass 2
 This is a curated shortlist, not a complete census of worldwide public resources. Some entries are P0 only for research or prototype ingestion, not automatically approved for commercial model training. No external dataset has yet been downloaded, merged into the Android app, or used to train a Vidya model. Each candidate still needs a reproducible download/version, checksum, license copy, schema validation and data-quality report.
+
+
+## Third research pass — Indian repair ecosystem, standards and pump diagnostics
+
+26. Government of India — Right to Repair India portal
+   Source: https://www.righttorepairindia.gov.in/
+   Official initiative of the Department of Consumer Affairs. The portal lists participating brands and repair/product-support information; sectors include farming equipment, mobile/electronic devices, consumer durables and automobile equipment. Farming categories include tractor parts, harvesters and water-pump motors; consumer durables include refrigerators, washing machines and ACs.
+   Vidya use: official discovery index for brand support, warranty/service information, repair options and authorized service networks. Prefer linking users to the official brand/portal page rather than copying pages into Vidya without permission.
+   Limits: participating brands and portal content are not the whole market; a portal listing does not mean full service manuals or unrestricted bulk-download rights.
+   Priority: P0 as a source-discovery directory; content ingestion requires page-specific rights review.
+
+27. ICAR — All Publications / farm machinery books
+   Source: https://icar.gov.in/en/all-publications
+   Lists publications including "Farm Machinery Principles and Applications" and "Farm Machinery Maintenance and Management".
+   Vidya use: discover Indian agricultural machinery education and maintenance references; identify publisher, author, edition and reuse terms before indexing.
+   Limits: availability on a government website does not automatically mean public-domain or freely redistributable content.
+   Priority: P1 as a discovery source; each book requires rights check.
+
+28. Bureau of Indian Standards — Important Standards on Farm Machinery
+   Source: https://www.bis.gov.in/wp-content/uploads/2021/09/Indian-Standards-on-AGRICULTURE.pdf
+   Index includes standards such as IS 12207:2019 agricultural tractors, IS 13539:2018 power tillers, IS 15806:2018 combine harvesters, and IS 17045:2018 tractor-driven rotary tillers.
+   Vidya use: build a standards catalogue and map machine types to relevant Indian standards for safe design/performance context.
+   Limits: standards documents may be copyrighted/paid; an index is not permission to reproduce or distribute full standards. Do not infer repair steps from performance standards.
+   Priority: P0 for metadata discovery; HOLD for full-text ingestion until licensed.
+
+29. University of Twente / 4TU — NLN-EMP electric motor centrifugal pump dataset
+   Source: https://research.utwente.nl/en/datasets/motor-current-and-vibration-monitoring-dataset-for-various-faults/
+   Dataset contains experimental vibration, motor current and voltage from an electric motor-pump setup, with faults at multiple severity levels and operating speeds; versions are hosted by 4TU Research Data.
+   Vidya use: pump/motor signal-processing research, condition classification and sensor-fusion baselines.
+   Limits: this is controlled experimental data, not Indian field-pump validation. Confirm exact selected version's license and data files at 4TU before training or redistribution.
+   Priority: P1 pending version-specific license verification.
+
+30. Mendeley Data — Journal Bearing Fault Detection in a Vertical Motor-Pump Testbed (2026)
+   Source: https://data.mendeley.com/datasets/x2hrn4vfrt/1
+   Published 14 Aug 2026; reported CC BY 4.0. 6.37 GB synchronized sensor dataset with vibration, acoustic, temperature, oil pressure, shaft displacement, three-phase motor current and RPM; healthy and journal-bearing clearance-fault conditions.
+   Vidya use: research for multi-sensor fusion and bearing fault detection.
+   Limits: very large download; nuclear reactor coolant pump testbed context is highly specialized and not directly representative of domestic/agricultural pumps. Need downsampling, metadata review and machine-level splits.
+   Priority: P1 for research; attribution required.
+
+31. OpenDB — open vehicle-specific OBD signal database
+   Source: https://github.com/obdb/
+   Community-maintained vehicle make/model/year signal sets and diagnostic parameter definitions; text is generally licensed CC BY-SA 4.0 or other listed liberal licenses.
+   Vidya use: vehicle-specific PID/signal mapping discovery and future data-driven scan-tool support.
+   Limits: coverage differs by vehicle; each repository and file must be checked for its exact license. Do not assume generic OBD PID support for every make/model.
+   Priority: P1; ingest only pinned vehicle repos with recorded licenses.
+
+32. OpenDTC
+   Source: https://opendtc.net/about
+   Free generic and manufacturer DTC lookup site with contributed diagnostic data; the site itself notes some manufacturer entries may be raw, untranslated or incomplete.
+   Vidya use: discovery leads for DTCs and source cross-checking only.
+   Limits: no blanket open-data license was established in this pass; do not scrape, bulk ingest or train on its content without explicit permission. Manufacturer-specific rows require independent verification.
+   Priority: HOLD; reference for discovery, not approved training data.
+
+33. MechanicDB developer sample
+   Source: https://mechanicdb.dataengineered.io/
+   Advertises a 90-code developer sample under ODbL 1.0, with attribution/share-alike; larger commercial datasets are paid.
+   Vidya use: evaluate the schema and compare against openly licensed DTC sources; do not purchase or integrate paid data without explicit approval.
+   Limits: ODbL obligations apply; sample size is small; full dataset is not free.
+   Priority: P1 for schema evaluation only after obtaining and checking the actual sample and license.
+
+## Third-pass engineering decisions
+- Prioritize the official Right to Repair India portal as a link-out/source-discovery catalogue, not as permission to mirror all its content.
+- Build an Indian standards metadata index, not a copied standards library.
+- Keep generic OBD-II data separate from make/model-specific signal definitions and OEM DTCs.
+- Pump/motor datasets are for research and controlled evaluation; no classifier is ready for field diagnosis.
+- No new external dataset has been added to the Android APK or used to train a model in this pass.
