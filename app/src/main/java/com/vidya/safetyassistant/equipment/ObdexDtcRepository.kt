@@ -41,15 +41,22 @@ class ObdexDtcRepository(context: Context) {
             require(unique.size == entries.size) { "OBDex contains duplicate DTC identifiers" }
             cacheFile.parentFile?.mkdirs()
             val temporary = File(cacheFile.parentFile, cacheFile.name + ".tmp")
+            val backup = File(cacheFile.parentFile, cacheFile.name + ".bak")
             temporary.writeBytes(bytes)
-            if (cacheFile.exists() && !cacheFile.delete()) {
-                temporary.delete()
-                error("Could not replace the previous OBDex cache")
+            if (backup.exists()) backup.delete()
+            val hadPreviousCache = cacheFile.exists()
+            if (hadPreviousCache) {
+                check(cacheFile.renameTo(backup)) {
+                    temporary.delete()
+                    "Could not protect the previous offline database"
+                }
             }
-            check(temporary.renameTo(cacheFile)) {
+            if (!temporary.renameTo(cacheFile)) {
+                if (hadPreviousCache) backup.renameTo(cacheFile)
                 temporary.delete()
-                "Could not save OBDex data for offline use"
+                error("Could not save OBDex data for offline use")
             }
+            backup.delete()
             cachedEntries = unique
             return unique.size
         } finally {
@@ -154,6 +161,7 @@ data class ObdexDtcEntry(
         ),
         severity = "Reference only — severity needs vehicle context",
         manufacturerSpecific = false,
-        limitation = "OBDex generic DTC data (CC0-1.0 data; MIT tooling). The entry's source links and upstream provenance should be checked; exact vehicle/year/ECU compatibility is not verified. No repair procedure or cost estimate is provided."
+        limitation = "OBDex generic DTC data. The project declares CC0-1.0 for data and MIT for tooling; its maintainer says imported DTC identifiers/titles derive from Wal33D/dtc-database under MIT, while other prose is independently authored. Retain the MIT notice and inspect record-level sources. Exact vehicle/year/ECU compatibility is not verified. No repair procedure or cost estimate is provided.",
+        sourceReferences = sources.filter { it.startsWith("https://") }.distinct().take(5)
     )
 }

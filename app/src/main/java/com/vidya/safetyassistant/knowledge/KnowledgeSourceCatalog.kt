@@ -22,7 +22,7 @@ object KnowledgeSourceCatalog {
             title = "OBDex generic OBD-II codes and PIDs",
             publisher = "OBDex contributors",
             canonicalUrl = "https://github.com/foerbsnavi/obdex",
-            license = "CC0-1.0 data; MIT tooling",
+            license = "CC0-1.0 data; MIT tooling; imported DTC identifiers/titles attributed by maintainer to Wal33D/dtc-database under MIT — retain MIT notice and audit record sources",
             commercialUseAllowed = true,
             redistributionAllowed = true,
             verification = KnowledgeVerification.SOURCE_CHECKED

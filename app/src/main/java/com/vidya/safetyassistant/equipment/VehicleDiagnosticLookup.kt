@@ -8,7 +8,8 @@ data class VehicleDiagnosticResult(
     val safeChecks: List<String>,
     val severity: String,
     val manufacturerSpecific: Boolean,
-    val limitation: String
+    val limitation: String,
+    val sourceReferences: List<String> = emptyList()
 )
 
 /**

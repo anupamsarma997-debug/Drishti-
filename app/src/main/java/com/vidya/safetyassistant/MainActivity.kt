@@ -752,6 +752,11 @@ private fun VidyaApp() {
                     }
                     Text("Severity: ${result.severity}", color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
                     Text(result.limitation, color = Color(0xFFFF8D70), style = MaterialTheme.typography.labelSmall)
+                    result.sourceReferences.forEach { sourceUrl ->
+                        TextButton(onClick = { openOfficialManualSource(context, sourceUrl) }) {
+                            Text("Open diagnostic data source")
+                        }
+                    }
                     val vehicleMachineId = vehicleType.lowercase()
                     val vehicleParts = PartFailureGuide.match(vehicleMachineId, result.meaning + " " +
                         result.possibleCauses.joinToString(" ") + " " + result.code)

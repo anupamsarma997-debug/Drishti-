@@ -22,6 +22,7 @@ class ObdexDtcEntryTest {
         assertFalse(result.manufacturerSpecific)
         assertEquals("Reference only — severity needs vehicle context", result.severity)
         assertTrue(result.limitation.contains("compatibility is not verified"))
+        assertEquals(listOf("https://example.org/reference"), result.sourceReferences)
         assertTrue(result.safeChecks.any { it.contains("not a confirmed diagnosis") })
     }
 
