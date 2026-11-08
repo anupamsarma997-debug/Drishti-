@@ -43,6 +43,17 @@ This log separates downloaded archives from extracted/validated images, and both
 - Android CI for the same code commit: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42494131151
 - Do not mark this dataset acquired/usable until checksum, extraction, image decode and audit report all pass.
 
+
+### Bonfiglioli bearing defect dataset — archive acquired and audited
+- Source: https://zenodo.org/records/11034252
+- Successful workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42494281941
+- Artifact: `vidya-bonfiglioli-bearing-dataset` (213,476,597 bytes; expires 2026-12-08); includes original RAR, extracted files and JSON report.
+- Archive: 97,505,343 bytes; SHA-256 `26f7cf53d0c9d5c6591e0aab619e184022ccad875f6f9510e00ac32121c790c5`; Zenodo MD5 checksum matched.
+- Extraction: 59 files; 58 images; 57 unique image hashes; 1 duplicate; 0 invalid images.
+- Image dimensions vary; images are high-resolution Hikvision captures in folders named for part/defect groups.
+- License remains unstated in the record rights field at audit time. Quarantine only: do not train, redistribute or use commercially until rights holder clarifies.
+- Scope is narrow laboratory bearing-defect imagery, not general-purpose machine-part recognition. No labels or class meanings are assumed merely from folder names.
+
 ## Promising candidates not yet downloaded
 
 ### add_real_parts_images (Roboflow Universe)
