@@ -32,6 +32,12 @@ Vidya is an Android-first, offline-oriented technical inspection assistant.
 - Unit tests for safety-engine policy and offline FAQ behavior.
 - GitHub Actions workflow to run unit tests and assemble a debug APK.
 
+## Independent AI direction
+
+- The Gemini Nano adapter and GenAI prompt dependency have been removed. Vidya does not call Gemini or Azure AI APIs.
+- Current generic object detection and OCR still use bundled Google ML Kit libraries locally on-device; these are not Gemini or Azure model APIs. Replacing them is a separate portability task and must not be done until alternatives pass Android build and device benchmarks.
+- No Vidya-trained specialist model is claimed yet. Current specialist triage remains deterministic/rule-based until licensed data, training and independent validation exist.
+
 ## Critical limits — read before use
 
 This is an early engineering MVP, **not a validated safety product**.
