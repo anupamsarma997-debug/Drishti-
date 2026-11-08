@@ -65,19 +65,20 @@ Source: [Roboflow Universe ElectroCom-61 page](https://universe.roboflow.com/dat
 47. Pin-Header
 48. Push-Switch
 49. Raindrops-Module
-50. RFID-Scanner
-51. Rocker-Switch
-52. Servo-Motor
-53. Soil-Moisture-Sensor
-54. Sonar-Sensor
-55. Tact-Switch
-56. Taper-Potentiometer
-57. TCRT5000
-58. Trimmer-Potentiometer
-59. Water-Sensor
-60. Zener-Diode
+50. Relay-Module
+51. RFID-Scanner
+52. Rocker-Switch
+53. Servo-Motor
+54. Soil-Moisture-Sensor
+55. Sonar-Sensor
+56. Tact-Switch
+57. Taper-Potentiometer
+58. TCRT5000
+59. Trimmer-Potentiometer
+60. Water-Sensor
+61. Zener-Diode
 
-**Important discrepancy:** the secondary page's displayed list contains 60 names in the captured text, despite claiming 61 classes. Do not invent a 61st class or assume the list is complete. This is a documented unresolved source inconsistency.
+The secondary listing includes Relay-Module, bringing the cross-reference to 61 names. This remains a secondary class-name reference only: it does not establish the primary archive's exact YOLO class-ID order. Extract and verify the definitive mapping from the primary v2 archive's `data.yaml` and metadata before training.
 
 ## Training gate
 

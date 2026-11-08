@@ -162,4 +162,4 @@ The auditor checks the three split folders, matching image/label stems, YOLO row
 
 ### ElectroCom61 class-name reference
 
-See [research/ELECTROCOM61_CLASS_REFERENCE.md](research/ELECTROCOM61_CLASS_REFERENCE.md) for a secondary class-name cross-reference and the exact mapping/training gate. A public mirror's captured list exposes only 60 names while claiming 61 classes; Vidya deliberately does not invent the missing name or assume class-ID order. The primary archive's own configuration and metadata must resolve this before training.
+See [research/ELECTROCOM61_CLASS_REFERENCE.md](research/ELECTROCOM61_CLASS_REFERENCE.md) for a secondary class-name cross-reference and the exact mapping/training gate. The secondary class-name cross-reference now includes Relay-Module (61 names total), but does not establish YOLO class-ID order. The primary archive's own configuration and metadata must resolve this before training.
