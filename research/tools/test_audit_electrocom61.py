@@ -54,6 +54,20 @@ class ElectroCom61AuditTest(unittest.TestCase):
         errors, _ = audit(self.root)
         self.assertTrue(any("missing split directory" in error for error in errors))
 
+    def test_duplicate_image_stems_are_rejected(self):
+        duplicate = self.root / "Train" / "Image" / "nested" / "sample.png"
+        duplicate.parent.mkdir()
+        duplicate.write_bytes(b"different image")
+        errors, _ = audit(self.root)
+        self.assertTrue(any("duplicate image filename stem" in error for error in errors))
+
+    def test_duplicate_label_stems_are_rejected(self):
+        duplicate = self.root / "Valid" / "Label" / "nested" / "sample.txt"
+        duplicate.parent.mkdir()
+        duplicate.write_text("1 0.5 0.5 0.2 0.2\\n", encoding="utf-8")
+        errors, _ = audit(self.root)
+        self.assertTrue(any("duplicate label filename stem" in error for error in errors))
+
     def test_empty_label_file_is_valid_negative_sample(self):
         (self.root / "Train" / "Label" / "sample.txt").write_text("", encoding="utf-8")
         errors, report = audit(self.root)

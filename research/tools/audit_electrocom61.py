@@ -56,6 +56,20 @@ def locate_split_dirs(root: Path) -> tuple[dict[str, tuple[Path, Path]], list[st
     return found, errors
 
 
+def index_by_stem(paths: list[Path], kind: str, split: str, errors: list[str]) -> dict[str, Path]:
+    indexed: dict[str, Path] = {}
+    for path in paths:
+        if path.stem in indexed:
+            errors.append(
+                f"duplicate {kind} filename stem in {split}: "
+                f"{indexed[path.stem].as_posix()} and {path.as_posix()}; "
+                "use unique matching basenames"
+            )
+            continue
+        indexed[path.stem] = path
+    return indexed
+
+
 def audit(root: Path) -> tuple[list[str], dict]:
     errors: list[str] = []
     if not root.is_dir():
@@ -71,8 +85,10 @@ def audit(root: Path) -> tuple[list[str], dict]:
     orphan_labels: list[str] = []
 
     for split, (image_dir, label_dir) in split_dirs.items():
-        images = {p.stem: p for p in image_dir.rglob("*") if p.is_file() and p.suffix.lower() in IMAGE_EXTENSIONS}
-        labels = {p.stem: p for p in label_dir.rglob("*.txt") if p.is_file()}
+        image_paths = [p for p in image_dir.rglob("*") if p.is_file() and p.suffix.lower() in IMAGE_EXTENSIONS]
+        label_paths = [p for p in label_dir.rglob("*") if p.is_file() and p.suffix.lower() == ".txt"]
+        images = index_by_stem(image_paths, "image", split, errors)
+        labels = index_by_stem(label_paths, "label", split, errors)
         for stem in sorted(set(images) - set(labels)):
             missing_labels.append(f"{split}/{stem}")
         for stem in sorted(set(labels) - set(images)):
