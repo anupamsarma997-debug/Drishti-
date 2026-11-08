@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit one official I3D Tools Dataset parquet shard, including multi-box rows and 16-class ID bounds and shard-level integrity and annotation-count and source-integrity audit; no training."""
+"""Audit one official I3D Tools Dataset parquet shard, including multi-box rows and 16-class ID bounds and shard-level integrity and annotation-count and source-integrity and multi-shard readiness audit; no training."""
 from __future__ import annotations
 
 import argparse
