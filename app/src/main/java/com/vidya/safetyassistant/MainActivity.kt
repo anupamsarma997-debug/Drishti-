@@ -99,6 +99,8 @@ private fun VidyaApp() {
     val cameraBringIntoViewRequester = remember { BringIntoViewRequester() }
     val safetyController = remember { SafetyController(context, SafetyEngine()) }
     val manualLibrary = remember { ManualLibrary(context) }
+    val obdexRepository = remember { ObdexDtcRepository(context) }
+    var obdexStatus by remember { mutableStateOf("Generic OBD-II database is not downloaded yet. The built-in starter codes remain available.") }
     val manualIndexer = remember { ManualTextIndexer(context) }
     val manualExecutor = remember { Executors.newSingleThreadExecutor() }
     var manualQuery by remember { mutableStateOf("") }
@@ -686,8 +688,21 @@ private fun VidyaApp() {
                 Spacer(Modifier.height(16.dp))
                 Text("BIKE & CAR ERROR CODE HELP", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.labelLarge)
-                Text("Enter the exact vehicle details and code. Bike, scooter, car, EV and truck fields are supported; code coverage is currently a small generic OBD-II starter dictionary.",
+                Text("Enter the exact vehicle details and code. The built-in starter dictionary works offline. You can optionally download a larger generic OBD-II reference once; it is then cached for offline lookups. Manufacturer-specific codes still require exact OEM documentation.",
                     color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                    obdexStatus = "Downloading and validating the generic OBD-II reference…"
+                    manualExecutor.execute {
+                        val result = runCatching { obdexRepository.refresh() }
+                        mainHandler.post {
+                            obdexStatus = result.fold(
+                                { "Offline generic OBD-II reference saved: $it codes." },
+                                { "Database update failed: ${it.message ?: "unknown error"}. Existing offline data remains available." }
+                            )
+                        }
+                    }
+                }) { Text("Download / update generic OBD-II database") }
+                Text(obdexStatus, color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     listOf("Bike", "Scooter", "Car", "EV", "Truck").forEach { type ->
                         TextButton(onClick = { vehicleType = type; vehicleResult = null }) {
@@ -707,9 +722,20 @@ private fun VidyaApp() {
                 Button(modifier = Modifier.fillMaxWidth(), enabled = vehicleBrand.isNotBlank() &&
                     vehicleModel.isNotBlank() && vehicleYear.isNotBlank() && vehicleCode.isNotBlank(),
                     onClick = {
+                        val queryCode = vehicleCode
                         vehicleResult = VehicleDiagnosticLookup.lookup(
-                            vehicleType, vehicleBrand, vehicleModel, vehicleYear, vehicleCode
+                            vehicleType, vehicleBrand, vehicleModel, vehicleYear, queryCode
                         )
+                        manualExecutor.execute {
+                            val extended = runCatching { obdexRepository.lookupOffline(queryCode) }.getOrNull()
+                            if (extended != null) {
+                                mainHandler.post {
+                                    if (vehicleCode.equals(queryCode, ignoreCase = true)) {
+                                        vehicleResult = extended
+                                    }
+                                }
+                            }
+                        }
                     }) { Text("Explain vehicle error code") }
                 vehicleResult?.let { result ->
                     Text("${result.code} · ${result.title}",
