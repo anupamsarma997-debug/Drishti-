@@ -1,0 +1,136 @@
+name: Prepare complete I3D YOLO dataset
+
+on:
+  push:
+    paths:
+      - "research/tools/prepare_i3d_yolo_dataset.py"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dataset preparation dependencies
+        run: python -m pip install --disable-pip-version-check pyarrow Pillow
+      - name: Download source shard 00000
+        uses: actions/download-artifact@v4
+        with:
+          name: vidya-i3d-tools-shard-00000-audited
+          path: /tmp/i3d/shard-00000
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 42494453950
+      - name: Download source shard 00001
+        uses: actions/download-artifact@v4
+        with:
+          name: vidya-i3d-tools-shard-00001-audited
+          path: /tmp/i3d/shard-00001
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 42494664824
+      - name: Download source shard 00002
+        uses: actions/download-artifact@v4
+        with:
+          name: vidya-i3d-tools-shard-00002-audited
+          path: /tmp/i3d/shard-00002
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 42494928495
+      - name: Download source shard 00003
+        uses: actions/download-artifact@v4
+        with:
+          name: vidya-i3d-tools-shard-00003-audited
+          path: /tmp/i3d/shard-00003
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 42495025879
+      - name: Download source shard 00004
+        uses: actions/download-artifact@v4
+        with:
+          name: vidya-i3d-tools-shard-00004-audited
+          path: /tmp/i3d/shard-00004
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 42495254135
+      - name: Download source shard 00005
+        uses: actions/download-artifact@v4
+        with:
+          name: vidya-i3d-tools-shard-00005-audited
+          path: /tmp/i3d/shard-00005
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 42495359661
+      - name: Download source shard 00006
+        uses: actions/download-artifact@v4
+        with:
+          name: vidya-i3d-tools-shard-00006-audited
+          path: /tmp/i3d/shard-00006
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 42495459107
+      - name: Download source shard 00007
+        uses: actions/download-artifact@v4
+        with:
+          name: vidya-i3d-tools-shard-00007-audited
+          path: /tmp/i3d/shard-00007
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 42495599571
+      - name: Download source shard 00008
+        uses: actions/download-artifact@v4
+        with:
+          name: vidya-i3d-tools-shard-00008-audited
+          path: /tmp/i3d/shard-00008
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 42495677350
+      - name: Download source shard 00009
+        uses: actions/download-artifact@v4
+        with:
+          name: vidya-i3d-tools-shard-00009-audited
+          path: /tmp/i3d/shard-00009
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 42495757520
+      - name: Download source shard 00010
+        uses: actions/download-artifact@v4
+        with:
+          name: vidya-i3d-tools-shard-00010-audited
+          path: /tmp/i3d/shard-00010
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 42495866783
+      - name: Download source shard 00011
+        uses: actions/download-artifact@v4
+        with:
+          name: vidya-i3d-tools-shard-00011-audited
+          path: /tmp/i3d/shard-00011
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 42495991311
+      - name: Prepare globally deduplicated YOLO train validation and test splits
+        shell: bash
+        run: |
+          set -euo pipefail
+          df -h
+          mapfile -d '' PARQUETS < <(find /tmp/i3d -name 'train-*.parquet' -print0 | sort -z)
+          test "${#PARQUETS[@]}" -eq 12
+          python research/tools/prepare_i3d_yolo_dataset.py --parquet "${PARQUETS[@]}" --output prepared/i3d-tools
+          du -sh prepared/i3d-tools
+          df -h
+      - name: Upload prepared YOLO dataset
+        uses: actions/upload-artifact@v4
+        with:
+          name: vidya-i3d-tools-yolo-prepared
+          path: prepared/i3d-tools/
+          if-no-files-found: error
+          retention-days: 30
