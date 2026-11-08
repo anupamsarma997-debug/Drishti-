@@ -70,7 +70,7 @@ object MachineRecognitionRouter {
         Rule(listOf("grain dryer", "paddy dryer", "अनाज सुखाने की मशीन"), "grain_dryer", "Grain dryer"),
         Rule(listOf("feed grinder", "hammer mill", "feed mixer", "चारा पीसने की मशीन"), "feed_mixer", "Feed grinder / mixer"),
         Rule(listOf("root crop digger", "potato digger", "ginger digger", "हल्दी खुदाई मशीन"), "root_digger", "Root crop digger"),
-        Rule(listOf("areca nut harvester", "arecanut harvester", "सुपारी हार्वेस्टर"), "areca_harvester", "Areca-nut harvester"),
+        Rule(listOf("areca harvester", "areca nut harvester", "arecanut harvester", "सुपारी हार्वेस्टर"), "areca_harvester", "Areca-nut harvester"),
         Rule(listOf("tea leaf plucker", "tea harvester", "चाय पत्ती तोड़ने की मशीन"), "tea_harvester", "Tea-leaf harvester"),
         Rule(listOf("plough", "plow", "harrow", "cultivator", "land leveller", "लेजर लेवलर"), "tillage_implements", "Tillage implement"),
         Rule(listOf("seed drill", "seed planter", "precision planter", "बीज ड्रिल", "रोपण मशीन"), "planting_equipment", "Seed drill / planter"),
