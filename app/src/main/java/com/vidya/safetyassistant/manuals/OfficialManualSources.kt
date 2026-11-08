@@ -15,6 +15,7 @@ data class OfficialManualSource(
  */
 object OfficialManualSources {
     val entries = listOf(
+        OfficialManualSource("Honda MotoPub — service publications", setOf("Bike", "Scooter"), "Model/year-specific service publications; read and accept the licence agreement before downloading. No redistribution permission assumed.", "https://www.hondamotopub.com/HMSI"),
         OfficialManualSource("Honda 2Wheelers India", setOf("Bike", "Scooter", "EV"), "Select segment, model and year; owner's manuals.", "https://www.honda2wheelersindia.com/resources/owners-manual"),
         OfficialManualSource("Hero MotoCorp", setOf("Bike", "Scooter", "EV"), "Select your two-wheeler and download its owner's manual.", "https://www.heromotocorp.com/en-in/services/owner-manual.html"),
         OfficialManualSource("TVS Motor", setOf("Bike", "Scooter", "EV"), "Model and manufacturing-date-specific user manuals.", "https://www.tvsmotor.com/our-service/user-manual"),

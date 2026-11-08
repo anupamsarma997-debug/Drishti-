@@ -14,6 +14,13 @@ class FarmManualSourcesTest {
         assertTrue(FarmManualSources.entries.any { it.name.contains("ICAR — Agricultural Engineering machinery catalogue") })
     }
 
+    @Test fun includesOfficialIndianTractorSupportPortals() {
+        assertTrue(FarmManualSources.entries.any { it.name.contains("Mahindra TIS") })
+        assertTrue(FarmManualSources.entries.any { it.name.contains("Mahindra Tractor Service") })
+        assertTrue(FarmManualSources.entries.any { it.name.contains("Swaraj Tractors") })
+        assertTrue(FarmManualSources.entries.any { it.name.contains("John Deere Asia") })
+    }
+
     @Test fun includesNorthEastFarmMachineryInstitute() {
         assertTrue(FarmManualSources.entries.any { it.name.contains("North Eastern Region") })
     }
