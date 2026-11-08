@@ -7,29 +7,30 @@ import org.junit.Test
 
 class MachineRecognitionRouterTest {
     @Test
-    fun routesRecognizedMotorcycleToVehicleExpertButRequiresConfirmation() {
-        val result = MachineRecognitionRouter.suggest("motorcycle", 0.91f)
+    fun routesMotorcycleNameplateClueToVehicleExpertAndRequiresConfirmation() {
+        val result = MachineRecognitionRouter.suggestFromOcr("Honda motorcycle model CB")
         assertEquals("bike", result?.machineId)
         assertEquals("Bike & Car Expert", result?.expertName)
         assertTrue(result?.needsUserConfirmation == true)
+        assertNull(result?.confidence)
     }
 
     @Test
-    fun routesCarToVehicleExpert() {
-        val result = MachineRecognitionRouter.suggest("car", 0.88f)
-        assertEquals("car", result?.machineId)
-        assertEquals("Bike & Car Expert", result?.expertName)
+    fun routesTractorTextToFarmExpert() {
+        val result = MachineRecognitionRouter.suggestFromOcr("TRACTOR diesel engine")
+        assertEquals("tractor", result?.machineId)
+        assertEquals("Tractor & Farm Machine Expert", result?.expertName)
     }
 
     @Test
-    fun rejectsLowConfidenceOrUnknownLabels() {
-        assertNull(MachineRecognitionRouter.suggest("motorcycle", 0.4f))
-        assertNull(MachineRecognitionRouter.suggest("unknown machine", 0.99f))
+    fun doesNotInferMachineFromGenericMlKitLabels() {
+        assertNull(MachineRecognitionRouter.suggestFromOcr("home goods"))
+        assertNull(MachineRecognitionRouter.suggestFromOcr("fashion goods"))
+        assertNull(MachineRecognitionRouter.suggestFromOcr("unknown object"))
     }
 
     @Test
-    fun rejectsBlankLabelsAndInvalidConfidence() {
-        assertNull(MachineRecognitionRouter.suggest("", 0.9f))
-        assertNull(MachineRecognitionRouter.suggest("car", 1.5f))
+    fun rejectsBlankOcr() {
+        assertNull(MachineRecognitionRouter.suggestFromOcr("   "))
     }
 }
