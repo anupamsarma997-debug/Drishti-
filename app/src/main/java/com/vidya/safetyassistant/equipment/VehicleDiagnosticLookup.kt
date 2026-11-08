@@ -78,7 +78,7 @@ object VehicleDiagnosticLookup {
         if (known != null) return known.copy(
             limitation = "Generic OBD-II reference only. Confirm that this vehicle/year and control module support this code definition. $manufacturer $model ($year) compatibility has not been verified."
         )
-        val manufacturerSpecific = code[1] in '1'..'3'
+        val manufacturerSpecific = code[1] == '1' || code[1] == '3'
         return VehicleDiagnosticResult(
             code,
             if (manufacturerSpecific) "Manufacturer-specific code — exact lookup required" else "Code not in Vidya's current reference",
