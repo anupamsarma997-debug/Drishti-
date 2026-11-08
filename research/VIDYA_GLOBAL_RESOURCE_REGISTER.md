@@ -779,3 +779,47 @@ This is a curated shortlist, not a complete census of worldwide public resources
     Vidya use: link users to genuine parts support and warn against treating visually similar non-genuine parts as confirmed fitment.
     Limits: not a public exploded-parts catalogue or model/serial lookup dataset.
     Priority: P0 for official link-out.
+
+
+## Seventeenth research pass — CC BY visual defect datasets
+
+90. Corrosion images and pixel annotations for corrosion segmentation
+    Primary source: https://data.mendeley.com/datasets/kcyn4nhv2c/1
+    Version 1, published 26 April 2023; 1,024 field corrosion images; 35 selected images have pixel annotation according to the dataset record. Archive sizes reported: 2.06 GB complete set and 251 MB labelled subset.
+    Licence: CC BY 4.0.
+    Vidya use: corrosion appearance and segmentation experiments. Preserve the distinction between the full unannotated set and the small annotated subset.
+    Limits: corrosion appearance is affected by substrate, lighting, scale and coating; images do not prove structural integrity or remaining life. This is not a model-specific repair dataset.
+    Priority: P0 candidate for metadata/label audit; not downloaded or integrated.
+
+91. IVD-SEG — standardized industrial vision defect segmentation
+    Primary source: https://zenodo.org/records/12704122
+    Dataset record reports 5,686 images spanning 43 industrial product categories and binary/multiclass segmentation tasks. Licence: CC BY 4.0.
+    Vidya use: broad industrial visual defect segmentation benchmark candidate.
+    Limits: inspect class taxonomy, image duplication, capture conditions and exact labels before treating it as a component-level machine fault dataset.
+    Priority: P0 candidate for audit; not downloaded or integrated.
+
+92. WTBs2025 — wind turbine blade surface defects
+    Primary source: https://zenodo.org/records/15272963
+    Dataset record reports 7,316 original annotated images across nine defect types, including coating detachment, erosion, oil leakage and localized damage; enhanced count is reported separately. Licence: CC BY 4.0.
+    Vidya use: wind-turbine blade inspection research, especially coating and surface-condition segmentation.
+    Limits: domain-specific to turbine blades; the "oil leakage" class must not be generalised to detecting leaks in engines, pipes, pumps or vehicles.
+    Priority: P1; not downloaded or integrated.
+
+93. Mixed PCB Defect Dataset
+    Primary source: https://data.mendeley.com/datasets/fj4krvmrr5/2
+    Version 2, published 5 April 2024; 640×640 PCB images with annotations for missing holes, mouse bites, open circuits, shorts, spurs and spurious copper issues; CC BY 4.0. The record describes intentional augmentation.
+    Vidya use: PCB visual-defect research, with original vs augmented samples kept distinct and board-level split to avoid leakage.
+    Limits: manufacturing PCB images do not cover installed appliance circuit boards under field lighting; augmented samples are not new real-world captures.
+    Priority: P1; not downloaded or integrated.
+
+94. Image-based Corrosion Detection Dataset
+    Primary source: https://data.mendeley.com/datasets/tbjn6p2gn9/1
+    Version 1, published 6 October 2020; Mendeley/NLM record states CC BY 4.0.
+    Vidya use: supplementary corrosion imagery candidate after checking the actual archive, class labels and overlap with the newer corrosion segmentation dataset.
+    Limits: current public metadata retrieved in this pass does not establish sample count, detailed labels or exact capture conditions.
+    Priority: P1 pending full archive metadata audit; not downloaded or integrated.
+
+## Seventeenth-pass decisions
+- Prioritise CC BY 4.0 sources with useful image annotations for commercial-compatible research, while keeping non-commercial datasets such as MVTec AD, AutoVI and KolektorSDD2 on HOLD unless separate permission is obtained.
+- Do not claim generic defect data detects machine faults. Surface anomaly, corrosion segmentation, PCB defect recognition, wind-turbine blade inspection and component identity are separate tasks requiring separate labels and field validation.
+- No images were downloaded into the Android APK and no model was trained in this pass.

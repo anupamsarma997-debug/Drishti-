@@ -69,6 +69,21 @@ class KnowledgeSourceCatalogTest {
         }
     }
 
+    @Test fun ccByIndustrialDefectDatasetsAreSeparatedFromNonCommercialSources() {
+        listOf(
+            "corrosion-segmentation-mendeley",
+            "ivd-seg-industrial-defects",
+            "wtbs2025-wind-turbine-blade-defects",
+            "mixed-pcb-defect-mendeley"
+        ).forEach { id ->
+            val source = KnowledgeSourceCatalog.find(id)
+            assertNotNull(source)
+            assertTrue(source!!.commercialUseAllowed)
+            assertTrue(source.redistributionAllowed)
+            assertTrue(source.license.contains("CC BY 4.0"))
+        }
+    }
+
     @Test fun unknownSourceDoesNotResolve() {
         assertEquals(null, KnowledgeSourceCatalog.find("made-up-source"))
     }

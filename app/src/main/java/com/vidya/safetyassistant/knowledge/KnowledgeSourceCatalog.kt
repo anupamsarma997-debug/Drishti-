@@ -123,6 +123,50 @@ object KnowledgeSourceCatalog {
             verification = KnowledgeVerification.SOURCE_CHECKED
         ),
         KnowledgeSource(
+            sourceId = "corrosion-segmentation-mendeley",
+            title = "Images and pixel annotations for corrosion segmentation",
+            publisher = "Pontificia Universidade Catolica do Rio de Janeiro via Mendeley Data",
+            canonicalUrl = "https://data.mendeley.com/datasets/kcyn4nhv2c/1",
+            revisionOrVersion = "Version 1; 26 April 2023; 1,024 images; 35 selected for annotations",
+            license = "CC BY 4.0; attribution required; inspect annotation granularity and source rights",
+            commercialUseAllowed = true,
+            redistributionAllowed = true,
+            verification = KnowledgeVerification.SOURCE_CHECKED
+        ),
+        KnowledgeSource(
+            sourceId = "ivd-seg-industrial-defects",
+            title = "IVD-SEG standardized industrial vision defect segmentation",
+            publisher = "Shenzhen University authors via Zenodo",
+            canonicalUrl = "https://zenodo.org/records/12704122",
+            revisionOrVersion = "July 2024; 5,686 images across 43 industrial product categories",
+            license = "CC BY 4.0; attribution required",
+            commercialUseAllowed = true,
+            redistributionAllowed = true,
+            verification = KnowledgeVerification.SOURCE_CHECKED
+        ),
+        KnowledgeSource(
+            sourceId = "wtbs2025-wind-turbine-blade-defects",
+            title = "WTBs2025 wind turbine blade surface defect images",
+            publisher = "Ruihua Zhang via Zenodo",
+            canonicalUrl = "https://zenodo.org/records/15272963",
+            revisionOrVersion = "2025; 7,316 original annotated images, enhanced count reported as 7,544",
+            license = "CC BY 4.0; attribution required; wind-turbine-blade domain only",
+            commercialUseAllowed = true,
+            redistributionAllowed = true,
+            verification = KnowledgeVerification.SOURCE_CHECKED
+        ),
+        KnowledgeSource(
+            sourceId = "mixed-pcb-defect-mendeley",
+            title = "Mixed PCB defect dataset",
+            publisher = "SRM University AP authors via Mendeley Data",
+            canonicalUrl = "https://data.mendeley.com/datasets/fj4krvmrr5/2",
+            revisionOrVersion = "Version 2; 5 April 2024; 640x640 images with augmented defects",
+            license = "CC BY 4.0; attribution required; augmented images must be distinguished from original captures",
+            commercialUseAllowed = true,
+            redistributionAllowed = true,
+            verification = KnowledgeVerification.SOURCE_CHECKED
+        ),
+        KnowledgeSource(
             sourceId = "mvtec-ad-industrial-anomaly",
             title = "MVTec Anomaly Detection benchmark",
             publisher = "MVTec",
