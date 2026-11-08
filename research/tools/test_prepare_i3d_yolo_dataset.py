@@ -28,6 +28,42 @@ class I3DPreparationTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             parse_boxes("1 1.2 0.5 0.2 0.2")
 
+
+    def test_duplicates_across_parquet_shards_are_removed_before_split(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            buffer = BytesIO()
+            Image.new("RGB", (24, 24), color="purple").save(buffer, format="PNG")
+            row = {"image": {"bytes": buffer.getvalue(), "path": "same.png"},
+                   "yolo_annotation": "1 0.5 0.5 0.3 0.3"}
+            first, second = root / "first.parquet", root / "second.parquet"
+            pq.write_table(pa.Table.from_pylist([row]), first)
+            pq.write_table(pa.Table.from_pylist([row]), second)
+            output = root / "prepared"
+            with patch("sys.argv", ["prepare", "--parquet", str(first), str(second), "--output", str(output)]):
+                main()
+            report = __import__("json").loads((output / "preparation_report.json").read_text())
+            self.assertEqual(2, report["source_rows"])
+            self.assertEqual(1, report["unique_primary_images"])
+            self.assertEqual(1, report["duplicate_primary_rows_removed"])
+            self.assertEqual(1, sum(report["split_images"].values()))
+
+    def test_conflicting_labels_for_same_image_are_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            buffer = BytesIO()
+            Image.new("RGB", (24, 24), color="orange").save(buffer, format="PNG")
+            raw = buffer.getvalue()
+            rows = [
+                {"image": {"bytes": raw, "path": "same.png"}, "yolo_annotation": "1 0.5 0.5 0.3 0.3"},
+                {"image": {"bytes": raw, "path": "same.png"}, "yolo_annotation": "2 0.5 0.5 0.3 0.3"},
+            ]
+            parquet = root / "conflict.parquet"
+            pq.write_table(pa.Table.from_pylist(rows), parquet)
+            with patch("sys.argv", ["prepare", "--parquet", str(parquet), "--output", str(root / "out")]):
+                with self.assertRaises(SystemExit):
+                    main()
+
     def test_split_is_deterministic(self):
         self.assertEqual(split_for_hash("abc123", 7), split_for_hash("abc123", 7))
         self.assertIn(split_for_hash("abc123", 7), {"train", "val", "test"})
