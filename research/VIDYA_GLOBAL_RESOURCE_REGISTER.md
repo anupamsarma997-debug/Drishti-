@@ -520,3 +520,41 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - dtcbot demonstrates a useful generic-versus-OEM DTC separation pattern; its data is not approved for reuse until code and upstream manual rights are clear.
 - Reddit supports the need for exact model identification and diagnostic uncertainty handling, not automatic repair instructions.
 - No Reddit comments, manuals, OBDb data or dtcbot data have been copied into the Android app or used to train a Vidya model in this pass.
+
+
+## Ninth research pass — official MIMII license verification and Reddit OBD gaps
+
+61. MIMII DG — Hitachi industrial acoustic anomaly dataset
+   Primary source: https://zenodo.org/records/6529888
+   Official Zenodo record explicitly states CC BY-NC-SA 4.0. Coverage: normal/abnormal sounds for fans, gearboxes, bearings, slide rails and valves; five archives totaling about 4.4 GB. The record links autoencoder and MobileNetV2 baselines.
+   Vidya use: non-commercial research into acoustic anomaly detection and robustness to domain shift/noise.
+   Limits: non-commercial restriction excludes commercial Vidya product/model use without separate permission. It is not field-validated Indian equipment data and cannot prove a failed part or prescribe repair.
+   Priority: HOLD for commercial integration; research-only within license terms.
+
+62. MIMII public 1.0 — official acoustic benchmark
+   Primary source: https://zenodo.org/records/3384388
+   Official Zenodo record explicitly states CC BY-SA 4.0. Covers valves, pumps, fans and slide rails with normal/anomalous recordings; 8-channel, 16 kHz, 16-bit audio; archive collection totals about 100.2 GB.
+   Vidya use: P1 research candidate for machine-sound anomaly detection and noise robustness. A small curated sample may be sufficient for initial experiments; do not download the full archive to a phone.
+   Limits: not public domain; attribution and ShareAlike obligations need legal review for commercial app/model distribution. Lab/factory recordings are not a verified diagnosis for an Indian make/model.
+   Priority: P1 research, legal review before any product integration.
+
+63. Reddit r/CarHacking — manufacturer-specific live OBD data gap
+   Source: https://www.reddit.com/r/CarHacking/comments/1w61pxh/how_are_small_obd_apps_getting/
+   Small scanner developers discuss the difficulty and cost of obtaining OEM-specific live parameters (MAF, fuel, pressure, temperature, transmission and other module data).
+   Vidya use: product requirement to distinguish standardized SAE PIDs from vehicle/ECU-specific signals, and to store provenance, applicability and licensing for every definition.
+   Limits: comments are anecdotal. Suggestions about firmware reverse engineering or probing are not approved data acquisition methods and may violate laws, contracts or anti-circumvention rules.
+   Priority: P1 architecture insight only.
+
+64. Reddit r/CarHacking — manufacturer-specific DTC collision warning
+   Source: https://www.reddit.com/r/CarHacking/comments/huf52a
+   Community discussion notes that manufacturer-specific codes may have different meanings between brands (example P1639 on GM versus Ford).
+   Vidya use: require DTC lookup keys to include make/model/year/ECU/module/market where known; unresolved identity must remain unresolved rather than guessing.
+   Limits: Reddit is not a technical authority or a license to reuse diagnostic data.
+   Priority: P1 requirement insight only.
+
+## Ninth-pass decisions
+- MIMII DG's explicit CC BY-NC-SA 4.0 license blocks commercial product reuse without separate permission.
+- MIMII public 1.0's explicit CC BY-SA 4.0 license is not public domain; ShareAlike and attribution implications must be assessed before bundling or training.
+- Acoustic anomaly detection is a research signal, not a component-level diagnosis or repair instruction.
+- Reddit is useful for product-gap discovery, not as an authoritative source of DTC definitions or proprietary data.
+- No new datasets were downloaded, integrated into Android, or used to train Vidya in this pass.
