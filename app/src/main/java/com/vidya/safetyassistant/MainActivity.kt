@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -97,6 +99,8 @@ private fun VidyaApp() {
     var nanoStatus by remember { mutableStateOf("Gemini Nano availability has not been checked on this phone.") }
     var nanoAnswer by remember { mutableStateOf("") }
     var nanoBusy by remember { mutableStateOf(false) }
+    var nanoPanelExpanded by remember { mutableStateOf(false) }
+    val cameraBringIntoViewRequester = remember { BringIntoViewRequester() }
     DisposableEffect(nanoAssistant) { onDispose { nanoAssistant.close() } }
     val safetyController = remember { SafetyController(context, SafetyEngine()) }
     val manualLibrary = remember { ManualLibrary(context) }
@@ -210,6 +214,7 @@ private fun VidyaApp() {
         cameraGranted = granted
         if (granted && requestArAfterPermission) arMode = true
         requestArAfterPermission = false
+        if (granted) nanoScope.launch { cameraBringIntoViewRequester.bringIntoView() }
     }
     val pdfPicker = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
@@ -318,17 +323,43 @@ private fun VidyaApp() {
                     style = MaterialTheme.typography.titleMedium)
                 Text("Select a machine expert. Describe the problem to get offline, safety-first troubleshooting clues.",
                     color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
-                Text("OPTIONAL ON-DEVICE GEMINI NANO", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.labelMedium)
-                Text("Runs locally only when Google AICore and a supported Nano model are available. Otherwise the offline expert stays active.",
-                    color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
-                Button(modifier = Modifier.fillMaxWidth(), onClick = {
-                    nanoScope.launch { nanoStatus = nanoAssistant.availabilityMessage() }
-                }) { Text("Check this phone for Gemini Nano") }
-                Text(nanoStatus, color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
-                Button(modifier = Modifier.fillMaxWidth(), onClick = {
-                    nanoScope.launch { nanoStatus = nanoAssistant.downloadModel() }
-                }) { Text("Download Gemini Nano model (if supported)") }
+                Button(
+                    modifier = Modifier.fillMaxWidth().height(54.dp),
+                    onClick = {
+                        arMode = false
+                        if (cameraGranted) {
+                            nanoScope.launch { cameraBringIntoViewRequester.bringIntoView() }
+                        } else {
+                            requestArAfterPermission = false
+                            cameraPermission.launch(Manifest.permission.CAMERA)
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF087E9B))
+                ) { Text("OPEN CAMERA INSPECTION", fontWeight = FontWeight.Bold) }
+                TextButton(onClick = { nanoPanelExpanded = !nanoPanelExpanded }) {
+                    Text(if (nanoPanelExpanded) "Hide on-device AI settings" else "Optional: Gemini Nano settings",
+                        color = Color(0xFF68E0FF))
+                }
+                if (nanoPanelExpanded) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                            .background(Color(0xFF111A25), RoundedCornerShape(16.dp))
+                            .padding(14.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text("ON-DEVICE GEMINI NANO", color = Color(0xFF68E0FF),
+                            fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelMedium)
+                        Text("Runs locally only when Google AICore and a supported Nano model are available. Otherwise the offline expert stays active.",
+                            color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                        Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                            nanoScope.launch { nanoStatus = nanoAssistant.availabilityMessage() }
+                        }) { Text("Check phone compatibility") }
+                        Text(nanoStatus, color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
+                        Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                            nanoScope.launch { nanoStatus = nanoAssistant.downloadModel() }
+                        }) { Text("Download model (if supported)") }
+                    }
+                }
                 cameraMachineSuggestion?.let { suggestion ->
                     Column(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
                         Text("OCR MACHINE CLUE: " + suggestion.machineName, color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
@@ -841,6 +872,7 @@ private fun VidyaApp() {
 
                 Box(
                     modifier = Modifier.fillMaxWidth().height(320.dp)
+                        .bringIntoViewRequester(cameraBringIntoViewRequester)
                         .background(Color(0xFF101923), RoundedCornerShape(20.dp))
                 ) {
                     if (cameraGranted && arMode) {
