@@ -30,6 +30,8 @@ class UrgentSymptomMatcherTest {
         assertFalse(UrgentSymptomMatcher.isUrgent("firewall error on controller"))
         assertFalse(UrgentSymptomMatcher.isUrgent("replace spark plug during service"))
         assertTrue(UrgentSymptomMatcher.isUrgent("visible spark near exposed wire"))
+        assertTrue(UrgentSymptomMatcher.isUrgent("smoke coming from engine"))
+        assertTrue(UrgentSymptomMatcher.isUrgent("fire from motor"))
         assertTrue(UrgentSymptomMatcher.isUrgent("fire coming from motor"))
     }
 

@@ -65,6 +65,7 @@ class PartFailureGuideTest {
     @Test fun unrelatedComplaintDoesNotReceiveGuessedPartShortlist() {
         assertTrue(PartFailureGuide.match("tractor", "the machine looks unusual").isEmpty())
         assertTrue(PartFailureGuide.match("pump", "dashboard colour changed").isEmpty())
+        assertTrue(PartFailureGuide.match("tractor", "").isEmpty())
     }
 
     @Test fun unknownMachineReturnsNoGuessedParts() {

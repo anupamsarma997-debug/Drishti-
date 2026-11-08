@@ -256,7 +256,7 @@ object PartFailureGuide {
             .split(Regex("[^a-z0-9]+"))
             .filter { it.length > 2 }
             .toSet()
-        if (queryTokens.isEmpty()) return entries.take(3)
+        if (queryTokens.isEmpty()) return emptyList()
         val ranked = entries.map { item ->
             val referenceTokens = (item.failureClues + item.partName + item.possibleCauses)
                 .flatMap { it.lowercase().split(Regex("[^a-z0-9]+")) }

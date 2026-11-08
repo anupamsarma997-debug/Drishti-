@@ -8,7 +8,7 @@ import java.util.Locale
  */
 internal object UrgentSymptomMatcher {
     private val urgentPhrases = listOf(
-        "smoke", "dhua", "dhuan", "fire", "aag", "sparking", "sparks", "visible spark", "spark coming", "chingaari",
+        "smoke from", "smoke coming", "smoke nikal", "smoke aa", "dhua", "dhuan", "fire from", "fire coming", "fire nikal", "aag", "sparking", "sparks", "visible spark", "spark coming", "chingaari",
         "burning smell", "burnt smell", "jalne ki boo", "jalne ki badbu",
         "electric shock", "bijli ka jhatka", "karant lag", "current aa raha",
         "current lag raha", "fuel leak", "petrol leak", "diesel leak", "tel leak",
