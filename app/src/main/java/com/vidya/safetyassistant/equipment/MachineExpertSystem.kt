@@ -32,7 +32,7 @@ object MachineExpertSystem {
         MachineExpert("farm", "Tractor & Farm Machine Expert",
             setOf("tractor", "power_tiller", "rotavator", "diesel_engine", "sprayer",
                 "thresher", "combine", "reaper", "chaff_cutter", "rice_mill", "maize_sheller",
-                "brush_cutter", "power_weeder", "transplanter", "solar_pump", "generator",
+                "brush_cutter", "power_weeder", "transplanter", "generator",
                 "winnower", "grain_dryer", "feed_mixer", "root_digger", "areca_harvester",
                 "tea_harvester", "tillage_implements", "planting_equipment", "fodder_harvester",
                 "mulcher_baler", "dairy"),
