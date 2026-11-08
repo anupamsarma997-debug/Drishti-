@@ -68,6 +68,31 @@ class ElectroCom61AuditTest(unittest.TestCase):
         errors, _ = audit(self.root)
         self.assertTrue(any("duplicate label filename stem" in error for error in errors))
 
+    def test_metadata_csv_matches_image_names_and_splits(self):
+        metadata = self.root / "Metadata_ElectroCom61.csv"
+        metadata.write_text(
+            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\\n"
+            "sample.jpg,1,1_Resistor,white,Phone,Train\\n"
+            "sample.jpg,1,1_Resistor,white,Phone,Valid\\n"
+            "sample.jpg,1,1_Resistor,white,Phone,Test\\n",
+            encoding="utf-8",
+        )
+        errors, report = audit(self.root)
+        self.assertEqual([], errors)
+        self.assertEqual("checked", report["metadata_csv"]["status"])
+        self.assertEqual(3, report["metadata_csv"]["rows"])
+
+    def test_metadata_split_mismatch_is_rejected(self):
+        metadata = self.root / "Metadata_ElectroCom61.csv"
+        metadata.write_text(
+            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\\n"
+            "sample.jpg,1,1_Resistor,white,Phone,Test\\n",
+            encoding="utf-8",
+        )
+        errors, _ = audit(self.root)
+        self.assertTrue(any("DATA_TYPE says" in error for error in errors))
+        self.assertTrue(any("row count" in error for error in errors))
+
     def test_empty_label_file_is_valid_negative_sample(self):
         (self.root / "Train" / "Label" / "sample.txt").write_text("", encoding="utf-8")
         errors, report = audit(self.root)

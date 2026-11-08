@@ -13,6 +13,7 @@ or establish that the dataset is suitable for machine-fault diagnosis.
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 import sys
@@ -70,6 +71,71 @@ def index_by_stem(paths: list[Path], kind: str, split: str, errors: list[str]) -
     return indexed
 
 
+def audit_metadata_csv(root: Path, image_split_by_name: dict[str, str], errors: list[str]) -> dict:
+    candidates = [p for p in root.rglob("*") if p.is_file() and p.name.casefold() == "metadata_electrocom61.csv"]
+    if not candidates:
+        return {"status": "not_found", "rows": 0}
+    if len(candidates) > 1:
+        errors.append("multiple Metadata_ElectroCom61.csv files found")
+        return {"status": "ambiguous", "rows": 0}
+
+    metadata_path = candidates[0]
+    required = {"IMAGE_NAME", "TYPE_OF_OBJECTS", "OBJECT_NAME", "BACKGROUND", "DEVICE_NAME", "DATA_TYPE"}
+    seen: set[str] = set()
+    row_count = 0
+    split_counts: Counter = Counter()
+    try:
+        with metadata_path.open("r", encoding="utf-8-sig", newline="") as handle:
+            reader = csv.DictReader(handle)
+            fields = {str(name).strip().upper() for name in (reader.fieldnames or [])}
+            missing_fields = sorted(required - fields)
+            if missing_fields:
+                errors.append("metadata CSV missing required columns: " + ", ".join(missing_fields))
+                return {"status": "invalid_columns", "rows": 0}
+            for line_no, row in enumerate(reader, 2):
+                row_count += 1
+                normalized = {str(k).strip().upper(): (v or "").strip() for k, v in row.items() if k is not None}
+                raw_name = normalized.get("IMAGE_NAME", "").replace("\\\\", "/")
+                image_name = raw_name.rsplit("/", 1)[-1]
+                key = image_name.casefold()
+                location = f"Metadata_ElectroCom61.csv:{line_no}"
+                if not image_name:
+                    errors.append(f"{location}: IMAGE_NAME is empty")
+                    continue
+                if key in seen:
+                    errors.append(f"{location}: duplicate IMAGE_NAME '{image_name}'")
+                seen.add(key)
+                if key not in image_split_by_name:
+                    errors.append(f"{location}: metadata image not found in split folders: {image_name}")
+                raw_split = normalized.get("DATA_TYPE", "").casefold()
+                split = SPLITS.get(raw_split)
+                if split is None:
+                    errors.append(f"{location}: DATA_TYPE must identify Train, Valid/Validation, or Test")
+                else:
+                    split_counts[split] += 1
+                    actual_split = image_split_by_name.get(key)
+                    if actual_split is not None and actual_split != split:
+                        errors.append(f"{location}: DATA_TYPE says {raw_split}, but image is in {actual_split}")
+                try:
+                    object_count = int(normalized.get("TYPE_OF_OBJECTS", ""))
+                    if object_count < 1:
+                        raise ValueError
+                except ValueError:
+                    errors.append(f"{location}: TYPE_OF_OBJECTS must be a positive integer")
+                if not normalized.get("OBJECT_NAME"):
+                    errors.append(f"{location}: OBJECT_NAME is empty")
+    except (OSError, UnicodeDecodeError, csv.Error) as exc:
+        errors.append(f"cannot read metadata CSV: {exc}")
+        return {"status": "read_error", "rows": row_count}
+
+    if row_count != len(image_split_by_name):
+        errors.append(
+            f"metadata row count ({row_count}) does not match unique image filename count "
+            f"({len(image_split_by_name)})"
+        )
+    return {"status": "checked", "rows": row_count, "split_rows": dict(split_counts)}
+
+
 def audit(root: Path) -> tuple[list[str], dict]:
     errors: list[str] = []
     if not root.is_dir():
@@ -79,7 +145,7 @@ def audit(root: Path) -> tuple[list[str], dict]:
     errors.extend(layout_errors)
     split_counts: Counter = Counter()
     class_counts: Counter = Counter()
-    hashes: dict[str, tuple[str, str]] = {}
+    hashes: dict[str, tuple[str, str]] = {}\n    image_split_by_name: dict[str, str] = {}
     total_images = total_labels = total_boxes = 0
     missing_labels: list[str] = []
     orphan_labels: list[str] = []
@@ -96,6 +162,11 @@ def audit(root: Path) -> tuple[list[str], dict]:
         for stem, image_path in images.items():
             total_images += 1
             split_counts[split] += 1
+            filename_key = image_path.name.casefold()
+            previous_split = image_split_by_name.get(filename_key)
+            if previous_split is not None and previous_split != split:
+                errors.append(f"image filename appears in multiple splits: {image_path.name}")
+            image_split_by_name[filename_key] = split
             try:
                 digest = sha256(image_path)
                 previous = hashes.get(digest)
@@ -144,8 +215,10 @@ def audit(root: Path) -> tuple[list[str], dict]:
     for item in orphan_labels:
         errors.append(f"label has no matching image: {item}")
 
+    metadata_report = audit_metadata_csv(root, image_split_by_name, errors)
     report = {
         "dataset_root": str(root),
+        "metadata_csv": metadata_report,
         "expected_class_ids": CLASS_COUNT,
         "images": total_images,
         "label_files": total_labels,
