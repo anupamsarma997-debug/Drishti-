@@ -150,3 +150,12 @@ This log separates downloaded archives from extracted/validated images, and both
 - 3,064 annotation rows; 3,064 valid YOLO boxes; zero malformed annotation rows.
 - First eight shards combined: 24,517 primary-image rows and 43,609 valid YOLO boxes. Counts are within-shard unique; cross-shard duplicate scan remains pending.
 - Latest Android CI on the matching preparation-pipeline commit passed the dataset unit tests, Android unit tests and debug APK build: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42495459071; APK artifact ID `13622938733` (80,372,566 bytes).
+
+
+### I3D Tools Dataset — ninth shard acquired and audited
+- Workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42495677350 (completed successfully).
+- Artifact: `vidya-i3d-tools-shard-00008-audited` (438,831,383 bytes; expires 2026-12-08); artifact ID `13623083539`.
+- Shard `train-00008-of-00012.parquet`: SHA-256 `4c0962b9adf94c67ca73ad1f63b878bdb9cd067027985abe6028d8be3efb0bfc`.
+- 3,064 rows, 3,064 primary images, 3,064 unique primary hashes; zero within-shard duplicate rows and zero invalid images.
+- 3,064 annotation rows; 3,064 valid YOLO boxes; zero malformed annotation rows.
+- First nine shards combined: 27,581 primary-image rows and 46,673 valid YOLO boxes. Counts are within-shard unique; cross-shard duplicate scan remains pending.
