@@ -49,6 +49,19 @@ class PartFailureGuideTest {
             .first().partName.contains("Traction", ignoreCase = true))
     }
 
+    @Test fun urgentHazardsDoNotReturnRoutinePartSuggestions() {
+        listOf(
+            "brake nahi lag raha",
+            "diesel leak",
+            "bijli ka jhatka lag raha"
+        ).forEach { complaint ->
+            assertTrue(
+                "Routine parts must be suppressed for urgent complaint: $complaint",
+                PartFailureGuide.match("tractor", complaint).isEmpty()
+            )
+        }
+    }
+
     @Test fun unknownMachineReturnsNoGuessedParts() {
         assertTrue(PartFailureGuide.forMachine("unknown").isEmpty())
         assertTrue(PartFailureGuide.match("unknown", "smoke and noise").isEmpty())

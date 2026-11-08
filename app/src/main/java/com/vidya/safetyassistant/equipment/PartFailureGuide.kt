@@ -248,6 +248,8 @@ object PartFailureGuide {
     fun forMachine(machineId: String): List<MachinePartFinding> = catalog[machineId] ?: additionalCatalog[machineId].orEmpty()
 
     fun match(machineId: String, complaint: String): List<MachinePartFinding> {
+        // Stop-use hazards must never be followed by a routine parts shortlist.
+        if (UrgentSymptomMatcher.isUrgent(complaint)) return emptyList()
         val entries = forMachine(machineId)
         if (entries.isEmpty()) return emptyList()
         val queryTokens = complaint.lowercase()
