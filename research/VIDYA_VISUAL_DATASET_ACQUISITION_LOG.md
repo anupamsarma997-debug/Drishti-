@@ -79,3 +79,13 @@ This log separates downloaded archives from extracted/validated images, and both
 - 3,065 rows; 3,065 primary images and 3,065 conditioning images; all primary images 1024x1024; 3,065 unique primary image hashes; zero duplicates and zero invalid images.
 - 3,065 YOLO annotation rows; 3,065 valid boxes; zero malformed annotations. Shard currently contains class IDs 0: 2,000 boxes and 1: 1,065 boxes (consistent with the source's first two listed categories, ball_bearing and gear; confirm exact mapping against the dataset's official metadata before training).
 - This is only 1 of 12 shards (~8.3% by shard count), not the full 5.52 GB dataset. It is synthetic imagery, so it cannot validate real-world workshop recognition.
+
+
+### I3D Tools Dataset — second shard acquired and audited
+- Workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42494664824 (completed successfully).
+- Artifact: `vidya-i3d-tools-shard-00001-audited` (453,366,099 bytes; expires 2026-12-08); includes the parquet shard and audit report.
+- Shard `train-00001-of-00012.parquet`: 456,191,298 bytes; SHA-256 `1355be106c389c114addd9ef891d8d3864c8612abf3541721f2186f802f88332`.
+- 3,065 rows; 3,065 primary images and 3,065 conditioning images; all primary images 1024x1024; 3,065 unique primary image hashes; zero duplicates and zero invalid images.
+- 3,065 YOLO annotation rows; 3,065 valid boxes; zero malformed annotations. Shard class ID counts: 1: 935, 2: 2,000, 3: 130.
+- Combined I3D shards 00000 and 00001: 6,130 primary images, 6,130 unique primary image hashes, 6,130 valid boxes; still only 2 of 12 shards. Do not claim the whole dataset has been acquired.
+- The two shards have overlapping class IDs and are consistent with sequentially numbered categories, but the official zero-based class mapping must be confirmed from the source metadata before producing a final class map.
