@@ -64,7 +64,7 @@ class ElectroCom61AuditTest(unittest.TestCase):
     def test_duplicate_label_stems_are_rejected(self):
         duplicate = self.root / "Valid" / "Label" / "nested" / "sample.txt"
         duplicate.parent.mkdir()
-        duplicate.write_text("1 0.5 0.5 0.2 0.2\\n", encoding="utf-8")
+        duplicate.write_text("1 0.5 0.5 0.2 0.2\n", encoding="utf-8")
         errors, _ = audit(self.root)
         self.assertTrue(any("duplicate label filename stem" in error for error in errors))
 
