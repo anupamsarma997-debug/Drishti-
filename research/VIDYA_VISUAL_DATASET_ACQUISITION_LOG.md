@@ -199,3 +199,9 @@ This log separates downloaded archives from extracted/validated images, and both
 - Conflicting annotations for duplicate images: 0; all 16 class IDs appear.
 - This establishes dataset-level exact-image uniqueness and annotation consistency, not model accuracy or real-world recognition.
 - Global audit code: `research/tools/audit_i3d_cross_shard.py`; tests: `research/tools/test_i3d_cross_shard.py`.
+
+
+### Cross-shard audit tests and Android CI
+- CI run: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42496271862 — passed.
+- Dataset audit/preparation unit-test suite passed, including cross-shard exact-duplicate detection, conflicting-label detection, and blank-label handling.
+- Android unit tests and debug APK assembly passed; APK artifact ID `13623302847` (80,372,566 bytes).
