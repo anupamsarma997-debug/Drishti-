@@ -13,8 +13,9 @@ class ElectroCom61AuditTest(unittest.TestCase):
             (self.root / split / "Image").mkdir(parents=True)
             (self.root / split / "Label").mkdir(parents=True)
         for split in ("Train", "Valid", "Test"):
-            (self.root / split / "Image" / "sample.jpg").write_bytes(b"image-" + split.encode())
-            (self.root / split / "Label" / "sample.txt").write_text("0 0.5 0.5 0.25 0.25\n", encoding="utf-8")
+            stem = split.lower() + "_sample"
+            (self.root / split / "Image" / f"{stem}.jpg").write_bytes(b"image-" + split.encode())
+            (self.root / split / "Label" / f"{stem}.txt").write_text("0 0.5 0.5 0.25 0.25\n", encoding="utf-8")
 
     def tearDown(self):
         self.temp.cleanup()
