@@ -24,6 +24,7 @@ import com.vidya.safetyassistant.safety.SafetyStatus
 fun SafetyOverlay(
     status: SafetyStatus,
     detections: CameraDetections? = null,
+    focusHint: String? = null,
     modifier: Modifier = Modifier
 ) {
     val transition = rememberInfiniteTransition(label = "danger-flash")
@@ -91,6 +92,32 @@ fun SafetyOverlay(
                     )
                 }
             }
+        }
+
+        focusHint?.takeIf { it.isNotBlank() }?.let { partName ->
+            val hint = "POSSIBLE PART: $partName · NOT VISUALLY VERIFIED"
+            val hintPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = android.graphics.Color.BLACK
+                textSize = 11.dp.toPx()
+                style = Paint.Style.FILL
+            }
+            val hintBg = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = android.graphics.Color.YELLOW
+                style = Paint.Style.FILL
+            }
+            val hintWidth = (hintPaint.measureText(hint) + 20.dp.toPx())
+                .coerceAtMost(size.width - 16.dp.toPx())
+            val hintTop = (size.height - 54.dp.toPx()).coerceAtLeast(8.dp.toPx())
+            drawContext.canvas.nativeCanvas.drawRoundRect(
+                RectF(8.dp.toPx(), hintTop, 8.dp.toPx() + hintWidth, hintTop + 34.dp.toPx()),
+                7.dp.toPx(), 7.dp.toPx(), hintBg
+            )
+            drawContext.canvas.nativeCanvas.drawText(
+                hint,
+                16.dp.toPx(),
+                hintTop + 21.dp.toPx(),
+                hintPaint
+            )
         }
 
         val label = when (status) {
