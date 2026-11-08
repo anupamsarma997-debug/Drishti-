@@ -56,6 +56,7 @@ import com.vidya.safetyassistant.manuals.LocalManual
 import com.vidya.safetyassistant.manuals.ManualLibrary
 import com.vidya.safetyassistant.manuals.ManualTextIndexer
 import com.vidya.safetyassistant.manuals.OfficialManualSources
+import com.vidya.safetyassistant.manuals.OfficialPartsSources
 import com.vidya.safetyassistant.manuals.FarmManualSources
 import com.vidya.safetyassistant.camera.CameraDetections
 import com.vidya.safetyassistant.camera.CameraPreview
@@ -842,6 +843,25 @@ private fun VidyaApp() {
                         }
                         TextButton(onClick = { openOfficialManualSource(context, source.url) }) {
                             Text("Open")
+                        }
+                    }
+                }
+                Spacer(Modifier.height(10.dp))
+                Text("OFFICIAL PARTS & GENUINE PARTS SOURCES", color = Color(0xFF68E0FF),
+                    fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                Text("These links help identify or source genuine parts. They are not a verified local parts-fitment database; always confirm model, variant and serial number with the manufacturer.",
+                    color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                OfficialPartsSources.forMachineType(vehicleType).forEach { source ->
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(source.brand, color = Color.White, fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodySmall)
+                            Text(source.description, color = Color(0xFF9BAFC2),
+                                style = MaterialTheme.typography.labelSmall)
+                        }
+                        TextButton(onClick = { openOfficialManualSource(context, source.url) }) {
+                            Text("Open parts source")
                         }
                     }
                 }

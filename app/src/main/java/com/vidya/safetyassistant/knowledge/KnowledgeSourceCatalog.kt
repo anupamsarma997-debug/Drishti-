@@ -39,6 +39,36 @@ object KnowledgeSourceCatalog {
             verification = KnowledgeVerification.SOURCE_CHECKED
         ),
         KnowledgeSource(
+            sourceId = "honda-genuine-parts-india",
+            title = "Honda Motorcycle & Scooter India genuine parts",
+            publisher = "Honda Motorcycle & Scooter India",
+            canonicalUrl = "https://www.honda2wheelersindia.com/honda-genuine-parts",
+            license = "Official parts information link-out; no catalogue extraction or redistribution permission assumed",
+            commercialUseAllowed = false,
+            redistributionAllowed = false,
+            verification = KnowledgeVerification.SOURCE_CHECKED
+        ),
+        KnowledgeSource(
+            sourceId = "hero-genuine-parts-india",
+            title = "Hero MotoCorp genuine parts portal",
+            publisher = "Hero MotoCorp",
+            canonicalUrl = "https://www.heromotocorp.com/en-in/services/hero-genuine-parts.html",
+            license = "Official parts information link-out; no catalogue extraction or redistribution permission assumed",
+            commercialUseAllowed = false,
+            redistributionAllowed = false,
+            verification = KnowledgeVerification.SOURCE_CHECKED
+        ),
+        KnowledgeSource(
+            sourceId = "bajaj-genuine-parts-india",
+            title = "Bajaj Auto genuine spares information",
+            publisher = "Bajaj Auto",
+            canonicalUrl = "https://legacy.bajajauto.com/customer-service/spares",
+            license = "Official legacy parts information link-out; no catalogue extraction or redistribution permission assumed",
+            commercialUseAllowed = false,
+            redistributionAllowed = false,
+            verification = KnowledgeVerification.SOURCE_CHECKED
+        ),
+        KnowledgeSource(
             sourceId = "mimii-dg",
             title = "MIMII DG industrial machine sound dataset",
             publisher = "Hitachi Ltd. via Zenodo",

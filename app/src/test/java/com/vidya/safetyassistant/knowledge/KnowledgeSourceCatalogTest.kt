@@ -60,6 +60,15 @@ class KnowledgeSourceCatalogTest {
         assertFalse(autovi!!.commercialUseAllowed)
     }
 
+    @Test fun officialPartsPortalsDoNotClaimReuseRights() {
+        listOf("honda-genuine-parts-india", "hero-genuine-parts-india", "bajaj-genuine-parts-india").forEach { id ->
+            val source = KnowledgeSourceCatalog.find(id)
+            assertNotNull(source)
+            assertFalse(source!!.commercialUseAllowed)
+            assertFalse(source.redistributionAllowed)
+        }
+    }
+
     @Test fun unknownSourceDoesNotResolve() {
         assertEquals(null, KnowledgeSourceCatalog.find("made-up-source"))
     }
