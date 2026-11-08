@@ -20,6 +20,7 @@ class SafetyEngineTest {
         assertEquals(SafetyStatus.STOP, result.status)
         assertTrue(result.stopRequired)
         assertTrue(!result.voiceWarning.isNullOrBlank())
+        assertTrue(result.reason.contains("cannot physically stop the machine"))
     }
 
     @Test fun staleFrameCannotBeMarkedSafe() {

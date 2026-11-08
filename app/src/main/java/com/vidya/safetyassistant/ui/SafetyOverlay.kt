@@ -121,9 +121,9 @@ fun SafetyOverlay(
         }
 
         val label = when (status) {
-            SafetyStatus.SAFE -> "SAFE: Step Active"
-            SafetyStatus.CAUTION -> "CAUTION: Verify before proceeding"
-            SafetyStatus.STOP -> "STOP: Danger Detected!"
+            SafetyStatus.SAFE -> "NO FLAG: Safety not verified"
+            SafetyStatus.CAUTION -> "CAUTION: Verify; safety unconfirmed"
+            SafetyStatus.STOP -> "STOP: Potential hazard flagged"
         }
         drawContext.canvas.nativeCanvas.apply {
             val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {

@@ -98,7 +98,7 @@ class SafetyEngine(
             HazardType.MOVING_MACHINERY -> "Ruko! Machine chal rahi ho sakti hai. Moving parts se door rahein."
             HazardType.UNKNOWN_HIGH_RISK -> "Ruko! Risk clear nahi hai. Kaam band karein aur qualified technician se jaanch karayein."
         },
-        reason = "Potential hazard flagged: $hazard. The app has stopped its guidance workflow.",
+        reason = "Potential hazard flagged: $hazard. Stop work and isolate equipment using its approved procedure. Vidya cannot physically stop the machine.",
         evaluatedAtMillis = now
     )
 
