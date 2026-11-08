@@ -589,3 +589,25 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - OBDium is useful as a technical architecture reference, but GPL-3.0 and physical ELM327 requirements make it unsuitable for blind code copying.
 - Wal33D/dtc-database has broad claimed coverage, but an MIT repository license is not sufficient evidence that all aggregated manufacturer-specific descriptions can be redistributed. Keep the database on HOLD.
 - No third-party database or scanner code was copied into Vidya in this pass; no new model training or hardware validation was performed.
+
+## Eleventh research pass — OBD source rights and DTC family allocation
+
+68. OBDex — machine-readable generic OBD-II DTC and PID data
+   Primary source: https://github.com/foerbsnavi/obdex
+   Data licence declaration: https://github.com/foerbsnavi/obdex/blob/main/LICENSE-DATA (CC0 1.0); tooling licence is separately declared as MIT in LICENSE-CODE. The repository README currently claims 9,533 enriched generic DTC entries across P0/P2/P3/U0/U3/B0/C0 families and 132 Mode 01/09 PIDs, with YAML/JSON schemas and source links per code.
+   Vidya use: strongest current candidate for a version-pinned generic DTC/PID coverage audit and possible offline generic lookup import after schema validation, source sampling, duplicate checks and exact data snapshot review.
+   Limits: these are maintainer-published coverage claims, not an independent audit or OEM service database. The README describes P3 as mixed while also excluding manufacturer-specific definitions; treat P3 and every code record as requiring exact family/range and source review. A generic DTC is not proof of vehicle/year/module compatibility and never determines the failed part.
+   Priority: P0 candidate for audit; not yet approved for APK ingestion.
+
+69. SAE International — J2012 Diagnostic Trouble Code Definitions (current catalogue record)
+   Official current catalogue: https://saemobilus.sae.org/standards/j2012_202509-diagnostic-trouble-code-definitions
+   The catalogue identifies J2012_202509, revised 1 Sep 2025, as the current recommended-practice revision surfaced in this research pass; it defines standardized DTCs and manufacturer-specific usage ranges. The full standard is copyrighted and is not approved for copying into Vidya.
+   Historical detailed allocation reference: https://law.resource.org/pub/us/cfr/ibr/005/sae.j2012.2002.pdf (SAE J2012 APR2002; use only as a public historical reference, not as a substitute for the current licensed standard). Its allocation tables distinguish P0/P2 and B0/C0/U0 ISO/SAE-controlled ranges; P1 and P3 manufacturer-controlled/reserved; B1/B2, C1/C2 and U1/U2 manufacturer-controlled; and B3/C3/U3 reserved.
+   Vidya use: standards-reference check for conservative DTC-family classification and to prevent a single digit rule from being applied identically to every family.
+   Limits: the historical 2002 allocation must not be assumed identical in every detail to the 2025 revision. Obtain and review the current licensed standard or a properly licensed secondary technical source before claiming full standards conformance.
+   Priority: P1 for standards metadata; HOLD for reproducing full standard text.
+
+## Eleventh-pass engineering decisions
+- Corrected the app's broad manufacturer-specific range classifier: P-family 1xxx/3xxx are treated as manufacturer-controlled or mixed/reserved; B/C/U families use 1xxx/2xxx as manufacturer-controlled, while 3xxx ranges remain reserved/unverified rather than being labelled manufacturer-specific. This is a conservative family-aware classification based on the historical SAE J2012 allocation and still requires current-standard review.
+- Added unit tests for B2/C2/U2 manufacturer-controlled ranges and B3/C3/U3 reserved ranges. Unknown/reserved codes remain unverified; no meaning or repair procedure is invented.
+- OBDex is not yet downloaded, bundled, or used for training. No OEM DTC database, vehicle compatibility verification, ELM327 adapter test, or real-vehicle validation has been completed.
