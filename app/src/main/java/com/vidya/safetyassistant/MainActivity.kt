@@ -326,6 +326,9 @@ private fun VidyaApp() {
                     nanoScope.launch { nanoStatus = nanoAssistant.availabilityMessage() }
                 }) { Text("Check this phone for Gemini Nano") }
                 Text(nanoStatus, color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
+                Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                    nanoScope.launch { nanoStatus = nanoAssistant.downloadModel() }
+                }) { Text("Download Gemini Nano model (if supported)") }
                 cameraMachineSuggestion?.let { suggestion ->
                     Column(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
                         Text("OCR MACHINE CLUE: " + suggestion.machineName, color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
