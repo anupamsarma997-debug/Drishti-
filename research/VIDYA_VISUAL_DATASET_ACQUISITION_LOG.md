@@ -113,3 +113,12 @@ This log separates downloaded archives from extracted/validated images, and both
 - Added `research/tools/prepare_i3d_yolo_dataset.py`: exports only primary images (not conditioning images), converts annotations to YOLO labels, removes exact duplicate image hashes, rejects conflicting labels, and makes deterministic 80/10/10 train/val/test splits. Writes `dataset.yaml`, manifest and preparation report.
 - Added unit tests in `research/tools/test_prepare_i3d_yolo_dataset.py`, including multi-box parsing and duplicate-image handling.
 - Android CI now installs PyArrow/Pillow and runs all dataset audit/preparation tests before Gradle tests and APK build. New CI run is pending/running; do not call the preparation tests passed until the new run completes.
+
+
+### I3D Tools Dataset — fifth shard acquired and audited
+- Workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42495254135 (completed successfully).
+- Artifact: `vidya-i3d-tools-shard-00004-audited` (465,435,238 bytes; expires 2026-12-08); artifact ID `13622394539`.
+- Shard `train-00004-of-00012.parquet`: SHA-256 `31c4e5d40e81ebc5e3ad44e15cb862e96aa81678ec69f65e76a262f51a4dbe2a`.
+- 3,065 rows, 3,065 primary images, 3,065 unique primary hashes; zero within-shard duplicate rows and zero invalid images.
+- 3,065 annotation rows; 5,117 valid YOLO boxes; zero malformed annotation rows.
+- First five shards combined: 15,325 primary-image rows, 15,325 within-shard unique hashes (cross-shard duplicate scan still pending), 34,417 valid YOLO boxes.
