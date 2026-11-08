@@ -67,3 +67,18 @@ A dataset of industrial defects is not automatically suitable for vehicle/farm-m
 - No instructions to defeat guards/interlocks or work on moving/live machinery.
 - If identity, source or applicability is incomplete, show only safe observations and stop/technician guidance.
 - No fabricated dataset labels, synthetic performance claims or unverified accuracy statements.
+
+
+## Official Indian two-wheeler manual portals — source index
+
+These are discovery links to manufacturers' own portals. The app should deep-link users to the official page or accept a user-provided manual; do not mirror or redistribute documents unless the relevant licence explicitly permits it.
+
+| Manufacturer | Official source | What it offers | Integration boundary |
+|---|---|---|---|
+| Hero MotoCorp | https://www.heromotocorp.com/en-in/services/owner-manual.html | Owner manuals selected by vehicle; separate maintenance schedule pages | Owner information; not automatically workshop service procedures |
+| Honda 2Wheelers India | https://www.honda2wheelersindia.com/resources/owners-manual | Segment/model/year/month/manual-type and VIN/frame-number search | Exact document selection and site terms apply |
+| Honda MotoPub India | https://www.hondamotopub.com/HMSI | Honda service publications by model and year; licence agreement before download | Read and comply with the download licence; no redistribution assumed |
+| TVS Motor | https://www.tvsmotor.com/our-service/user-manual | Vehicle user manuals with model and manufacturing-date distinctions | Date/variant matters; portal distinguishes OBD II and OBD IIB production periods |
+| Bajaj Auto | https://www.bajajauto.com/customer-service/owners-manual | Owner manuals for listed models | Owner documentation, not automatically a workshop service manual |
+
+**Coverage warning:** these portals do not constitute a complete make/model/year/variant database. A portal entry is not a parsed manual, verified parts catalogue, or approved repair instruction. Store selected document title, exact applicability, revision and page citation only after the individual document is inspected.

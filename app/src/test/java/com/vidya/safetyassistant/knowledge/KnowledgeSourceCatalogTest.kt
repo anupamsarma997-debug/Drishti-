@@ -28,6 +28,24 @@ class KnowledgeSourceCatalogTest {
         assertTrue(obdex.license.contains("MIT"))
     }
 
+
+    @Test fun officialIndianOemManualPortalsAreIndexedWithoutAssumingReuseRights() {
+        val ids = listOf(
+            "hero-india-owner-manuals",
+            "honda2wheelers-india-owner-manuals",
+            "honda-motopub-india-service-publications",
+            "tvs-india-user-manuals",
+            "bajaj-india-owner-manuals"
+        )
+        ids.forEach { id ->
+            val source = KnowledgeSourceCatalog.find(id)
+            assertNotNull(source)
+            assertFalse(source!!.commercialUseAllowed)
+            assertFalse(source.redistributionAllowed)
+            assertEquals(KnowledgeVerification.SOURCE_CHECKED, source.verification)
+        }
+    }
+
     @Test fun unknownSourceDoesNotResolve() {
         assertEquals(null, KnowledgeSourceCatalog.find("made-up-source"))
     }

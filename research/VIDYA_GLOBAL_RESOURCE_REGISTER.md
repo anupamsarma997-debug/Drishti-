@@ -661,3 +661,46 @@ This is a curated shortlist, not a complete census of worldwide public resources
     Defines machine identity, parts, diagnostic codes, manual index, visual/audio/sensor assets, and symptom-to-safe-next-step troubleshooting records. Includes source/license/market/variant provenance, verification states, and an expert-verified exact-variant repair-procedure gate.
     This is a schema and ingestion plan, not evidence that a global database or trained model has been populated.
     Priority: P0 architecture foundation; code tests added, CI pending.
+
+
+## Fourteenth research pass — official Indian two-wheeler manual portals
+
+76. Hero MotoCorp India — owner manuals and maintenance references
+    Primary source: https://www.heromotocorp.com/en-in/services/owner-manual.html
+    Official page offers vehicle selection and owner-manual downloads; related official maintenance page lists model-specific maintenance schedules.
+    Vidya use: official link-out and candidate owner-manual index for Hero two-wheelers. Owner manuals are not automatically full workshop service manuals.
+    Rights: no redistribution or commercial reuse assumed; use the official portal and follow document terms.
+    Priority: P0 for source linking; manual ingestion only after document-level rights review.
+
+77. Honda Motorcycle & Scooter India — owner manual portal
+    Primary source: https://www.honda2wheelersindia.com/resources/owners-manual
+    Official portal supports segment, model, year, month, manual type and VIN/frame-number lookup.
+    Vidya use: exact model/year owner-manual discovery. Avoid transmitting VIN/frame number to third parties without explicit user consent.
+    Rights: no redistribution or commercial reuse assumed; use official portal terms.
+    Priority: P0 for source linking; manual ingestion only after document-level rights review.
+
+78. Honda MotoPub — India service publications
+    Primary source: https://www.hondamotopub.com/HMSI
+    Official Honda service-publication portal supports model and model-year selection and PDF downloads; the portal requires acceptance of its licence agreement.
+    Vidya use: high-value lead for model/year-specific service publications. Record document identity and licence terms before local processing.
+    Rights: licence agreement required; do not mirror or redistribute absent explicit permission.
+    Priority: P0 for official link-out; HOLD for local copying until licence review.
+
+79. TVS Motor India — user manuals
+    Primary source: https://www.tvsmotor.com/our-service/user-manual
+    Official portal lists scooter, motorcycle, electric and moped manuals, model variants and manufacturing-date distinctions. It notes pre-April-2025 vehicles follow BSVI OBD II and post-April-2025 vehicles follow BSVI OBD IIB, with later date buckets also shown in its selector.
+    Vidya use: variant/date-aware manual discovery and a warning not to treat OBD-II and OBD-IIB as interchangeable.
+    Rights: no redistribution or commercial reuse assumed; follow official download terms.
+    Priority: P0 for source linking; document-level review before ingestion.
+
+80. Bajaj Auto India — owner manuals
+    Primary source: https://www.bajajauto.com/customer-service/owners-manual
+    Official owner-manual portal lists model-specific user documentation.
+    Vidya use: official model manual discovery and source-linking.
+    Rights: no redistribution or commercial reuse assumed.
+    Priority: P0 for source linking; not a verified workshop-manual dataset.
+
+## Fourteenth-pass source-scope correction
+- Open Repair Alliance ORDS is explicitly a standard for small electricals and consumer electronics. Its repair logs can inform appliance repair-history taxonomy, but must not be treated as evidence for motorcycles, cars, tractors, pumps or industrial machines. The standard removed the model field due to data-quality problems. Keep it out of exact-model machine fitment and repair-procedure claims.
+- The official portals above are link-out sources, not permission to bulk download, mirror, train on, or redistribute manuals. Individual licences and document-level applicability must be reviewed.
+- No OEM manual PDFs were copied into the app and no new dataset was downloaded or trained in this pass.
