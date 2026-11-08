@@ -130,3 +130,17 @@ The draft benchmark record format, hazard labels, reviewer protocol, privacy saf
 
 The rural-machine guide covers tractors, tillers, rotavators, irrigation and solar pumps, sprayers, threshers, combines, reapers, chaff cutters, rice mills, shellers, brush cutters, weeders, transplanters, generators, grain processing/drying, feed mills, root diggers, orchard/areca harvesters, tea harvesters, tillage and planting implements, fodder harvesters, balers/mulchers, and dairy equipment. Guidance remains observation-only and escalates hazardous work to trained service.
 
+
+
+## IRISP instance-retrieval manifest importer (not semantic parts labels)
+
+The IRISP repository documents a folder layout with per-object ID directories. Its object IDs identify individual physical objects; they do **not** say whether an object is a bearing, spring, cable, pump component, or any other semantic part class. Vidya therefore imports this source only as an instance-retrieval dataset.
+
+After obtaining the source archives yourself, follow the upstream extraction instructions and run:
+
+```bash
+python research/tools/import_irisp_manifest.py --image-root /path/to/images --output irisp_manifest.jsonl
+python research/tools/validate_parts_manifest.py --manifest irisp_manifest.jsonl --image-root /path/to/images
+```
+
+The importer scans only `train/phone`, `val/phone`, and `test/phone`; it deliberately excludes query/gallery benchmark folders until their pairing protocol is separately audited. It records object IDs as instance identity and capture groups, leaves semantic component labels unknown, and computes SHA-256 for each image. It does not download, extract, relabel, or train on images. IRISP is CC BY-SA 4.0; review attribution and ShareAlike obligations before redistributing any derived dataset or model. The source's dataset count is not a claim about Vidya's imported or validated data.
