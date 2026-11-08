@@ -267,7 +267,7 @@ object PartFailureGuide {
             .sortedByDescending { it.second }
             .map { it.first }
             .take(4)
-        // When the complaint has no known keyword, show a small general shortlist rather than guessing.
-        return ranked.ifEmpty { entries.take(3) }
+        // No matched clue means no part recommendation; do not fill the gap with unrelated guesses.
+        return ranked
     }
 }
