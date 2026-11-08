@@ -5,6 +5,7 @@ on:
     paths:
       - ".github/workflows/acquire-i3d-tools-shard 00002.yml"
       - "research/tools/audit_i3d_tools_parquet.py"
+      - "research/VIDYA_VISUAL_DATASET_ACQUISITION_LOG.md"
   workflow_dispatch:
 
 permissions:
