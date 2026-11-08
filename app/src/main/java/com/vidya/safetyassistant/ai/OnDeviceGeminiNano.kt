@@ -4,7 +4,7 @@ import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.prompt.Generation
 import com.google.mlkit.genai.prompt.GenerateContentRequest
 import com.google.mlkit.genai.prompt.TextPart
-import com.google.mlkit.genai.prompt.DownloadStatus
+import com.google.mlkit.genai.common.DownloadStatus
 import kotlinx.coroutines.flow.collect
 
 /**
