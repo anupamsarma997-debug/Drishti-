@@ -47,6 +47,13 @@ class IrispImporterTests(unittest.TestCase):
         self.assertEqual(len({r["capture_group_id"] for r in same_object}), 1)
         self.assertTrue(all(len(r["original_file_sha256"]) == 64 for r in records))
 
+    def test_empty_or_unmatched_layout_fails_closed(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "images"
+            root.mkdir()
+            with self.assertRaisesRegex(ValueError, "No images found"):
+                build_records(root)
+
     def test_missing_root_fails(self):
         with tempfile.TemporaryDirectory() as temp:
             with self.assertRaises(FileNotFoundError):
