@@ -90,6 +90,12 @@ This log separates downloaded archives from extracted/validated images, and both
 - Combined I3D shards 00000 and 00001: 6,130 primary images, 6,130 unique primary image hashes, 6,130 valid boxes; still only 2 of 12 shards. Do not claim the whole dataset has been acquired.
 - The two shards have overlapping class IDs and are consistent with sequentially numbered categories, but the official zero-based class mapping must be confirmed from the source metadata before producing a final class map.
 
-### I3D shard 00002 — acquisition pending
-- Workflow is configured to download and audit `train-00002-of-00012.parquet` from the official Hugging Face repository.
-- The workflow path filter was corrected; a new run will start when this log is updated. This shard is not counted as acquired until its download, audit and artifact upload all succeed.
+### I3D Tools Dataset — third shard acquired and audited
+- Workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42494928495 (completed successfully).
+- Artifact: `vidya-i3d-tools-shard-00002-audited` (482,462,832 bytes; expires 2026-12-08); includes the Parquet shard and audit report.
+- Shard `train-00002-of-00012.parquet`: 486,088,143 bytes; SHA-256 `ac406077bf22efe77510b2b375c10a9c601f4e1c0d220ec867951213e6dc6d1e`.
+- 3,065 rows; 3,065 primary images and 3,065 conditioning images; all primary images 1024x1024; 3,065 unique primary image hashes within this shard; zero invalid images.
+- 3,065 annotation rows; all 3,065 annotation rows valid after correcting the audit parser to support multiple YOLO boxes per image; 7,845 valid bounding boxes; zero malformed rows.
+- All 16 class IDs (0–15) appear in this shard. Class ID box counts are recorded in the JSON audit report.
+- Combined first three shards: 9,195 primary images, 9,195 conditioning images and 13,975 valid YOLO boxes. Within-shard duplicates are zero; cross-shard duplicate checking remains pending.
+- This remains synthetic training material, not real-world validation. No model has been trained.
