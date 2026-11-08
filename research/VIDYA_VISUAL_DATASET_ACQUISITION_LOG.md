@@ -83,3 +83,12 @@ This log separates downloaded archives from extracted/validated images, and both
 - Class list in source order: ball_bearing, gear, hammer, measuring_tape, nail, nut, oring, plier, saw, scissors, screw, screwdriver, spring, utility_knife, washer, wrench.
 - Synthetic images are suitable only for a controlled baseline/domain adaptation experiment; they do not prove recognition on real workshop imagery.
 - Do not combine its 16 class IDs with the PCB, car-body or electronics class IDs. Keep dataset-specific class maps.
+
+
+### I3D Tools Dataset — first shard acquired and audited
+- Workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42494453950
+- Artifact: `vidya-i3d-tools-shard-00000-audited` (468,184,622 bytes; expires 2026-12-08); includes the parquet shard and audit report.
+- Shard `train-00000-of-00012.parquet`: 470,815,684 bytes; SHA-256 `b9a3d842e48a09fcd5d3b324dc084518a8814cb0b494b94b12bbf4a093ba0741`.
+- 3,065 rows; 3,065 primary images and 3,065 conditioning images; all primary images 1024x1024; 3,065 unique primary image hashes; zero duplicates and zero invalid images.
+- 3,065 YOLO annotation rows; 3,065 valid boxes; zero malformed annotations. Shard currently contains class IDs 0: 2,000 boxes and 1: 1,065 boxes (consistent with the source's first two listed categories, ball_bearing and gear; confirm exact mapping against the dataset's official metadata before training).
+- This is only 1 of 12 shards (~8.3% by shard count), not the full 5.52 GB dataset. It is synthetic imagery, so it cannot validate real-world workshop recognition.
