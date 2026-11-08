@@ -17,7 +17,7 @@ class MachineRecognitionRouterTest {
 
     @Test
     fun routesTractorTextToFarmExpert() {
-        val result = MachineRecognitionRouter.suggestFromOcr("TRACTOR diesel engine")
+        val result = MachineRecognitionRouter.suggestFromOcr("TRACTOR 45 hp")
         assertEquals("tractor", result?.machineId)
         assertEquals("Tractor & Farm Machine Expert", result?.expertName)
     }
