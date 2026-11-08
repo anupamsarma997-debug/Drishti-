@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit one official I3D Tools Dataset parquet shard; no training."""
+"""Audit one official I3D Tools Dataset parquet shard, including multi-box rows; no training."""
 from __future__ import annotations
 
 import argparse
