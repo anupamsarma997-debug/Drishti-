@@ -611,3 +611,24 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - Corrected the app's broad manufacturer-specific range classifier: P-family 1xxx/3xxx are treated as manufacturer-controlled or mixed/reserved; B/C/U families use 1xxx/2xxx as manufacturer-controlled, while 3xxx ranges remain reserved/unverified rather than being labelled manufacturer-specific. This is a conservative family-aware classification based on the historical SAE J2012 allocation and still requires current-standard review.
 - Added unit tests for B2/C2/U2 manufacturer-controlled ranges and B3/C3/U3 reserved ranges. Unknown/reserved codes remain unverified; no meaning or repair procedure is invented.
 - OBDex is not yet downloaded, bundled, or used for training. No OEM DTC database, vehicle compatibility verification, ELM327 adapter test, or real-vehicle validation has been completed.
+
+## Twelfth research pass — Indian farm-machine training references and OCR routing audit
+
+70. Directorate General of Training (DGT) — Mechanic Agricultural Machinery CTS 2.0 curriculum
+   Primary source: https://www.dgt.gov.in/sites/default/files/2023-12/Mech.%20Agricultural%20Machinery_CTS2.0_NSQF-4.pdf
+   Official vocational curriculum includes service/troubleshooting topics for irrigation valves and hydrants, power tillers and power weeders, cultivators, sprayers, seed drills/planters and other agricultural machinery, alongside scheduled maintenance and safety precautions.
+   Vidya use: map specialist modules to recognised Indian vocational-training topic coverage; use as a learning-reference index and to identify gaps in basic maintenance topics.
+   Limits: curriculum is not a make/model/year-specific OEM service manual. Government hosting does not automatically grant permission to republish the PDF or reproduce its text; check document terms before copying content.
+   Priority: P0 for topic mapping and link-out; HOLD for full-text redistribution until rights are confirmed.
+
+71. ICAR — Agricultural Engineering machinery catalogue / curriculum PDF
+   Primary source: https://icar.org.in/sites/default/files/inline-files/AgriculturalEngineering_1.pdf
+   Official ICAR material lists Indian agricultural machinery examples and categories including seed drills, planters, harvesters, reapers, threshers, winnowers and crop-processing equipment.
+   Vidya use: expand the machine taxonomy and check whether rural equipment categories are missing from OCR routing and specialist coverage.
+   Limits: educational catalogue, not model-specific repair procedure or a blanket licence to copy diagrams/text into Vidya. Check copyright and publication terms before redistribution.
+   Priority: P1 for category discovery; no content copied into the APK.
+
+## Twelfth-pass engineering decisions
+- Corrected an OCR routing collision: generic "reaper / harvester" clues no longer pre-empt the more specific tea-harvester and areca-harvester routes. Added regression tests for Tea harvester, Areca harvester and Reaper.
+- Added DGT and ICAR official farm-machinery learning references to the in-app source catalogue, clearly labelled as training/category references rather than OEM repair manuals.
+- No new manuals or datasets were downloaded, copied into the APK, or used to train a model. No physical machine validation was performed.
