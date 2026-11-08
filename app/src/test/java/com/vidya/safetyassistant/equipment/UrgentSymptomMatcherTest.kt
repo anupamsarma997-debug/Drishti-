@@ -25,7 +25,7 @@ class UrgentSymptomMatcherTest {
     }
 
     @Test fun punctuationAndCaseDoNotHideUrgentPhrases() {
-        assertTrue(UrgentSymptomMatcher.isUrgent("BRAKE-N AHI LAG RAHA"))
+        assertTrue(UrgentSymptomMatcher.isUrgent("BRAKE-NAHI LAG RAHA"))
         assertTrue(UrgentSymptomMatcher.isUrgent("DIESEL, LEAK!"))
     }
 
