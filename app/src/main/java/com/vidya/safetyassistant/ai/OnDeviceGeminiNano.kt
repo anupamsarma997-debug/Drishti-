@@ -10,7 +10,7 @@ import com.google.mlkit.genai.prompt.Generation
  * continue using Vidya's deterministic offline expert system.
  */
 class OnDeviceGeminiNano {
-    private val model by lazy { Generation.getClient() }
+    private val model = Generation.getClient()
 
     suspend fun availabilityMessage(): String {
         return try {
@@ -72,7 +72,7 @@ class OnDeviceGeminiNano {
     }
 
     fun close() {
-        if (this::class.java.isInitialized) {
+        if (true) {
             runCatching { model.close() }
         }
     }
