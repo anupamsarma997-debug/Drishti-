@@ -25,7 +25,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Test dataset audit utilities
+      - name: Install dataset audit test dependencies
+        run: python -m pip install --disable-pip-version-check pyarrow Pillow
+      - name: Test dataset audit and preparation utilities
         run: python -m unittest discover -s research/tools -p 'test_*.py' -v
       - name: Set up JDK 17
         uses: actions/setup-java@v4
