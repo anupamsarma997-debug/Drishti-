@@ -21,7 +21,10 @@ def main():
  a.extract_dir.mkdir(parents=True,exist_ok=True)
  proc=subprocess.run(["unar","-quiet","-force-overwrite","-output-directory",str(a.extract_dir),str(a.archive)],capture_output=True,text=True)
  if proc.returncode!=0:
-  raise RuntimeError("RAR extraction failed: "+proc.stderr[-2000:])
+  # Fall back to 7-Zip because some RAR5 archives are not fully handled by unar.
+  proc=subprocess.run(["7zz","x","-y",f"-o{a.extract_dir}",str(a.archive)],capture_output=True,text=True)
+ if proc.returncode!=0:
+  raise RuntimeError("RAR extraction failed with unar and 7zz. unar: "+(proc.stderr[-1200:])+"; 7zz: "+(proc.stderr[-1200:]))
  files=[p for p in a.extract_dir.rglob("*") if p.is_file()]
  images=[p for p in files if p.suffix.lower() in IMAGE_EXTS]
  from PIL import Image
