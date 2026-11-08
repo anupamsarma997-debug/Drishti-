@@ -22,7 +22,17 @@ internal object UrgentSymptomMatcher {
     )
 
     fun isUrgent(complaint: String): Boolean {
-        val normalized = complaint.trim().lowercase(Locale.ROOT)
-        return normalized.isNotEmpty() && urgentPhrases.any { it in normalized }
+        val normalized = normalize(complaint)
+        if (normalized.isBlank()) return false
+        val padded = " $normalized "
+        return urgentPhrases.any { phrase ->
+            " ${normalize(phrase)} " in padded
+        }
     }
+
+    private fun normalize(value: String): String =
+        value.lowercase(Locale.ROOT)
+            .replace(Regex("[^\\\\p{L}\\\\p{N}]+"), " ")
+            .trim()
+
 }

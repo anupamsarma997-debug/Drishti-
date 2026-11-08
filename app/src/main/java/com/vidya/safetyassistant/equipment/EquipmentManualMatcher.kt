@@ -20,7 +20,8 @@ object EquipmentManualMatcher {
 
     private fun modelPattern(model: String): Regex? {
         val parts = model.uppercase().split(Regex("[^A-Z0-9]+")).filter { it.isNotBlank() }
-        if (parts.isEmpty()) return null
+        // A one-character OCR fragment is too ambiguous to identify a manual page.
+        if (parts.isEmpty() || parts.joinToString("").length < 3) return null
         val body = parts.joinToString("[\\s._/\\-]*") { Regex.escape(it) }
         return Regex("(?<![A-Z0-9])$body(?![A-Z0-9])")
     }

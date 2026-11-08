@@ -20,6 +20,15 @@ class UrgentSymptomMatcherTest {
         assertTrue(UrgentSymptomMatcher.isUrgent("jalne ki badbu aa rahi"))
     }
 
+    @Test fun ordinaryShockAbsorberMentionIsNotMistakenForElectricShock() {
+        assertFalse(UrgentSymptomMatcher.isUrgent("rear shock absorber makes a noise"))
+    }
+
+    @Test fun punctuationAndCaseDoNotHideUrgentPhrases() {
+        assertTrue(UrgentSymptomMatcher.isUrgent("BRAKE-N AHI LAG RAHA"))
+        assertTrue(UrgentSymptomMatcher.isUrgent("DIESEL, LEAK!"))
+    }
+
     @Test fun ordinaryComplaintsDoNotMatchUrgentList() {
         assertFalse(UrgentSymptomMatcher.isUrgent("engine vibration at idle"))
         assertFalse(UrgentSymptomMatcher.isUrgent("water flow is low"))

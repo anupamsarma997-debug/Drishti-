@@ -23,6 +23,11 @@ class EquipmentManualMatcherTest {
         assertTrue(EquipmentManualMatcher.findMatches(null, "AX-220", pages).isEmpty())
     }
 
+    @Test fun rejectsAmbiguousOneCharacterModel() {
+        val pages = listOf(ManualPageText("Any.pdf", 1, "Model X and other equipment"))
+        assertTrue(EquipmentManualMatcher.findMatches(null, "X", pages).isEmpty())
+    }
+
     @Test fun emptyModelNeverMatches() {
         val pages = listOf(ManualPageText("Any.pdf", 1, "AX-220"))
         assertTrue(EquipmentManualMatcher.findMatches(null, " ", pages).isEmpty())
