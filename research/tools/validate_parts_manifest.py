@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Audit a Vidya visual-parts JSONL manifest using only the Python standard library.
 
-This validates metadata, file hashes, duplicate files, augmentation ancestry and
-capture-group split leakage. It does not validate semantic label correctness.
+Checks metadata, task/annotation compatibility, file hashes, duplicate files,
+augmentation ancestry and capture-group split leakage. It does not validate
+semantic label correctness or grant permission to use a source dataset.
 """
 from __future__ import annotations
 
@@ -21,6 +22,12 @@ REQUIRED = (
 )
 TASKS = {"machine_family", "component_family", "instance_retrieval", "visual_condition"}
 ANNOTATIONS = {"image_label", "bounding_box", "polygon_mask", "keypoint", "instance_id"}
+TASK_ANNOTATIONS = {
+    "machine_family": {"image_label", "bounding_box"},
+    "component_family": {"image_label", "bounding_box"},
+    "instance_retrieval": {"instance_id"},
+    "visual_condition": {"image_label", "bounding_box", "polygon_mask", "keypoint"},
+}
 SPLITS = {"train", "validation", "test"}
 UNKNOWN = {"", "unknown", "uncertain", "unlabelled", "unlabeled", "null", "none"}
 
@@ -48,7 +55,11 @@ def audit(manifest: Path, image_root: Path) -> tuple[list[str], dict]:
         except (json.JSONDecodeError, ValueError) as exc:
             errors.append(f"line {line_no}: invalid JSON record: {exc}")
 
+    if not rows:
+        errors.append("manifest contains no JSON records")
+
     ids: set[str] = set()
+    rows_by_id: dict[str, dict] = {}
     file_hashes: dict[str, str] = {}
     group_splits: dict[str, set[str]] = defaultdict(set)
     labels: Counter = Counter()
@@ -58,6 +69,7 @@ def audit(manifest: Path, image_root: Path) -> tuple[list[str], dict]:
 
     for row in rows:
         line = row["_line"]
+
         def fail(message: str) -> None:
             errors.append(f"line {line} ({row.get('sample_id', '?')}): {message}")
 
@@ -70,14 +82,19 @@ def audit(manifest: Path, image_root: Path) -> tuple[list[str], dict]:
             if sample_id in ids:
                 fail(f"duplicate sample_id '{sample_id}'")
             ids.add(sample_id)
+            rows_by_id.setdefault(sample_id, row)
 
         task = row.get("task_type")
+        annotation = row.get("annotation_type")
         if task not in TASKS:
             fail(f"unsupported task_type '{task}'")
         else:
             tasks[task] += 1
-
-        annotation = row.get("annotation_type")
+            if annotation not in TASK_ANNOTATIONS[task]:
+                fail(
+                    f"annotation_type '{annotation}' is incompatible with "
+                    f"task_type '{task}'; allowed: {sorted(TASK_ANNOTATIONS[task])}"
+                )
         if annotation not in ANNOTATIONS:
             fail(f"unsupported annotation_type '{annotation}'")
 
@@ -96,37 +113,61 @@ def audit(manifest: Path, image_root: Path) -> tuple[list[str], dict]:
         if label.lower() in UNKNOWN and task in {"component_family", "machine_family"}:
             fail("unknown label must not be treated as a supervised class; quarantine or mark explicitly")
 
-        rel = Path(str(row.get("relative_path", "")))
-        if rel.is_absolute() or ".." in rel.parts:
-            fail("relative_path must stay inside image_root")
-        else:
-            path = (image_root / rel).resolve()
-            try:
-                path.relative_to(image_root.resolve())
-            except ValueError:
-                fail("relative_path escapes image_root")
-                path = None
-            if path is not None:
-                if not path.is_file():
+        rel_text = str(row.get("relative_path", "")).strip()
+        if rel_text:
+            rel = Path(rel_text)
+            if rel.is_absolute() or ".." in rel.parts:
+                fail("relative_path must stay inside image_root")
+            else:
+                try:
+                    root = image_root.resolve(strict=True)
+                    path = (root / rel).resolve(strict=True)
+                    path.relative_to(root)
+                except FileNotFoundError:
                     fail(f"image file not found: {rel}")
-                else:
-                    actual = sha256(path)
-                    expected = str(row.get("original_file_sha256", "")).lower()
-                    if actual != expected:
-                        fail(f"SHA-256 mismatch for {rel}")
+                    path = None
+                except (ValueError, OSError):
+                    fail("relative_path escapes image_root or cannot be resolved")
+                    path = None
+                if path is not None:
+                    if not path.is_file():
+                        fail(f"image file not found: {rel}")
                     else:
-                        valid_files += 1
-                    prior = file_hashes.get(actual)
-                    if prior and prior != sample_id:
-                        fail(f"duplicate image bytes also used by sample_id '{prior}'")
-                    else:
-                        file_hashes[actual] = sample_id
+                        actual = sha256(path)
+                        expected = str(row.get("original_file_sha256", "")).lower()
+                        if actual != expected:
+                            fail(f"SHA-256 mismatch for {rel}")
+                        else:
+                            valid_files += 1
+                        prior = file_hashes.get(actual)
+                        if prior and prior != sample_id:
+                            fail(f"duplicate image bytes also used by sample_id '{prior}'")
+                        else:
+                            file_hashes[actual] = sample_id
 
         is_augmented = row.get("is_original_or_augmented")
         if is_augmented not in {"original", "augmented"}:
             fail("is_original_or_augmented must be 'original' or 'augmented'")
-        if is_augmented == "augmented" and not str(row.get("parent_sample_id", "")).strip():
+        parent_id = str(row.get("parent_sample_id", "")).strip()
+        if is_augmented == "augmented" and not parent_id:
             fail("augmented sample requires parent_sample_id")
+        if is_augmented == "original" and parent_id:
+            fail("original sample must not declare parent_sample_id")
+
+    # Check augmentation lineage only after all sample IDs have been collected.
+    for row in rows:
+        if row.get("is_original_or_augmented") != "augmented":
+            continue
+        line = row["_line"]
+        parent_id = str(row.get("parent_sample_id", "")).strip()
+        parent = rows_by_id.get(parent_id)
+        if not parent:
+            errors.append(f"line {line} ({row.get('sample_id', '?')}): parent_sample_id '{parent_id}' does not exist in manifest")
+            continue
+        if parent.get("split") != row.get("split"):
+            errors.append(f"line {line} ({row.get('sample_id', '?')}): augmented sample and parent must remain in the same split")
+        if parent.get("capture_group_id") != row.get("capture_group_id"):
+            errors.append(f"line {line} ({row.get('sample_id', '?')}): augmented sample and parent must share capture_group_id")
 
     for group, assigned in group_splits.items():
         if len(assigned) > 1:
