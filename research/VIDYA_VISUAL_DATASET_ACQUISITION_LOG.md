@@ -131,3 +131,12 @@ This log separates downloaded archives from extracted/validated images, and both
 - 3,064 rows, 3,064 primary images, 3,064 unique primary hashes; zero within-shard duplicate rows and zero invalid images.
 - 3,064 annotation rows; 3,064 valid YOLO boxes; zero malformed annotation rows.
 - First six shards combined: 18,389 primary-image rows and 37,481 valid YOLO boxes. Counts are within-shard unique; cross-shard duplicate scan is still pending.
+
+
+### I3D Tools Dataset — seventh shard acquired and audited
+- Workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42495459107 (completed successfully).
+- Artifact: `vidya-i3d-tools-shard-00006-audited` (455,409,098 bytes; expires 2026-12-08); artifact ID `13623775041`.
+- Shard `train-00006-of-00012.parquet`: SHA-256 `7189510959114fb946114b9b6ead23904984243cc88026fda2f7905d9d4513ed`.
+- 3,064 rows, 3,064 primary images, 3,064 unique primary hashes; zero within-shard duplicate rows and zero invalid images.
+- 3,064 annotation rows; 3,064 valid YOLO boxes; zero malformed annotation rows.
+- First seven shards combined: 21,453 primary-image rows and 40,545 valid YOLO boxes. Counts are within-shard unique; cross-shard duplicate scan is still pending.
