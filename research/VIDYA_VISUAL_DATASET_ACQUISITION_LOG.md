@@ -99,3 +99,17 @@ This log separates downloaded archives from extracted/validated images, and both
 - All 16 class IDs (0–15) appear in this shard. Class ID box counts are recorded in the JSON audit report.
 - Combined first three shards: 9,195 primary images, 9,195 conditioning images and 13,975 valid YOLO boxes. Within-shard duplicates are zero; cross-shard duplicate checking remains pending.
 - This remains synthetic training material, not real-world validation. No model has been trained.
+
+
+### I3D Tools Dataset — fourth shard acquired and audited
+- Workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42495025879 (download and audit steps succeeded; artifact upload completed).
+- Artifact: `vidya-i3d-tools-shard-00003-audited` (494,585,464 bytes; expires 2026-12-08); artifact ID `13622963218`.
+- Shard `train-00003-of-00012.parquet`: SHA-256 `9b19899eba4302a50d2ff44505064aa31be0cfc5b2c4c5ce41953916639dc8ab`.
+- 3,065 rows, 3,065 primary images, 3,065 unique primary hashes; zero exact duplicates within shard and zero invalid images.
+- 3,065 annotation rows; 3,065 valid; 15,325 valid YOLO boxes; zero malformed annotation rows. All 16 class IDs present.
+- First four shards combined: 12,260 primary-image rows, 12,260 within-shard unique hashes (cross-shard duplicate scan not yet performed), and 29,300 valid YOLO boxes.
+- Data remains synthetic. No training or real-world accuracy claim.
+### I3D YOLO preparation pipeline
+- Added `research/tools/prepare_i3d_yolo_dataset.py`: exports only primary images (not conditioning images), converts annotations to YOLO labels, removes exact duplicate image hashes, rejects conflicting labels, and makes deterministic 80/10/10 train/val/test splits. Writes `dataset.yaml`, manifest and preparation report.
+- Added unit tests in `research/tools/test_prepare_i3d_yolo_dataset.py`, including multi-box parsing and duplicate-image handling.
+- Android CI now installs PyArrow/Pillow and runs all dataset audit/preparation tests before Gradle tests and APK build. New CI run is pending/running; do not call the preparation tests passed until the new run completes.
