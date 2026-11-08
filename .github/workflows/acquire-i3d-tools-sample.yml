@@ -1,9 +1,9 @@
-name: Acquire and audit I3D tools dataset sample
+name: Acquire and audit I3D tools dataset shard 00002
 
 on:
   push:
     paths:
-      - ".github/workflows/acquire-i3d-tools-sample.yml"
+      - ".github/workflows/acquire-i3d-tools-shard 00002.yml"
       - "research/tools/audit_i3d_tools_parquet.py"
   workflow_dispatch:
 
@@ -21,26 +21,26 @@ jobs:
           python-version: "3.12"
       - name: Install parquet and image audit tools
         run: python -m pip install --disable-pip-version-check pyarrow Pillow
-      - name: Download second official parquet shard
+      - name: Download third official parquet shard
         run: |
           set -euo pipefail
           mkdir -p /tmp/i3d
           curl --fail --location --retry 5 --retry-all-errors --connect-timeout 30 --max-time 1800 \
-            --output /tmp/i3d/train-00001-of-00012.parquet \
-            "https://huggingface.co/datasets/i3dlabiisc/I3D-Tools-Dataset/resolve/main/data/train-00001-of-00012.parquet"
-          test -s /tmp/i3d/train-00001-of-00012.parquet
-          ls -lh /tmp/i3d/train-00001-of-00012.parquet
+            --output /tmp/i3d/train-00002-of-00012.parquet \
+            "https://huggingface.co/datasets/i3dlabiisc/I3D-Tools-Dataset/resolve/main/data/train-00002-of-00012.parquet"
+          test -s /tmp/i3d/train-00002-of-00012.parquet
+          ls -lh /tmp/i3d/train-00002-of-00012.parquet
       - name: Audit parquet images and YOLO annotations
         run: |
           python research/tools/audit_i3d_tools_parquet.py \
-            --parquet /tmp/i3d/train-00001-of-00012.parquet \
-            --output dataset-audit/i3d-tools-shard-00001.json
-      - name: Upload audited sample shard and report
+            --parquet /tmp/i3d/train-00002-of-00012.parquet \
+            --output dataset-audit/i3d-tools-shard-00002.json
+      - name: Upload audited shard 00002 shard and report
         uses: actions/upload-artifact@v4
         with:
-          name: vidya-i3d-tools-shard-00001-audited
+          name: vidya-i3d-tools-shard-00002-audited
           path: |
-            /tmp/i3d/train-00001-of-00012.parquet
-            dataset-audit/i3d-tools-shard-00001.json
+            /tmp/i3d/train-00002-of-00012.parquet
+            dataset-audit/i3d-tools-shard-00002.json
           if-no-files-found: error
           retention-days: 30
