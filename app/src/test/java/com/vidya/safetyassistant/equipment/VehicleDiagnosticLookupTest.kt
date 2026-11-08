@@ -61,6 +61,25 @@ class VehicleDiagnosticLookupTest {
         }
     }
 
+    @Test fun recognizesManufacturerControlledSecondRangesForNonPowertrainFamilies() {
+        val manufacturerCodes = listOf("B2123", "C2123", "U2123")
+        manufacturerCodes.forEach { code ->
+            val result = VehicleDiagnosticLookup.lookup("Car", "Example", "Model", "2022", code)
+            assertNotNull("Expected result for $code", result)
+            assertTrue("$code should be manufacturer-specific", result!!.manufacturerSpecific)
+        }
+    }
+
+    @Test fun reservedThirdRangesForNonPowertrainFamiliesRemainUnverifiedNotManufacturerSpecific() {
+        val reservedCodes = listOf("B3123", "C3123", "U3123")
+        reservedCodes.forEach { code ->
+            val result = VehicleDiagnosticLookup.lookup("Car", "Example", "Model", "2022", code)
+            assertNotNull("Expected result for $code", result)
+            assertFalse("$code is reserved, not classified as manufacturer-specific", result!!.manufacturerSpecific)
+            assertEquals("Code not in Vidya's current reference", result.title)
+        }
+    }
+
     @Test fun doesNotClaimUnknownGenericCodeIsKnown() {
         val result = VehicleDiagnosticLookup.lookup("Car", "Brand", "Model", "2020", "P0999")
         assertNotNull(result)
