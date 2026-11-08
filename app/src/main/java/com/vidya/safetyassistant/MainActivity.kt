@@ -311,7 +311,7 @@ private fun VidyaApp() {
                     color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
                 cameraMachineSuggestion?.let { suggestion ->
                     Column(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
-                        Text("CAMERA SUGGESTION: " + suggestion.machineName + " · " + (suggestion.confidence * 100).toInt() + "%", color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
+                        Text("OCR MACHINE CLUE: " + suggestion.machineName, color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
                         Text(suggestion.expertName + ". " + suggestion.reason, color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Button(onClick = { selectedExpertMachineId = suggestion.machineId; expertAssessment = null }) { Text("Yes, use this expert") }
@@ -815,16 +815,14 @@ private fun VidyaApp() {
                                 } else {
                                     "On-device objects: " + frame.objects.take(3).joinToString { it.label }
                                 }
-                                val suggestion = frame.objects
-                                    .mapNotNull { MachineRecognitionRouter.suggest(it.label, it.confidence) }
-                                    .maxByOrNull { it.confidence }
-                                if (suggestion != null && cameraMachineSuggestion?.machineId != suggestion.machineId) {
-                                    cameraMachineSuggestion = suggestion
-                                }
                             },
                             onDetectionError = { detectorStatus = it },
                             onTextRecognized = { text ->
                                 liveOcrText = text
+                                val suggestion = MachineRecognitionRouter.suggestFromOcr(text)
+                                if (suggestion != null && cameraMachineSuggestion?.machineId != suggestion.machineId) {
+                                    cameraMachineSuggestion = suggestion
+                                }
                                 val parsed = EquipmentLabelParser.parse(text)
                                 if (parsed.hasAnyFact) equipmentFacts = EquipmentLabelFacts(
                                     manufacturer = parsed.manufacturer ?: equipmentFacts.manufacturer,
