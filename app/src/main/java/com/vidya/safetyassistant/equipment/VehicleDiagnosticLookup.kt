@@ -72,7 +72,7 @@ object VehicleDiagnosticLookup {
             return VehicleDiagnosticResult(code, "Code format not recognized",
                 "Enter a five-character diagnostic trouble code such as P0300, or enter the exact dashboard message.",
                 emptyList(), listOf("Recheck every character on the scan tool or dashboard.", "Do not guess a code from a warning-light symbol."),
-                "Unverified", true, "This lookup accepts standard five-character OBD-style DTCs only.")
+                "Unverified", false, "This lookup accepts standard five-character OBD-style DTCs only.")
         }
         val known = genericCodes[code]
         if (known != null) return known.copy(
