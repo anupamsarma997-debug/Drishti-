@@ -3,7 +3,7 @@ name: Acquire and audit I3D tools dataset shard 00002
 on:
   push:
     paths:
-      - ".github/workflows/acquire-i3d-tools-shard 00002.yml"
+      - ".github/workflows/acquire-i3d-tools-sample.yml"
       - "research/tools/audit_i3d_tools_parquet.py"
       - "research/VIDYA_VISUAL_DATASET_ACQUISITION_LOG.md"
   workflow_dispatch:
