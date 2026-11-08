@@ -93,7 +93,7 @@ object MachineExpertSystem {
             "Fluid path / leakage", "Observe the fluid location from a safe distance. Do not touch unknown fluid or open pressurised lines.")
         addIf(listOf("brake", "steering", "wobble", "tyre", "tire"),
             "Braking / steering / wheel safety", "Do not operate or ride if braking, steering, tyre or wheel safety is uncertain.")
-        addIf(listOf("smoke", "spark", "burn", "electrical", "trip", "shock"),
+        addIf(listOf("smoke", "spark", "burn", "electrical", "trip", "electric shock", "bijli ka jhatka", "karant"),
             "Electrical / fire risk", "Switch off only if safe, keep clear and arrange qualified inspection. Do not open electrical covers.")
         addIf(listOf("error", "code", "warning", "light", "blink"),
             "Warning indicator / fault code", "Photograph the exact warning or code and record machine make, full model and year.")

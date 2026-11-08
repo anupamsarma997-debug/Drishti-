@@ -14,47 +14,46 @@ class MachineExpertSystemTest {
     }
 
     @Test fun symptomAssessmentProvidesCautiousChecks() {
-        val result = MachineExpertSystem.assess(
-            "bike", "Motorcycle", "Honda", "Shine", "2022",
-            "engine clicks and does not start"
-        )!!
+        val result = MachineExpertSystem.assess("bike", "Motorcycle", "Honda", "Shine", "2022",
+            "engine clicks and does not start")!!
         assertTrue(result.possibleAreas.any { it.contains("Starting") })
         assertTrue(result.safeChecks.isNotEmpty())
         assertTrue(result.confidenceNote.contains("cannot prove"))
     }
 
     @Test fun hazardousComplaintTriggersStopFirstGuidance() {
-        val result = MachineExpertSystem.assess(
-            "tractor", "Tractor", "Brand", "Model", "2020", "smoke and burning smell"
-        )!!
+        val result = MachineExpertSystem.assess("tractor", "Tractor", "Brand", "Model", "2020",
+            "smoke and burning smell")!!
         assertTrue(result.summary.contains("Potential safety hazard"))
         assertTrue(result.stopConditions.any { it.startsWith("STOP") })
     }
 
     @Test fun brakeFailureAndFuelLeakPhrasesTriggerStopGuidance() {
-        val brake = MachineExpertSystem.assess(
-            "car", "Car", "Make", "Model", "2020", "brake pedal goes to floor"
-        )!!
+        val brake = MachineExpertSystem.assess("car", "Car", "Make", "Model", "2020",
+            "brake pedal goes to floor")!!
         assertTrue(brake.summary.contains("Potential safety hazard"))
         assertTrue(brake.stopConditions.any { it.startsWith("STOP") })
-
-        val leak = MachineExpertSystem.assess(
-            "tractor", "Tractor", "Make", "Model", "2020", "diesel leak"
-        )!!
+        val leak = MachineExpertSystem.assess("tractor", "Tractor", "Make", "Model", "2020",
+            "diesel leak")!!
         assertTrue(leak.summary.contains("Potential safety hazard"))
     }
 
     @Test fun romanHindiHazardPhrasesTriggerStopGuidance() {
-        val brake = MachineExpertSystem.assess(
-            "bike", "Bike", "Make", "Model", "2021", "brake nahi lag raha"
-        )!!
+        val brake = MachineExpertSystem.assess("bike", "Bike", "Make", "Model", "2021",
+            "brake nahi lag raha")!!
         assertTrue(brake.summary.contains("Potential safety hazard"))
         assertTrue(brake.stopConditions.any { it.startsWith("STOP") })
-
-        val electric = MachineExpertSystem.assess(
-            "motor", "Motor", "Make", "Model", "2021", "bijli ka jhatka lag raha"
-        )!!
+        val electric = MachineExpertSystem.assess("motor", "Motor", "Make", "Model", "2021",
+            "bijli ka jhatka lag raha")!!
         assertTrue(electric.summary.contains("Potential safety hazard"))
+    }
+
+    @Test fun shockAbsorberNoiseDoesNotBecomeElectricalFault() {
+        val result = MachineExpertSystem.assess("bike", "Bike", "Make", "Model", "2021",
+            "rear shock absorber makes a noise")!!
+        assertTrue(result.possibleAreas.any { it.contains("Mechanical noise") })
+        assertFalse(result.possibleAreas.any { it.contains("Electrical / fire") })
+        assertFalse(result.summary.contains("Potential safety hazard"))
     }
 
     @Test fun unknownMachineIsNotGuessed() {
