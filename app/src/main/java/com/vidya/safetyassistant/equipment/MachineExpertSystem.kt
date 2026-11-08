@@ -70,16 +70,7 @@ object MachineExpertSystem {
     ): ExpertAssessment? {
         val expert = expertFor(machineId) ?: return null
         val text = complaint.trim().lowercase()
-        val dangerous = listOf(
-            "smoke", "fire", "spark", "sparking", "burning smell", "electric shock",
-            "shock", "fuel leak", "gas leak", "brake fail", "brake failure",
-            "overheat", "overheating", "blade", "jammed", "crushed", "high voltage",
-            "battery swelling", "battery hot", "battery swollen", "battery bulging",
-            "petrol leak", "diesel leak", "gas smell", "burnt smell",
-            "brake not working", "brakes not working", "brake pedal soft",
-            "brake pedal goes to floor", "current aa raha", "current lag raha",
-            "wire exposed", "orange cable"
-        ).any { it in text }
+        val dangerous = UrgentSymptomMatcher.isUrgent(text)
 
         val areas = mutableListOf<String>()
         val checks = mutableListOf<String>()

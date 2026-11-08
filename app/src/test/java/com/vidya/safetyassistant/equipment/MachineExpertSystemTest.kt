@@ -44,6 +44,19 @@ class MachineExpertSystemTest {
         assertTrue(leak.summary.contains("Potential safety hazard"))
     }
 
+    @Test fun romanHindiHazardPhrasesTriggerStopGuidance() {
+        val brake = MachineExpertSystem.assess(
+            "bike", "Bike", "Make", "Model", "2021", "brake nahi lag raha"
+        )!!
+        assertTrue(brake.summary.contains("Potential safety hazard"))
+        assertTrue(brake.stopConditions.any { it.startsWith("STOP") })
+
+        val electric = MachineExpertSystem.assess(
+            "motor", "Motor", "Make", "Model", "2021", "bijli ka jhatka lag raha"
+        )!!
+        assertTrue(electric.summary.contains("Potential safety hazard"))
+    }
+
     @Test fun unknownMachineIsNotGuessed() {
         assertNull(MachineExpertSystem.expertFor("unknown_machine"))
         assertNull(MachineExpertSystem.assess("unknown_machine", "Unknown", "", "", "", "noise"))

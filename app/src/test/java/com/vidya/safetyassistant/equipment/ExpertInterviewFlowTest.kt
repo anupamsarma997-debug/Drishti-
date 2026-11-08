@@ -30,6 +30,14 @@ class ExpertInterviewFlowTest {
     }
 
     @Test
+    fun stopsInterviewForCommonRomanHindiHazardPhrases() {
+        assertNull(ExpertInterviewFlow.nextQuestion("car", "brake nahi lag raha", 0))
+        assertNull(ExpertInterviewFlow.nextQuestion("tractor", "diesel leak ho raha hai", 0))
+        assertNull(ExpertInterviewFlow.nextQuestion("motor", "battery phool gaya", 0))
+        assertNull(ExpertInterviewFlow.nextQuestion("bike", "bijli ka jhatka lag raha", 0))
+    }
+
+    @Test
     fun limitsNumberOfFollowUpRounds() {
         assertNull(ExpertInterviewFlow.nextQuestion("car", "engine vibration", 3))
     }
