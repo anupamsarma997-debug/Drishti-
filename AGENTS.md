@@ -33,4 +33,6 @@ Build an Android-first technical safety assistant that helps users understand eq
 6. Keep documentation synchronized with implementation.
 
 ## Current status
+Gemini Nano integration has been removed; no Gemini or Azure AI API is used. Generic object detection and OCR currently still use local Google ML Kit libraries and are not Gemini/Azure APIs.
+
 This repository contains an early Android MVP source: CameraX preview + ML Kit generic on-device object boxes, Compose safety overlay, manual-only safety-engine inputs, vibration/TTS stop alerts, Android speech adapter, rule-based offline safety FAQ, local PDF metadata library, and optional ARCore plane tracking with tap-to-place neutral marker. Generic object recognition and AR plane tracking are NOT hazard detection or equipment-part localization. No specialized electrical/mechanical hazard model, manual-grounded AR arrows, PDF/manual RAG, or real-world safety validation is implemented. Do not mark the UI SAFE based only on generic object detection or AR tracking.
