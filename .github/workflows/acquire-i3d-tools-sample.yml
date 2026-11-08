@@ -1,4 +1,4 @@
-name: Acquire and audit I3D tools dataset shard 00009
+name: Acquire and audit I3D tools dataset shard 00010
 
 on:
   push:
@@ -21,26 +21,26 @@ jobs:
           python-version: "3.12"
       - name: Install parquet and image audit tools
         run: python -m pip install --disable-pip-version-check pyarrow Pillow
-      - name: Download tenth official parquet shard
+      - name: Download eleventh official parquet shard
         run: |
           set -euo pipefail
           mkdir -p /tmp/i3d
           curl --fail --location --retry 5 --retry-all-errors --connect-timeout 30 --max-time 1800 \
-            --output /tmp/i3d/train-00009-of-00012.parquet \
-            "https://huggingface.co/datasets/i3dlabiisc/I3D-Tools-Dataset/resolve/main/data/train-00009-of-00012.parquet"
-          test -s /tmp/i3d/train-00009-of-00012.parquet
-          ls -lh /tmp/i3d/train-00009-of-00012.parquet
+            --output /tmp/i3d/train-00010-of-00012.parquet \
+            "https://huggingface.co/datasets/i3dlabiisc/I3D-Tools-Dataset/resolve/main/data/train-00010-of-00012.parquet"
+          test -s /tmp/i3d/train-00010-of-00012.parquet
+          ls -lh /tmp/i3d/train-00010-of-00012.parquet
       - name: Audit parquet images and YOLO annotations
         run: |
           python research/tools/audit_i3d_tools_parquet.py \
-            --parquet /tmp/i3d/train-00009-of-00012.parquet \
-            --output dataset-audit/i3d-tools-shard-00009.json
-      - name: Upload audited shard 00009 shard and report
+            --parquet /tmp/i3d/train-00010-of-00012.parquet \
+            --output dataset-audit/i3d-tools-shard-00010.json
+      - name: Upload audited shard 00010 shard and report
         uses: actions/upload-artifact@v4
         with:
-          name: vidya-i3d-tools-shard-00009-audited
+          name: vidya-i3d-tools-shard-00010-audited
           path: |
-            /tmp/i3d/train-00009-of-00012.parquet
-            dataset-audit/i3d-tools-shard-00009.json
+            /tmp/i3d/train-00010-of-00012.parquet
+            dataset-audit/i3d-tools-shard-00010.json
           if-no-files-found: error
           retention-days: 30
