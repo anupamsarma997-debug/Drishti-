@@ -10,7 +10,7 @@ internal object UrgentSymptomMatcher {
     private val urgentPhrases = listOf(
         "smoke", "dhua", "dhuan", "fire", "aag", "spark", "sparking", "chingaari",
         "burning smell", "burnt smell", "jalne ki boo", "jalne ki badbu",
-        "electric shock", "shock", "bijli ka jhatka", "karant lag", "current aa raha",
+        "electric shock", "bijli ka jhatka", "karant lag", "current aa raha",
         "current lag raha", "fuel leak", "petrol leak", "diesel leak", "tel leak",
         "petrol gir raha", "diesel gir raha", "gas leak", "gas smell", "gas ki boo",
         "brake fail", "brake failure", "brake not working", "brakes not working",
@@ -18,7 +18,8 @@ internal object UrgentSymptomMatcher {
         "brake kaam nahi kar", "battery swelling", "battery swollen", "battery bulging",
         "battery phool", "battery ful", "battery hot", "overheat", "overheating",
         "high voltage", "orange cable", "wire exposed", "wire khula", "wire kata",
-        "exposed wire", "blade", "jammed", "crushed"
+        "exposed wire", "blade exposed", "blade broken", "guard missing",
+        "machine jammed", "hand crushed", "finger crushed"
     )
 
     fun isUrgent(complaint: String): Boolean {

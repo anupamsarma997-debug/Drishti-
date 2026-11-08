@@ -22,6 +22,8 @@ class UrgentSymptomMatcherTest {
 
     @Test fun ordinaryShockAbsorberMentionIsNotMistakenForElectricShock() {
         assertFalse(UrgentSymptomMatcher.isUrgent("rear shock absorber makes a noise"))
+        assertFalse(UrgentSymptomMatcher.isUrgent("technician replaced the blade yesterday"))
+        assertFalse(UrgentSymptomMatcher.isUrgent("machine is jammed in the menu"))
     }
 
     @Test fun punctuationAndCaseDoNotHideUrgentPhrases() {
