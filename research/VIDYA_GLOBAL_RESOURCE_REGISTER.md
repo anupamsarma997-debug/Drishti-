@@ -393,3 +393,57 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - Simulated predictive-maintenance data is suitable for pipeline testing, not field-performance claims.
 - Official Indian brand portals are link-out sources. Do not scrape or redistribute proprietary manuals without permission.
 - No new dataset has been downloaded, bundled into the APK, or used to train a Vidya model in this pass.
+
+
+## Fifth research pass — additional machine diagnostics datasets and Indian farm standards
+
+43. NLN-EMP electric motor-driven centrifugal pump dataset — confirmed CC0
+   Primary source: https://research.utwente.nl/en/datasets/nln-emp-motor-current-and-vibration-monitoring-dataset-for-variou/
+   The University of Twente record identifies version 4 (5 Aug 2024) and explicitly lists Creative Commons Zero v1.0 Universal. Contains experimental vibration, motor current and voltage from a pump setup with multiple fault types and severity levels across operating speeds.
+   Vidya use: high-priority legally reusable baseline for offline pump/motor signal-processing experiments; preserve dataset citation and version metadata even though CC0 does not require attribution.
+   Limits: controlled naval/industrial test setup, not domestic Indian pump field data. Split by experiment/setup and operating condition to avoid leakage.
+   Priority: P0 for controlled research; still inspect the downloaded files and metadata before use.
+
+44. MIMII industrial sound dataset
+   Primary discovery: https://zenodo.org/records/3384388
+   Covers normal/anomalous sounds from valves, pumps, fans and slide rails, recorded with multi-channel microphones and factory background noise; reported CC BY-SA 4.0.
+   Vidya use: sound anomaly detection research for rotating and fluid-handling equipment.
+   Limits: anomaly labels do not give a complete repair diagnosis; CC BY-SA share-alike obligations must be reviewed for model/data redistribution. Verify exact Zenodo version and files before use.
+   Priority: P1, license-aware research.
+
+45. XJTU-DV dynamic vision dataset
+   Primary paper: https://doi.org/10.1016/j.cjme.2025.100163
+   January 2026 open-access paper describes an event-camera dataset for non-contact vibration measurement and mechanical fault diagnosis. XJTU-DV-Pump includes healthy, ball fault, inner fault, outer fault, rotor misalignment and cavitation conditions, with multiple angles, distances and speeds.
+   Vidya use: investigate camera-based vibration estimation and pump anomaly detection without touching moving machinery.
+   Limits: confirm the dataset download page's exact license and camera/event-data format before reuse; event-camera data are not ordinary phone RGB video. Do not claim direct smartphone-camera compatibility.
+   Priority: P1 research candidate; HOLD until exact data license is verified.
+
+46. UMFDD — Universal Machinery Fault Diagnosis Dataset
+   Primary source: https://data.mendeley.com/datasets/3bz24t6tf4/1
+   Published 2 Apr 2026, Version 1, CC BY 4.0; 8.06 GB ZIP. Integrates multiple public and experimental datasets with normalized signal units and categories for healthy, bearing, gearbox and induction-motor faults.
+   Vidya use: cross-dataset signal normalization and model generalization research.
+   Limits: composite dataset; audit each constituent dataset's original rights, labels, testbed and possible duplicate samples. CC BY 4.0 on the compilation does not erase upstream restrictions. Large download is not suitable for phone-side ingestion.
+   Priority: P1 after component-level provenance audit.
+
+47. HUSTmotor multimodal motor fault dataset
+   Source: https://github.com/CHAOZHAO-1/HUSTmotor-multi-modal-dataset
+   Public repository describes vibration and acoustic signals for six preset motor states (healthy, bearing fault, bowed rotor, broken rotor bars, misalignment, voltage unbalance) at four operating frequencies; 24 text files, 25.6 kHz sampling.
+   Vidya use: investigate joint audio-vibration features and robustness across operating frequencies.
+   Limits: faults were artificially preset on a laboratory test rig; repository page did not expose a clear reuse license in this review. Public access is not permission for commercial training.
+   Priority: HOLD pending explicit license confirmation.
+
+48. SRFMTTI — Indian farm machinery testing and standards catalogue
+   Official source: https://srfmtti.dacnet.nic.in/Testing.html
+   Government farm machinery testing institute page lists standards and testing information, including preventive maintenance of agricultural wheeled tractors (IS 6840), operator-manual content/presentation (IS 8132), tractor/machinery operator controls (IS 8133) and PTO shaft guards (IS 8265).
+   Vidya use: standards metadata and safety-reference discovery for Indian tractor/farm-machine workflows.
+   Limits: standard titles/indexes are not the complete standard text; standards may be copyrighted or paid. Use only licensed copies and never turn a standards title into a model-specific repair procedure.
+   Priority: P0 for metadata and safety-source discovery.
+
+## Fifth-pass decisions
+- NLN-EMP v4 is now a confirmed CC0 candidate from the publisher's record; it is the strongest immediate pump/motor dataset candidate in this pass.
+- MIMII is useful for sound anomaly research, but a sound anomaly is not a confirmed failed component or repair instruction.
+- XJTU-DV is promising for camera-based vibration research but uses event-camera recordings; phone RGB camera support cannot be assumed.
+- UMFDD is large and composite; component licenses and provenance must be checked independently.
+- HUSTmotor is on HOLD until its original repository provides a clear license.
+- SRFMTTI standards index is an official Indian source for metadata, not permission to redistribute BIS/IS full texts.
+- No dataset has been downloaded, integrated into the Android app, or used to train a Vidya model in this pass.
