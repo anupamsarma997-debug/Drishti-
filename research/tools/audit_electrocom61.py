@@ -145,7 +145,8 @@ def audit(root: Path) -> tuple[list[str], dict]:
     errors.extend(layout_errors)
     split_counts: Counter = Counter()
     class_counts: Counter = Counter()
-    hashes: dict[str, tuple[str, str]] = {}\n    image_split_by_name: dict[str, str] = {}
+    hashes: dict[str, tuple[str, str]] = {}
+    image_split_by_name: dict[str, str] = {}
     total_images = total_labels = total_boxes = 0
     missing_labels: list[str] = []
     orphan_labels: list[str] = []
