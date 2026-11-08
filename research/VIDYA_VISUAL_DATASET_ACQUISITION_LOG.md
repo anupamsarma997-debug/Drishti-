@@ -187,3 +187,15 @@ This log separates downloaded archives from extracted/validated images, and both
 - 3,064 annotation rows; 3,064 valid YOLO boxes; zero malformed annotation rows.
 - All 12 official shards have now been downloaded and individually audited: 36,773 primary-image rows and 55,865 valid YOLO boxes. These are per-shard uniqueness counts; global cross-shard duplicate detection remains the next required step.
 - No training has been performed; source dataset is synthetic and needs independent real-world evaluation.
+
+
+### Global cross-shard duplicate and annotation audit — PASS
+- Workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42496202801 (completed successfully).
+- Report artifact: `vidya-i3d-global-cross-shard-audit`, artifact ID `13624045394`, 787 bytes; expires 2026-12-08.
+- All 12 shard Parquet files were downloaded again from their audited GitHub artifacts and scanned together.
+- 36,773 rows; 36,773 primary images; 36,773 globally unique primary-image SHA-256 hashes.
+- Exact duplicate primary-image rows across all shards: 0.
+- Valid YOLO boxes: 55,865; malformed annotation rows: 0; missing primary images: 0.
+- Conflicting annotations for duplicate images: 0; all 16 class IDs appear.
+- This establishes dataset-level exact-image uniqueness and annotation consistency, not model accuracy or real-world recognition.
+- Global audit code: `research/tools/audit_i3d_cross_shard.py`; tests: `research/tools/test_i3d_cross_shard.py`.
