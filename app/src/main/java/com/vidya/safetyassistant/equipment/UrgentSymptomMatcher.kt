@@ -33,7 +33,6 @@ internal object UrgentSymptomMatcher {
 
     private fun normalize(value: String): String =
         value.lowercase(Locale.ROOT)
-            .replace(Regex("[^\\\\p{L}\\\\p{N}]+"), " ")
+            .replace(Regex("[^\\p{L}\\p{N}]+"), " ")
             .trim()
-
 }
