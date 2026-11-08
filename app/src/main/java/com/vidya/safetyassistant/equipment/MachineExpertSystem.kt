@@ -30,7 +30,7 @@ object MachineExpertSystem {
             "Starting, engine, drivetrain, tyres, brakes, dashboard codes and vehicle electrical symptoms",
             "Exact model/year/OEM service data is required for model-specific diagnosis."),
         MachineExpert("farm", "Tractor & Farm Machine Expert",
-            setOf("tractor", "power_tiller", "rotavator", "pump", "diesel_engine", "sprayer",
+            setOf("tractor", "power_tiller", "rotavator", "diesel_engine", "sprayer",
                 "thresher", "combine", "reaper", "chaff_cutter", "rice_mill", "maize_sheller",
                 "brush_cutter", "power_weeder", "transplanter", "solar_pump", "generator",
                 "winnower", "grain_dryer", "feed_mixer", "root_digger", "areca_harvester",

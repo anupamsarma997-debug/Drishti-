@@ -9,6 +9,8 @@ class MachineExpertSystemTest {
         assertEquals("Tractor & Farm Machine Expert", MachineExpertSystem.expertFor("tractor")?.name)
         assertEquals("Home Appliance Expert", MachineExpertSystem.expertFor("washer")?.name)
         assertEquals("Motor & Pump Expert", MachineExpertSystem.expertFor("motor")?.name)
+        assertEquals("Motor & Pump Expert", MachineExpertSystem.expertFor("pump")?.name)
+        assertEquals("Motor & Pump Expert", MachineExpertSystem.expertFor("solar_pump")?.name)
         assertEquals("Workshop & Power Tool Expert", MachineExpertSystem.expertFor("power_tools")?.name)
         assertEquals("Industrial Machine Expert", MachineExpertSystem.expertFor("forklift")?.name)
     }
