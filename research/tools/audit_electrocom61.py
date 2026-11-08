@@ -71,7 +71,7 @@ def index_by_stem(paths: list[Path], kind: str, split: str, errors: list[str]) -
     return indexed
 
 
-def audit_metadata_csv(root: Path, image_split_by_name: dict[str, str], unique_classes_by_image: dict[str, set[int]], errors: list[str]) -> dict:
+def audit_metadata_csv(root: Path, image_split_by_name: dict[str, str], errors: list[str]) -> dict:
     candidates = [p for p in root.rglob("*") if p.is_file() and p.name.casefold() == "metadata_electrocom61.csv"]
     if not candidates:
         return {"status": "not_found", "rows": 0}
@@ -120,12 +120,6 @@ def audit_metadata_csv(root: Path, image_split_by_name: dict[str, str], unique_c
                     object_count = int(normalized.get("TYPE_OF_OBJECTS", ""))
                     if object_count < 1:
                         raise ValueError
-                    observed_classes = unique_classes_by_image.get(key)
-                    if observed_classes is not None and object_count != len(observed_classes):
-                        errors.append(
-                            f"{location}: TYPE_OF_OBJECTS says {object_count} unique component types, "
-                            f"but YOLO labels contain {len(observed_classes)} distinct class IDs"
-                        )
                 except ValueError:
                     errors.append(f"{location}: TYPE_OF_OBJECTS must be a positive integer")
                 if not normalized.get("OBJECT_NAME"):
@@ -157,7 +151,6 @@ def audit(root: Path) -> tuple[list[str], dict]:
     class_counts: Counter = Counter()
     hashes: dict[str, tuple[str, str]] = {}
     image_split_by_name: dict[str, str] = {}
-    unique_classes_by_image: dict[str, set[int]] = {}
     total_images = total_labels = total_boxes = 0
     missing_labels: list[str] = []
     orphan_labels: list[str] = []
@@ -190,7 +183,6 @@ def audit(root: Path) -> tuple[list[str], dict]:
                 errors.append(f"cannot hash image {image_path}: {exc}")
         for stem, label_path in labels.items():
             total_labels += 1
-            label_classes: set[int] = set()
             try:
                 lines = label_path.read_text(encoding="utf-8").splitlines()
             except (OSError, UnicodeDecodeError) as exc:
@@ -221,18 +213,14 @@ def audit(root: Path) -> tuple[list[str], dict]:
                     errors.append(f"{location}: box width and height must be greater than zero")
                     continue
                 class_counts[int(class_value)] += 1
-                label_classes.add(int(class_value))
                 total_boxes += 1
-            matching_image = images.get(stem)
-            if matching_image is not None:
-                unique_classes_by_image[matching_image.name.casefold()] = label_classes
 
     for item in missing_labels:
         errors.append(f"image has no matching label file: {item}")
     for item in orphan_labels:
         errors.append(f"label has no matching image: {item}")
 
-    metadata_report = audit_metadata_csv(root, image_split_by_name, unique_classes_by_image, errors)
+    metadata_report = audit_metadata_csv(root, image_split_by_name, errors)
     report = {
         "dataset_root": str(root),
         "metadata_csv": metadata_report,

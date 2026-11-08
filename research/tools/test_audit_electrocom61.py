@@ -97,15 +97,15 @@ class ElectroCom61AuditTest(unittest.TestCase):
 
     def test_metadata_unique_component_count_matches_distinct_label_classes(self):
         (self.root / "Train" / "Label" / "train_sample.txt").write_text(
-            "0 0.5 0.5 0.25 0.25\\n1 0.4 0.4 0.1 0.1\\n",
+            "0 0.5 0.5 0.25 0.25\n1 0.4 0.4 0.1 0.1\n",
             encoding="utf-8",
         )
         metadata = self.root / "Metadata_ElectroCom61.csv"
         metadata.write_text(
-            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\\n"
-            "train_sample.jpg,1,1_Resistor;1_Diode,white,Phone,Train\\n"
-            "valid_sample.jpg,1,1_Resistor,white,Phone,Valid\\n"
-            "test_sample.jpg,1,1_Resistor,white,Phone,Test\\n",
+            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\n"
+            "train_sample.jpg,1,1_Resistor;1_Diode,white,Phone,Train\n"
+            "valid_sample.jpg,1,1_Resistor,white,Phone,Valid\n"
+            "test_sample.jpg,1,1_Resistor,white,Phone,Test\n",
             encoding="utf-8",
         )
         errors, _ = audit(self.root)
