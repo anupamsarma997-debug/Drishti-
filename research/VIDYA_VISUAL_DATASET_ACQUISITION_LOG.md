@@ -32,16 +32,13 @@ This log separates downloaded archives from extracted/validated images, and both
 - Source documentation states CC BY 4.0 and cites the original Roboflow dataset.
 - Scope: vehicle exterior/body components; does not cover engine internals or diagnose faults.
 
-## Acquisition in progress / extraction repair
+## Historical failed attempt — resolved
 
 ### Bonfiglioli bearing defect dataset
 - Source: https://zenodo.org/records/11034252
 - Source describes actual bearing parts photographed with a HIK vision camera; 97.5 MB RAR. The record does not provide a clear license in its rights field, so this dataset remains quarantined: no training, redistribution or commercial use until permission is clarified.
-- First acquisition workflow downloaded the complete 92.98 MiB archive, SHA-256 `26f7cf53d0c9d5c6591e0aab619e184022ccad875f6f9510e00ac32121c790c5`, but `unar` failed on 8 files during extraction. No image count is claimed.
-- Fix committed: add Zenodo MD5 verification against `d252807928f29c11c2a6344afb7f8eef`, install 7-Zip and use it as an extraction fallback.
-- Retry workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42494131192
-- Android CI for the same code commit: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42494131151
-- Do not mark this dataset acquired/usable until checksum, extraction, image decode and audit report all pass.
+- Earlier attempt downloaded the 92.98 MiB archive but failed extraction because the runner lacked the expected 7-Zip executable. This was resolved by installing `7zip-rar` and using Ubuntu's `7z` executable.
+- The successful, checksum-verified extraction and audit are recorded in the next section. The dataset remains quarantined because the Zenodo record does not state a clear license.
 
 
 ### Bonfiglioli bearing defect dataset — archive acquired and audited
@@ -69,20 +66,10 @@ This log separates downloaded archives from extracted/validated images, and both
 - Not downloaded.
 
 ## Current engineering status
-- Android CI run 42493860995 passed on commit 82c1416231b51c02c9aba119d068a2f811671c29; the debug APK was built and uploaded.
-- Android CI run 42494131151 is testing the checksum/7-Zip retry commit.
+- Android CI run 42494527709 passed on commit d2bc0aa7f069810ada3ea3ebc531af2ffa545dc6; debug APK artifact was uploaded (80,372,566 bytes).
+- Latest Android CI for subsequent dataset workflow commits is tracked in GitHub Actions; no Android application source change is included in the I3D dataset workflow.
 - No Vidya specialist model has been trained yet. Existing archives are separate tasks/formats and must not be naively merged into one class list.
 - Next gates: finish bearing archive audit; obtain Roboflow exports only through authorized access; normalize per-dataset labels; split by original source/physical instance where possible; train narrow baselines; evaluate on held-out sources; only then consider Android model integration.
-
-
-### I3D Tools Dataset — first-shard acquisition in progress
-- Source: https://huggingface.co/datasets/i3dlabiisc/I3D-Tools-Dataset
-- Official dataset page lists 36,773 rows, 16 hand-tool classes and 5.52 GB across 12 parquet shards; MIT is the displayed dataset license. The page tags it synthetic.
-- Workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42494453950
-- Current action downloads only shard `train-00000-of-00012.parquet` (~471 MB), then audits embedded primary/conditioning images, image hashes and YOLO boxes. No full-dataset acquisition is claimed.
-- Class list in source order: ball_bearing, gear, hammer, measuring_tape, nail, nut, oring, plier, saw, scissors, screw, screwdriver, spring, utility_knife, washer, wrench.
-- Synthetic images are suitable only for a controlled baseline/domain adaptation experiment; they do not prove recognition on real workshop imagery.
-- Do not combine its 16 class IDs with the PCB, car-body or electronics class IDs. Keep dataset-specific class maps.
 
 
 ### I3D Tools Dataset — first shard acquired and audited
