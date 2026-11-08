@@ -174,3 +174,8 @@ See [research/ELECTROCOM61_CLASS_REFERENCE.md](research/ELECTROCOM61_CLASS_REFER
 - [India Driving Datasets](https://indiadrivingdata.org/): Indian road-scene datasets; account and license review required, not mechanical-part data.
 
 These are source discoveries only. No archives were downloaded, no new images imported, and no recognition model trained in this pass. See research/VIDYA_GLOBAL_RESOURCE_REGISTER.md for license, scope, limitations and priority details.
+
+
+### First acquired archive — electronics component sorting only
+
+GitHub Actions successfully downloaded and extracted the public [Electronics-Parts-Dataset](https://github.com/praneelchand10/Electronics-Parts-Dataset) source archive. Audit: 10 nested ZIP archives passed CRC checks; 10,480 PNG files decoded; zero invalid images and zero byte-identical duplicates. The archive contains multiple resolution variants and only three classes (capacitor, potentiometer, TO-220 regulator IC), so the count is not 10,480 independent captures and this is not a general machine-parts/fault dataset. GitHub repo declares CC0-1.0 but the associated MDPI paper says CC BY 4.0; use the conservative attribution conditions pending clarification. Acquisition artifact and SHA-256 are recorded in `research/VIDYA_GLOBAL_RESOURCE_REGISTER.md`. No model has been trained or integrated yet.

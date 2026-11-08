@@ -935,3 +935,16 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - Motor-pump and gearbox/bearing datasets are sensor data, not camera images; keep them in a separate track.
 - IDD is road-scene context only and requires account/license review.
 - No archive was downloaded or model trained in this pass. This is source discovery, not a new app capability.
+
+
+## Twenty-second implementation pass — first source archive acquired and extracted
+
+103. Electronics-Parts-Dataset (GitHub source archive, main branch)
+    Source: https://github.com/praneelchand10/Electronics-Parts-Dataset
+    Source archive successfully downloaded by GitHub Actions on 8 November 2026; compressed source archive size 95,160,178 bytes; SHA-256 db259bddb1f9788ebb7dc0040139811496b93f3deb967edfaf6e4f89a6debfd6.
+    Nested archive audit: 10 ZIP archives were CRC-tested and extracted successfully. The extracted collection contains 10,480 PNG files, 10,480 unique file-byte hashes, zero invalid images, and zero byte-identical duplicate files. Image dimensions reported: 10x10 (1,734), 20x20 (1,734), 30x30 (3,544), 100x100 (1,734), 224x224 (1,734). These are resolution variants and must not be counted as 10,480 independent physical captures; 30x30 also appears in more than one archive.
+    Class scope from the dataset paper: capacitor, potentiometer and TO-220 linear voltage-regulator IC. The paper describes 1,734 original 30x30 crops and folder labels 1/2/3. This is an electronics sorting dataset, not vehicle, tractor, pump or industrial-machine component coverage.
+    Licence discrepancy: GitHub repository metadata and included LICENSE declare CC0-1.0, while the associated 2023 MDPI data article states CC BY 4.0. Until clarified with the author, retain attribution and treat CC BY 4.0 as the conservative use condition; do not redistribute or commercially ship derived weights without a rights review.
+    Acquisition artifact: GitHub Actions run 42493272704, artifact vidya-electronics-parts-acquired, 236,045,799 bytes, artifact SHA-256 3f4b91d6f28c09f6d17e35c6b1e9c5d9adde3c19ca6a210200c25a10eac8b791, retention until 8 December 2026. The artifact contains the downloaded source ZIP, extracted nested archives and audit report.
+    Audit result: all 10 nested ZIP archives passed CRC validation and extraction; all 10,480 images decoded with Pillow; zero invalid images. This is archive integrity/format validation only, not semantic label verification, train/test leakage review, model training or model accuracy.
+    Priority: archive acquired; next gate is verify class folder counts and split methodology, then build a narrow three-class baseline. Do not integrate into general machine diagnosis.

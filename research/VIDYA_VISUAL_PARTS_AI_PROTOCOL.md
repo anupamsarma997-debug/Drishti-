@@ -146,3 +146,12 @@ This protocol is an engineering plan, not evidence of model performance, dataset
 5. Sensor datasets: defer until a compatible sensor-input pathway and signal-processing evaluation plan exist.
 
 No model training begins until archive bytes, licence files, class taxonomy, labels, duplicate/leakage reports and a reproducible split have been checked. Do not bundle multi-gigabyte source datasets in the Android APK.
+
+
+## 13. First acquired dataset: narrow electronic-parts pilot
+
+The first real archive acquisition is `praneelchand10/Electronics-Parts-Dataset`. GitHub Actions downloaded its 95,160,178-byte source ZIP, SHA-256 `db259bddb1f9788ebb7dc0040139811496b93f3deb967edfaf6e4f89a6debfd6`, extracted 10 nested ZIP archives and validated 10,480 PNG files. All images decoded; no byte-identical duplicates were found. This total includes multiple resolution variants (10x10, 20x20, 30x30, 100x100, 224x224) and must not be treated as 10,480 independent captures.
+
+The source paper defines only three classes: capacitors, potentiometers and TO-220 linear voltage-regulator ICs. It describes 1,734 original 30x30 crops. This is suitable only for a limited electronics-component sorting baseline, not general vehicle/farm/industrial parts or fault recognition. Before training, identify the canonical original-resolution split, confirm the class folders/counts, check whether source-scene/capture groups leak across splits, and resolve the licence discrepancy (GitHub repository says CC0-1.0; associated paper says CC BY 4.0). Until resolved, preserve attribution and apply the more conservative CC BY 4.0 conditions.
+
+Current result: archive download/extraction/integrity audit succeeded. No Vidya model has been trained from this archive, no accuracy has been measured by Vidya, and no Android model integration has occurred.
