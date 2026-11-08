@@ -447,3 +447,46 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - HUSTmotor is on HOLD until its original repository provides a clear license.
 - SRFMTTI standards index is an official Indian source for metadata, not permission to redistribute BIS/IS full texts.
 - No dataset has been downloaded, integrated into the Android app, or used to train a Vidya model in this pass.
+
+## Sixth research pass — Indian repair-support coverage and ICAR references
+
+49. Right to Repair India — official farming-equipment category coverage
+   Primary source: https://righttorepairindia.gov.in/sectorcoverd
+   The Department of Consumer Affairs portal explicitly lists tractor parts, harvesters and water-pump motors under farming equipment; it also lists passenger vehicles and EVs, refrigerators, washing machines and air conditioners in other sectors.
+   Vidya use: authoritative category discovery and a safe link-out path to participating brands support resources.
+   Limits: portal coverage does not mean every brand/model has a downloadable workshop manual, and it is not blanket permission to copy portal or OEM content.
+   Priority: P0 for source discovery and user link-outs.
+
+50. Right to Repair India — participating company count (dated government statement)
+   Primary source: Rajya Sabha answer, 10 February 2026: https://sansad.nic.in/getFile/annex/270/AU1152_PZkOpI.pdf?source=pqars
+   The Ministry of Consumer Affairs stated that 66 companies had been onboarded to the portal. This is a dated figure, not a live current count.
+   Vidya use: background evidence that the official portal aggregates participating brand support.
+   Limits: do not hard-code 66 as a current count; verify the live directory before displaying brand availability.
+   Priority: P1 background metadata.
+
+51. ICAR — Farm Machinery Maintenance and Management
+   Publisher page: https://icar.org.in/en/product/44
+   Official ICAR publication catalogue entry for a farm-machinery maintenance and management book.
+   Vidya use: identify a credible India-specific reference for the knowledge research queue; inspect publisher access and rights before extracting or storing content.
+   Limits: ICAR site carries copyright notices; catalogue availability or a download button is not a blanket open-data license. Do not bundle or reproduce the book without permission.
+   Priority: P1 for licensed-reference acquisition.
+
+52. ICAR — Farm Machinery Principles and Applications
+   Publisher page: https://www.icar.org.in/en/product/46
+   Official ICAR publication catalogue entry for principles and applications of farm machinery.
+   Vidya use: discover foundational agricultural engineering topics and terminology for the farm-machine taxonomy.
+   Limits: publisher copyright applies; use only within permitted access and licensing terms.
+   Priority: P1 for licensed-reference acquisition.
+
+53. ICAR — Agricultural Engineering curriculum and maintenance topics
+   Official source: https://ebook.icar.org.in/index.php/bookprocess/ugengg_list
+   Public curriculum description covers farm machinery, tractor systems and controls, harvesting equipment, PTO, hydraulics and scheduled tractor/farm-machine maintenance.
+   Vidya use: taxonomy and topic-gap discovery; it can help identify which machine systems the knowledge base should cover.
+   Limits: curriculum text is educational overview, not model-specific service data or proof of a repair procedure. Check reuse terms.
+   Priority: P1 for taxonomy and reference discovery.
+
+## Sixth-pass decisions
+- Right to Repair India is a useful official discovery layer spanning farm machinery, automobiles and selected consumer durables; use links rather than copying proprietary OEM content.
+- The government-reported 66-company figure is dated 10 February 2026 and must not be presented as a live count.
+- ICAR publication catalogue entries are credible leads, but publisher copyright means access is not equivalent to an open reuse license.
+- No new manuals or datasets were copied into the app or used to train a model in this pass.
