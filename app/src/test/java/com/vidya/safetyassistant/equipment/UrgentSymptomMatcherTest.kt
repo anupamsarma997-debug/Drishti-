@@ -26,6 +26,13 @@ class UrgentSymptomMatcherTest {
         assertFalse(UrgentSymptomMatcher.isUrgent("machine is jammed in the menu"))
     }
 
+    @Test fun wordBoundariesAvoidPartNameAndTechnicalTermFalsePositives() {
+        assertFalse(UrgentSymptomMatcher.isUrgent("firewall error on controller"))
+        assertFalse(UrgentSymptomMatcher.isUrgent("replace spark plug during service"))
+        assertTrue(UrgentSymptomMatcher.isUrgent("visible spark near exposed wire"))
+        assertTrue(UrgentSymptomMatcher.isUrgent("fire coming from motor"))
+    }
+
     @Test fun punctuationAndCaseDoNotHideUrgentPhrases() {
         assertTrue(UrgentSymptomMatcher.isUrgent("BRAKE-NAHI LAG RAHA"))
         assertTrue(UrgentSymptomMatcher.isUrgent("DIESEL, LEAK!"))
