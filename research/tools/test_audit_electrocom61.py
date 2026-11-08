@@ -86,8 +86,8 @@ class ElectroCom61AuditTest(unittest.TestCase):
     def test_metadata_requires_background_and_capture_device(self):
         metadata = self.root / "Metadata_ElectroCom61.csv"
         metadata.write_text(
-            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\\n"
-            "train_sample.jpg,1,1_Resistor,,,Train\\n",
+            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\n"
+            "train_sample.jpg,1,1_Resistor,,,Train\n",
             encoding="utf-8",
         )
         errors, _ = audit(self.root)
