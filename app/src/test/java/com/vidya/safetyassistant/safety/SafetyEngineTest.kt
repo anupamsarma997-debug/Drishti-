@@ -38,9 +38,9 @@ class SafetyEngineTest {
         assertEquals(SafetyStatus.CAUTION, result.status)
     }
 
-    @Test fun completeClearClassificationIsOnlyNoFlagSafe() {
+    @Test fun noFlaggedHazardStillCannotClaimMachineIsSafe() {
         val result = engine.evaluate(frame(), 10_000L)
-        assertEquals(SafetyStatus.SAFE, result.status)
-        assertTrue(result.reason.contains("not a safety guarantee"))
+        assertEquals(SafetyStatus.CAUTION, result.status)
+        assertTrue(result.reason.contains("cannot prove safety"))
     }
 }

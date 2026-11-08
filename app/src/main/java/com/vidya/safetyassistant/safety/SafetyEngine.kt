@@ -74,11 +74,14 @@ class SafetyEngine(
             )
         }
 
+        // An empty hazard list means only that this frame produced no configured flag.
+        // It is not proof that the machine or work area is safe. Keep the user in CAUTION
+        // until a validated, equipment-specific hazard assessment exists.
         return SafetyAssessment(
-            status = SafetyStatus.SAFE,
+            status = SafetyStatus.CAUTION,
             stopRequired = false,
             voiceWarning = null,
-            reason = "No configured hazard was flagged. This is not a safety guarantee.",
+            reason = "No configured hazard was flagged, but camera analysis cannot prove safety. Verify the machine is isolated and consult its exact manual.",
             evaluatedAtMillis = nowMillis
         )
     }
