@@ -1,9 +1,6 @@
 name: Acquire and audit I3D tools shard 00002
 
 on:
-  push:
-    paths:
-      - ".github/workflows/acquire-i3d-tools-shard-00002.yml"
   workflow_dispatch:
 
 permissions:
