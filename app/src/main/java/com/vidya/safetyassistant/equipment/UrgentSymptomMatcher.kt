@@ -23,11 +23,10 @@ internal object UrgentSymptomMatcher {
     )
 
     fun isUrgent(complaint: String): Boolean {
-        val normalized = normalize(complaint)
-        if (normalized.isBlank()) return false
-        val padded = " $normalized "
+        val padded = " ${normalize(complaint)} "
+        if (padded.isBlank()) return false
         return urgentPhrases.any { phrase ->
-            " ${normalize(phrase)} " in padded
+            padded.contains(" ${normalize(phrase)}")
         }
     }
 
