@@ -163,3 +163,14 @@ The auditor checks the three split folders, matching image/label stems, duplicat
 ### ElectroCom61 class-name reference
 
 See [research/ELECTROCOM61_CLASS_REFERENCE.md](research/ELECTROCOM61_CLASS_REFERENCE.md) for a secondary class-name cross-reference and the exact mapping/training gate. The secondary class-name cross-reference now includes Relay-Module (61 names total), but does not establish YOLO class-ID order. The primary archive's own configuration and metadata must resolve this before training.
+
+
+## Additional machine-vision dataset sources (research only)
+
+- [Hardware Tools Complete Dataset](https://data.mendeley.com/datasets/gmjkzdxhc6/1): 24 workshop-tool categories, 4,545 original images plus a separately augmented 12,150-image benchmark, COCO boxes, CC BY 4.0.
+- [Car Parts and Car Damages](https://humansintheloop.org/resources/datasets/car-parts-and-car-damages-dataset/): 1,812 exterior vehicle images / 24,851 polygons, publisher-declared CC0 1.0; access requires publisher form.
+- [IRISP industrial spare parts](https://github.com/imyliu1717/industrial_spare_part_dataset): 17,410 instance identities / 141,937 images, CC BY-SA 4.0; linked archives total about 80 GB and instance IDs are not semantic part labels.
+- [Journal Bearing Fault Detection](https://data.mendeley.com/datasets/x2hrn4vfrt/1) and [Mixed Bearing/Gearbox Fault Dataset](https://data.mendeley.com/datasets/yrms2v89p7/1): sensor-signal datasets, not image-recognition data.
+- [India Driving Datasets](https://indiadrivingdata.org/): Indian road-scene datasets; account and license review required, not mechanical-part data.
+
+These are source discoveries only. No archives were downloaded, no new images imported, and no recognition model trained in this pass. See research/VIDYA_GLOBAL_RESOURCE_REGISTER.md for license, scope, limitations and priority details.

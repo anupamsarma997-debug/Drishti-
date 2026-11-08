@@ -124,3 +124,25 @@ Passing a CI build does not pass these dataset or field-validation gates.
 
 ---
 This protocol is an engineering plan, not evidence of model performance, dataset ownership, OEM approval, or safety certification.
+
+
+## 11. Separate visual and sensor dataset tracks
+
+| Track | Suitable data | What it can support | What it cannot prove |
+|---|---|---|---|
+| Workshop tool detection | Hardware Tools Complete Dataset | Detect listed workshop tool categories | Internal machine-part identity or fault diagnosis |
+| Car exterior parts/damage | Humans in the Loop CC0 dataset | Exterior panel localisation and visible damage segmentation | Engine, brake, transmission or electrical faults |
+| Electronics components | ElectroCom61 v2 | Listed electronic-component detection | Vehicle/equipment fitment or failure diagnosis |
+| Industrial instance retrieval | IRISP | Same-object retrieval across views | Semantic part name, fault state, OEM part number |
+| Motor/pump/gearbox signals | Vibration/acoustic/current/temperature datasets | Narrow sensor-based condition monitoring | Camera recognition or field-wide fault diagnosis |
+| Indian road scenes | IDD | Vehicle/road-scene context | Mechanical parts or machine repair |
+
+## 12. Acquisition priority and blockers
+
+1. Hardware Tools Complete Dataset: obtain the Mendeley archive; preserve raw and augmented subsets separately; audit COCO categories, image counts, duplicate hashes, source-image lineage, split leakage and attribution before training.
+2. Humans in the Loop car parts/damage: publisher access form is required; obtain archive and confirm CC0 notice before use.
+3. ElectroCom61 v2: obtain the 2,121-image archive and audit the primary data.yaml class-ID mapping; keep electronics as a separate pilot.
+4. IRISP: archive index is available but listed archives total about 80 GB; do not pull all archives to a phone. Start only with a documented minimal subset if permitted by upstream license/split protocol.
+5. Sensor datasets: defer until a compatible sensor-input pathway and signal-processing evaluation plan exist.
+
+No model training begins until archive bytes, licence files, class taxonomy, labels, duplicate/leakage reports and a reproducible split have been checked. Do not bundle multi-gigabyte source datasets in the Android APK.

@@ -866,3 +866,72 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - Added tests for a valid metadata file and for split mismatch / row-count failure.
 - Metadata checks are skipped with an explicit report status if the CSV is not present. The audit still does not verify the semantic correctness of component names or bounding boxes against image pixels.
 - No dataset archive has been downloaded or trained in this pass; no model capability is claimed.
+
+
+## Twenty-first research pass — machine-part, workshop-tool and fault-signal dataset expansion
+
+96. Hardware Tools Complete Dataset — fine-grained workshop hardware and hand tools
+    Primary source: https://data.mendeley.com/datasets/gmjkzdxhc6/1
+    DOI: 10.17632/gmjkzdxhc6.1; published 8 September 2026; Version 1.
+    The Mendeley record reports 24 fine-grained workshop hardware/hand-tool categories, 4,545 original unaugmented images, and a 12,150-image augmented benchmark (10,140 train / 1,006 validation / 1,004 test) with 13,306 annotated instances. COCO JSON bounding boxes; master archive includes documentation and raw/augmented subsets.
+    Licence: CC BY 4.0 as stated by the primary record.
+    Vidya use: high-priority workshop-tool object detection candidate; use original images as independent capture evidence and keep augmented derivatives linked to source images. Do not count augmented images as new physical captures.
+    Limits: hand tools/hardware are not vehicle or agricultural-machine internal parts; exact class taxonomy and archive structure still require archive audit. A tool detector does not diagnose a tool's condition or prove safe operation.
+    Priority: P0 for archive audit; not downloaded or integrated.
+
+97. Car Parts and Car Damages Dataset — exterior vehicle parts and visible damage
+    Primary source: https://humansintheloop.org/resources/datasets/car-parts-and-car-damages-dataset/
+    The publisher describes 1,812 images: 998 car-part images and 814 damage images, with 24,851 polygon annotations. Part classes include exterior body panels, glass, wheels, lights, mirrors and grille; damage classes include dents, cracks, scratches, broken/missing parts and corrosion.
+    Licence: CC0 1.0 public-domain dedication, stated by the dataset publisher.
+    Access: publisher requests a form; archive is not directly linked on the page.
+    Vidya use: P0 candidate for visible exterior car-part localisation and body-damage segmentation after archive receipt and audit.
+    Limits: exterior bodywork only; no engine, brake, transmission, electrical or motorcycle internal parts; visible damage labels do not diagnose mechanical faults.
+    Priority: P0 pending publisher access; not downloaded or integrated.
+
+98. IRISP — Industrial Spare Parts Fine-Grained Instance Retrieval
+    Primary source: https://github.com/imyliu1717/industrial_spare_part_dataset
+    Dataset paper: https://openaccess.thecvf.com/content/CVPR2026W/FGVC13/html/Liu_Efficient_Fine-grained_Image_Retrieval_with_Vision_Foundation_Models_for_Industrial_CVPRW_2026_paper.html
+    Upstream README reports 17,410 physical object identities and 141,937 images (131,937 mobile-phone images plus 10,000 machine/studio images). Actual archive index: https://data.dws.informatik.uni-mannheim.de/machinelearning/irisp/ . Listed archives: All_Files.zip (48 GB), All_Files_2.zip (28 GB), gallery_phone_challenge.zip (4 GB).
+    Licence: CC BY-SA 4.0.
+    Vidya use: fine-grained instance retrieval / same-physical-item experiments, after checking paper, archive, split semantics and share-alike obligations.
+    Limits: object IDs represent physical instance identity, not semantic machine-part names, fault labels, OEM part numbers or fitment. Listed archives total about 80 GB and are impractical for phone-only acquisition.
+    Priority: P1; download link verified, archive not downloaded.
+
+99. Dataset for Multiclassification of Parts in Industry
+    Primary source: https://data.mendeley.com/datasets/2pvx4nwk4w/1
+    DOI: 10.17632/2pvx4nwk4w.1; published 2 October 2019. Images of five industrial part identities, captured with a Logitech camera in different positions, with development and test folders.
+    Licence: CC BY 4.0.
+    Vidya use: small pipeline smoke-test for image classification / reference-set retrieval and archive-audit tooling.
+    Limits: only five part identities; no general machine taxonomy or fault labels.
+    Priority: P1 for a small-format pipeline test; archive not downloaded.
+
+100. Journal Bearing Fault Detection in a Vertical Motor-Pump Testbed
+     Primary source: https://data.mendeley.com/datasets/x2hrn4vfrt/1
+     DOI: 10.17632/x2hrn4vfrt.1; published 14 August 2026. Record lists a 6.37 GB ZIP of synchronized vibration, acoustic, temperature, oil-pressure, shaft-displacement, three-phase motor-current and RPM signals sampled at 25.6 kHz, with healthy and bearing-clearance fault conditions.
+     Licence: CC BY 4.0.
+     Vidya use: offline sensor-signal fault-detection research for a motor-pump testbed, only if Vidya later gains compatible sensor input and a separate signal model.
+     Limits: not a camera image dataset; testbed faults do not establish field accuracy on household/agricultural pumps.
+     Priority: P1 for future sensor-model research; not downloaded.
+
+101. Mixed Fault Dataset of Bearings and Gearboxes under Variable Operating Conditions
+     Primary source: https://data.mendeley.com/datasets/yrms2v89p7/1
+     DOI: 10.17632/yrms2v89p7.1; published 15 July 2025. Vibration-signal subsets cover bearing inner/outer race, rolling element and cage faults, combined bearing faults, and gearbox tooth wear, broken teeth and eccentricity.
+     Licence: CC BY 4.0.
+     Vidya use: separate vibration-based condition-monitoring experiment and model evaluation.
+     Limits: sensor signals, not photos; no camera model or generic machine-wide diagnosis can be inferred.
+     Priority: P1; not downloaded.
+
+102. India Driving Datasets (IDD) — Indian road-scene context
+     Primary source: https://indiadrivingdata.org/
+     IIIT Hyderabad portal lists IDD-2WD with 15,000+ images and 50,000+ instances; IDD Detection with 10,000 images; IDD-117K with 117,951 images; and FGVD with 5,502 scene images and 210 fine-grained vehicle labels. Portal states account creation/login is required for downloads and license terms must be reviewed.
+     Vidya use: optional vehicle-family / road-scene context only, not mechanical-part recognition.
+     Limits: traffic/vehicle detection does not label engine, brake, suspension or internal parts.
+     Priority: P2; no archive downloaded.
+
+## Twenty-first-pass acquisition decisions
+- Best near-term visual archive candidate: Hardware Tools Complete Dataset (24 classes, 4,545 original images, COCO annotations, CC BY 4.0). It covers workshop tools, not all machine parts.
+- Best car exterior candidate: Humans in the Loop dataset (CC0 1.0), but publisher form is required for access.
+- IRISP download status is resolved: upstream links to about 80 GB of archives, but labels are instance IDs rather than semantic part categories; use only for retrieval research and review CC BY-SA obligations.
+- Motor-pump and gearbox/bearing datasets are sensor data, not camera images; keep them in a separate track.
+- IDD is road-scene context only and requires account/license review.
+- No archive was downloaded or model trained in this pass. This is source discovery, not a new app capability.
