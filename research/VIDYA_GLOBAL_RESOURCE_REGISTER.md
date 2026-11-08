@@ -857,3 +857,12 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - Added `research/tools/audit_electrocom61.py` for the published split/folder convention. It checks image-label pairing, YOLO row shape, class IDs 0–60, normalized box coordinates, positive box dimensions, cross-split duplicate image bytes, and per-class box counts.
 - Added synthetic unit tests for valid layout, invalid class IDs/coordinates, missing/orphan labels, cross-split duplicate bytes, missing split folders and empty negative-sample labels.
 - This is an archive-structure audit only; it does not infer class names, authenticate semantic labels, train a model, or establish suitability for machine troubleshooting.
+
+
+## Twentieth implementation pass — ElectroCom61 metadata cross-check
+
+- Corrected the secondary class-name cross-reference by including `Relay-Module`, giving 61 names. This remains a name reference only; the primary archive's class-ID order must still be read from its own configuration.
+- Extended `research/tools/audit_electrocom61.py` to discover `Metadata_ElectroCom61.csv` when present and validate required columns, duplicate names, references to actual images, DATA_TYPE versus split-folder agreement, positive TYPE_OF_OBJECTS values, non-empty OBJECT_NAME, and metadata row count against unique image filenames.
+- Added tests for a valid metadata file and for split mismatch / row-count failure.
+- Metadata checks are skipped with an explicit report status if the CSV is not present. The audit still does not verify the semantic correctness of component names or bounding boxes against image pixels.
+- No dataset archive has been downloaded or trained in this pass; no model capability is claimed.

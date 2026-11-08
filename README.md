@@ -157,7 +157,7 @@ After manually obtaining and reviewing the dataset licence/attribution files, ex
 python research/tools/audit_electrocom61.py --root /path/to/ElectroCom61
 ```
 
-The auditor checks the three split folders, matching image/label stems, YOLO row syntax, class IDs 0–60, normalized box coordinates, image SHA-256 duplicates across splits, and per-class box counts. It does not train a model, verify semantic class names, decode image pixels, prove commercial rights beyond the declared CC BY 4.0 record, or establish machine-fault recognition. No dataset images are bundled in Vidya.
+The auditor checks the three split folders, matching image/label stems, duplicate stems, YOLO row syntax, class IDs 0–60, normalized box coordinates, image SHA-256 duplicates across splits, and per-class box counts. If `Metadata_ElectroCom61.csv` is present, it also checks required columns, duplicate/missing image names, split agreement, positive object counts, and metadata/image row totals. It does not train a model, verify semantic class names, decode image pixels, prove commercial rights beyond the declared CC BY 4.0 record, or establish machine-fault recognition. No dataset images are bundled in Vidya.
 
 
 ### ElectroCom61 class-name reference
