@@ -823,3 +823,20 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - Prioritise CC BY 4.0 sources with useful image annotations for commercial-compatible research, while keeping non-commercial datasets such as MVTec AD, AutoVI and KolektorSDD2 on HOLD unless separate permission is obtained.
 - Do not claim generic defect data detects machine faults. Surface anomaly, corrosion segmentation, PCB defect recognition, wind-turbine blade inspection and component identity are separate tasks requiring separate labels and field validation.
 - No images were downloaded into the Android APK and no model was trained in this pass.
+
+
+## Eighteenth research pass — downloadable electronic component detection
+
+95. ElectroCom61 — 61-class electronic component object detection
+    Primary source: https://data.mendeley.com/datasets/6scy6h8sjz/1
+    DOI: 10.17632/6scy6h8sjz.1
+    Mendeley record reports 2,071 annotated images of common electronic components, 61 classes, varied lighting/backgrounds and multiple views; images were standardised to 640×640. The record provides a Download All action and a 70%/20%/10% train/validation/test split.
+    Licence: CC BY 4.0 as stated on the dataset record.
+    Vidya use: strongest currently identified directly downloadable, labelled candidate for a narrow electronics-component detector experiment. Audit the archive, exact class names, YOLO annotation integrity, duplicate images, class balance and capture-group leakage before any training.
+    Limits: collected in a university electronic lab; not a general mechanical/automotive/agricultural parts dataset, not fault/damage diagnosis, and no OEM make/model/part-number fitment. The record's multiple views and split structure still require leakage review.
+    Priority: P0 for archive audit; not downloaded, imported or trained.
+
+## Eighteenth-pass decisions
+- ElectroCom61 is a more actionable near-term dataset candidate than IRISP because its record exposes a Download All action, annotation format metadata and a CC BY 4.0 licence. It only advances the electronics-component recognition track.
+- The Mendeley record is evidence of the dataset's declared licence and metadata, not legal advice or proof that every image is free of third-party rights. Preserve attribution and review the archive's included notices before use.
+- No dataset archive was downloaded in this pass; no model was trained and no app capability has changed.
