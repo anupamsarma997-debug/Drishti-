@@ -23,6 +23,24 @@ No Azure or Google cloud resource, paid service, API key, billing account or mod
 
 ## 1. Google technologies
 
+### A. Google AI Studio / Antigravity Build — useful development tool, not the deployed Vidya backend
+
+What it offers:
+- Prompt-based generation and editing of Kotlin + Jetpack Compose Android projects.
+- Browser-based Android emulator for UI iteration without installing Android Studio locally.
+- Current Android export is a ZIP project; the documented Android workflow does not export directly to GitHub.
+- Emulator limitations include camera/photo capture, NFC, Bluetooth, GPS and Google Play services. This means it cannot validate Vidya's real camera/OCR flow or Google sign-in.
+
+Vidya decision:
+- Useful for trying a small isolated screen or prompt and reviewing generated Kotlin.
+- Do not replace the existing GitHub repository with a generated ZIP or blindly overwrite working files.
+- For camera and ML Kit testing, a real Android device is still required.
+- Treat AI Studio as a coding/prototyping assistant; Firebase AI Logic / Gemini API is the runtime AI service, and they are separate products.
+
+Official docs:
+- https://ai.google.dev/gemini-api/docs/aistudio-android
+
+
 ### A. ML Kit Vision — keep as the offline camera foundation
 
 What it does:
