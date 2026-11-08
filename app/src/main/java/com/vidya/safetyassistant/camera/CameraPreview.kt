@@ -8,6 +8,7 @@ import androidx.camera.view.PreviewView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
@@ -25,10 +26,15 @@ fun CameraPreview(
 ) {
     val context = LocalContext.current
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
-    val previewView = remember {
+    // Keep callbacks current without tearing down/restarting the camera on recomposition.
+    val latestOnDetections = rememberUpdatedState(onDetections)
+    val latestOnDetectionError = rememberUpdatedState(onDetectionError)
+    val latestOnTextRecognized = rememberUpdatedState(onTextRecognized)
+    val previewView = remember(context) {
         PreviewView(context).apply {
             scaleType = PreviewView.ScaleType.FILL_CENTER
-            implementationMode = PreviewView.ImplementationMode.PERFORMANCE
+            // TextureView is more stable than SurfaceView inside a vertically scrolling Compose screen.
+            implementationMode = PreviewView.ImplementationMode.COMPATIBLE
         }
     }
 
@@ -36,14 +42,20 @@ fun CameraPreview(
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
         val mainExecutor = ContextCompat.getMainExecutor(context)
         val analysisExecutor = Executors.newSingleThreadExecutor()
-        val analyzer = OnDeviceObjectAnalyzer(onDetections, onDetectionError, onTextRecognized)
+        val analyzer = OnDeviceObjectAnalyzer(
+            onDetections = { latestOnDetections.value(it) },
+            onError = { latestOnDetectionError.value(it) },
+            onTextRecognized = { latestOnTextRecognized.value(it) }
+        )
         var provider: ProcessCameraProvider? = null
+        var boundPreview: Preview? = null
+        var boundAnalysis: ImageAnalysis? = null
         var disposed = false
 
         cameraProviderFuture.addListener({
             if (disposed) return@addListener
             try {
-                provider = cameraProviderFuture.get()
+                val cameraProvider = cameraProviderFuture.get()
                 val preview = Preview.Builder().build().also {
                     it.surfaceProvider = previewView.surfaceProvider
                 }
@@ -53,27 +65,34 @@ fun CameraPreview(
                     .build()
                     .also { it.setAnalyzer(analysisExecutor, analyzer) }
 
-                provider?.unbindAll()
-                provider?.bindToLifecycle(
+                provider = cameraProvider
+                boundPreview = preview
+                boundAnalysis = analysis
+                cameraProvider.bindToLifecycle(
                     lifecycleOwner,
                     CameraSelector.DEFAULT_BACK_CAMERA,
                     preview,
                     analysis
                 )
             } catch (error: Exception) {
-                onDetectionError(error.localizedMessage ?: "Camera could not be started.")
+                latestOnDetectionError.value(error.localizedMessage ?: "Camera could not be started.")
             }
         }, mainExecutor)
 
         onDispose {
             disposed = true
             try {
-                provider?.unbindAll()
+                val activeProvider = provider
+                val activePreview = boundPreview
+                val activeAnalysis = boundAnalysis
+                if (activeProvider != null && activePreview != null && activeAnalysis != null) {
+                    activeProvider.unbind(activePreview, activeAnalysis)
+                }
             } catch (_: Exception) {
                 // The lifecycle may already have released the camera.
             }
             analyzer.close()
-            analysisExecutor.shutdown()
+            analysisExecutor.shutdownNow()
         }
     }
 
