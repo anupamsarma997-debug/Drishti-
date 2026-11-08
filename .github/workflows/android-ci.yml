@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -40,9 +40,24 @@ jobs:
           gradle-version: "8.10.2"
       - name: Run unit tests and assemble debug APK
         run: gradle testDebugUnitTest assembleDebug
-      - name: Upload debug APK
+      - name: Verify APK output
+        run: |
+          test -s app/build/outputs/apk/debug/app-debug.apk
+          file app/build/outputs/apk/debug/app-debug.apk
+      - name: Upload debug APK as workflow artifact (ZIP)
+        if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: vidya-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+      - name: Publish direct APK download in GitHub Release
+        if: github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: debug-latest
+          name: Vidya Debug APK (Latest)
+          prerelease: true
+          make_latest: false
+          overwrite_files: true
+          files: app/build/outputs/apk/debug/app-debug.apk
