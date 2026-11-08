@@ -124,6 +124,10 @@ def audit_metadata_csv(root: Path, image_split_by_name: dict[str, str], errors: 
                     errors.append(f"{location}: TYPE_OF_OBJECTS must be a positive integer")
                 if not normalized.get("OBJECT_NAME"):
                     errors.append(f"{location}: OBJECT_NAME is empty")
+                if not normalized.get("BACKGROUND"):
+                    errors.append(f"{location}: BACKGROUND is empty")
+                if not normalized.get("DEVICE_NAME"):
+                    errors.append(f"{location}: DEVICE_NAME is empty")
     except (OSError, UnicodeDecodeError, csv.Error) as exc:
         errors.append(f"cannot read metadata CSV: {exc}")
         return {"status": "read_error", "rows": row_count}
