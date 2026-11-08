@@ -30,6 +30,20 @@ class VehicleDiagnosticLookupTest {
         assertEquals("Code format not recognized", result!!.title)
     }
 
+    @Test fun standardizedP2RangeIsNotMisclassifiedAsManufacturerSpecific() {
+        val result = VehicleDiagnosticLookup.lookup("Car", "Example", "Model Y", "2023", "P2A00")
+        assertNotNull(result)
+        assertFalse(result!!.manufacturerSpecific)
+        assertEquals("Code not in Vidya's current reference", result.title)
+    }
+
+    @Test fun manufacturerControlledP3RangeRequiresExactLookup() {
+        val result = VehicleDiagnosticLookup.lookup("Car", "Example", "Model Y", "2023", "P3A00")
+        assertNotNull(result)
+        assertTrue(result!!.manufacturerSpecific)
+        assertTrue(result.title.contains("Manufacturer-specific"))
+    }
+
     @Test fun doesNotClaimUnknownGenericCodeIsKnown() {
         val result = VehicleDiagnosticLookup.lookup("Car", "Brand", "Model", "2020", "P0999")
         assertNotNull(result)
