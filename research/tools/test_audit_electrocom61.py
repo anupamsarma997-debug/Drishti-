@@ -71,10 +71,10 @@ class ElectroCom61AuditTest(unittest.TestCase):
     def test_metadata_csv_matches_image_names_and_splits(self):
         metadata = self.root / "Metadata_ElectroCom61.csv"
         metadata.write_text(
-            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\\n"
-            "sample.jpg,1,1_Resistor,white,Phone,Train\\n"
-            "sample.jpg,1,1_Resistor,white,Phone,Valid\\n"
-            "sample.jpg,1,1_Resistor,white,Phone,Test\\n",
+            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\n"
+            "sample.jpg,1,1_Resistor,white,Phone,Train\n"
+            "sample.jpg,1,1_Resistor,white,Phone,Valid\n"
+            "sample.jpg,1,1_Resistor,white,Phone,Test\n",
             encoding="utf-8",
         )
         errors, report = audit(self.root)
@@ -85,8 +85,8 @@ class ElectroCom61AuditTest(unittest.TestCase):
     def test_metadata_split_mismatch_is_rejected(self):
         metadata = self.root / "Metadata_ElectroCom61.csv"
         metadata.write_text(
-            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\\n"
-            "sample.jpg,1,1_Resistor,white,Phone,Test\\n",
+            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\n"
+            "sample.jpg,1,1_Resistor,white,Phone,Test\n",
             encoding="utf-8",
         )
         errors, _ = audit(self.root)

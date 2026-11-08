@@ -95,8 +95,8 @@ def audit_metadata_csv(root: Path, image_split_by_name: dict[str, str], errors: 
             for line_no, row in enumerate(reader, 2):
                 row_count += 1
                 normalized = {str(k).strip().upper(): (v or "").strip() for k, v in row.items() if k is not None}
-                raw_name = normalized.get("IMAGE_NAME", "").replace("\\\\", "/")
-                image_name = raw_name.rsplit("/", 1)[-1]
+                raw_name = normalized.get("IMAGE_NAME", "")
+                image_name = raw_name.replace("\\", "/").rsplit("/", 1)[-1]
                 key = image_name.casefold()
                 location = f"Metadata_ElectroCom61.csv:{line_no}"
                 if not image_name:
