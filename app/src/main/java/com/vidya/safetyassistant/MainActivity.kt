@@ -81,7 +81,6 @@ import com.vidya.safetyassistant.voice.OfflineSafetyGuide
 import com.vidya.safetyassistant.voice.VoiceAssistant
 import com.vidya.safetyassistant.online.OnlineMachineResearch
 import com.vidya.safetyassistant.online.OnlineMachineResult
-import com.vidya.safetyassistant.ai.OnDeviceGeminiNano
 import java.util.concurrent.Executors
 import kotlinx.coroutines.launch
 
@@ -96,14 +95,8 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalFoundationApi::class)
 private fun VidyaApp() {
     val context = LocalContext.current
-    val nanoAssistant = remember { OnDeviceGeminiNano() }
-    val nanoScope = rememberCoroutineScope()
-    var nanoStatus by remember { mutableStateOf("Gemini Nano availability has not been checked on this phone.") }
-    var nanoAnswer by remember { mutableStateOf("") }
-    var nanoBusy by remember { mutableStateOf(false) }
-    var nanoPanelExpanded by remember { mutableStateOf(false) }
+    val uiScope = rememberCoroutineScope()
     val cameraBringIntoViewRequester = remember { BringIntoViewRequester() }
-    DisposableEffect(nanoAssistant) { onDispose { nanoAssistant.close() } }
     val safetyController = remember { SafetyController(context, SafetyEngine()) }
     val manualLibrary = remember { ManualLibrary(context) }
     val manualIndexer = remember { ManualTextIndexer(context) }
@@ -216,7 +209,7 @@ private fun VidyaApp() {
         cameraGranted = granted
         if (granted && requestArAfterPermission) arMode = true
         requestArAfterPermission = false
-        if (granted) nanoScope.launch { cameraBringIntoViewRequester.bringIntoView() }
+        if (granted) uiScope.launch { cameraBringIntoViewRequester.bringIntoView() }
     }
     val pdfPicker = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
@@ -338,30 +331,6 @@ private fun VidyaApp() {
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF087E9B))
                 ) { Text("OPEN CAMERA INSPECTION", fontWeight = FontWeight.Bold) }
-                TextButton(onClick = { nanoPanelExpanded = !nanoPanelExpanded }) {
-                    Text(if (nanoPanelExpanded) "Hide on-device AI settings" else "Optional: Gemini Nano settings",
-                        color = Color(0xFF68E0FF))
-                }
-                if (nanoPanelExpanded) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth()
-                            .background(Color(0xFF111A25), RoundedCornerShape(16.dp))
-                            .padding(14.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text("ON-DEVICE GEMINI NANO", color = Color(0xFF68E0FF),
-                            fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelMedium)
-                        Text("Runs locally only when Google AICore and a supported Nano model are available. Otherwise the offline expert stays active.",
-                            color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
-                        Button(modifier = Modifier.fillMaxWidth(), onClick = {
-                            nanoScope.launch { nanoStatus = nanoAssistant.availabilityMessage() }
-                        }) { Text("Check phone compatibility") }
-                        Text(nanoStatus, color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
-                        Button(modifier = Modifier.fillMaxWidth(), onClick = {
-                            nanoScope.launch { nanoStatus = nanoAssistant.downloadModel() }
-                        }) { Text("Download model (if supported)") }
-                    }
-                }
                 cameraMachineSuggestion?.let { suggestion ->
                     Column(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
                         Text("OCR MACHINE CLUE: " + suggestion.machineName, color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
@@ -449,27 +418,6 @@ private fun VidyaApp() {
                         style = MaterialTheme.typography.bodySmall)
                     Text(result.confidenceNote, color = Color(0xFF9BAFC2),
                         style = MaterialTheme.typography.labelSmall)
-                    Button(modifier = Modifier.fillMaxWidth(), enabled = !nanoBusy, onClick = {
-                        nanoBusy = true
-                        nanoAnswer = ""
-                        nanoScope.launch {
-                            nanoAnswer = nanoAssistant.askMachineExpert(
-                                machine = result.expert.name,
-                                brand = expertBrand,
-                                modelName = expertModel,
-                                year = expertYear,
-                                complaint = expertComplaint,
-                                previousAnswers = expertComplaint
-                            )
-                            nanoBusy = false
-                        }
-                    }) { Text(if (nanoBusy) "On-device AI is working…" else "Ask Gemini Nano (if supported)") }
-                    if (nanoAnswer.isNotBlank()) {
-                        Text("ON-DEVICE AI — PRELIMINARY ONLY", color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
-                        Text(nanoAnswer, color = Color.White, style = MaterialTheme.typography.bodySmall)
-                        Text("Verify every technical claim against the exact official manual. AI output is not a diagnosis or repair authorization.",
-                            color = Color(0xFFFF8D70), style = MaterialTheme.typography.labelSmall)
-                    }
                     val expertParts = PartFailureGuide.match(selectedExpertMachineId, expertComplaint)
                     if (expertParts.isNotEmpty()) {
                         Spacer(Modifier.height(8.dp))
