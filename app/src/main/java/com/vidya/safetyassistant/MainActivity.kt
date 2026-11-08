@@ -60,6 +60,8 @@ import com.vidya.safetyassistant.equipment.EquipmentLabelParser
 import com.vidya.safetyassistant.equipment.EquipmentManualMatcher
 import com.vidya.safetyassistant.equipment.HomeTroubleshootingGuide
 import com.vidya.safetyassistant.equipment.MachineExpertSystem
+import com.vidya.safetyassistant.equipment.MachineRecognitionRouter
+import com.vidya.safetyassistant.equipment.MachineRouteSuggestion
 import com.vidya.safetyassistant.equipment.RuralMachineGuide
 import com.vidya.safetyassistant.equipment.FarmMachineBrandCatalog
 import com.vidya.safetyassistant.equipment.PartFailureGuide
@@ -123,6 +125,7 @@ private fun VidyaApp() {
     var expertYear by remember { mutableStateOf("") }
     var expertComplaint by remember { mutableStateOf("") }
     var expertAssessment by remember { mutableStateOf<com.vidya.safetyassistant.equipment.ExpertAssessment?>(null) }
+    var cameraMachineSuggestion by remember { mutableStateOf<MachineRouteSuggestion?>(null) }
     var symptomMenuExpanded by remember { mutableStateOf(false) }
     var selectedApplianceId by remember { mutableStateOf(HomeTroubleshootingGuide.categories.first().id) }
     var selectedSymptomId by remember { mutableStateOf(HomeTroubleshootingGuide.categories.first().symptoms.first().id) }
@@ -289,6 +292,16 @@ private fun VidyaApp() {
                     style = MaterialTheme.typography.titleMedium)
                 Text("Select a machine expert. Describe the problem to get offline, safety-first troubleshooting clues.",
                     color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                cameraMachineSuggestion?.let { suggestion ->
+                    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+                        Text("CAMERA SUGGESTION: " + suggestion.machineName + " · " + (suggestion.confidence * 100).toInt() + "%", color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
+                        Text(suggestion.expertName + ". " + suggestion.reason, color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Button(onClick = { selectedExpertMachineId = suggestion.machineId; expertAssessment = null }) { Text("Yes, use this expert") }
+                            TextButton(onClick = { cameraMachineSuggestion = null }) { Text("Not this machine") }
+                        }
+                    }
+                }
                 val expertMachineOptions = listOf(
                     "bike" to "Motorcycle", "scooter" to "Scooter", "car" to "Car",
                     "ev" to "Electric vehicle", "truck" to "Truck", "tractor" to "Tractor",
@@ -734,6 +747,12 @@ private fun VidyaApp() {
                                     "No generic objects recognized in the latest frame."
                                 } else {
                                     "On-device objects: " + frame.objects.take(3).joinToString { it.label }
+                                }
+                                val suggestion = frame.objects
+                                    .mapNotNull { MachineRecognitionRouter.suggest(it.label, it.confidence) }
+                                    .maxByOrNull { it.confidence }
+                                if (suggestion != null && cameraMachineSuggestion?.machineId != suggestion.machineId) {
+                                    cameraMachineSuggestion = suggestion
                                 }
                             },
                             onDetectionError = { detectorStatus = it },
