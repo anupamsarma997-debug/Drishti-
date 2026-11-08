@@ -50,6 +50,13 @@ class MachineExpertSystemTest {
         assertTrue(electric.summary.contains("Potential safety hazard"))
     }
 
+    @Test fun sparkPlugServiceDoesNotBecomeElectricalFireWarning() {
+        val assessment = MachineExpertSystem.assess(
+            "bike", "Motorcycle", "Honda", "Shine", "2022", "replace spark plug during service"
+        )!!
+        assertFalse(assessment.possibleAreas.contains("Electrical / fire risk"))
+    }
+
     @Test fun shockAbsorberNoiseDoesNotBecomeElectricalFault() {
         val result = MachineExpertSystem.assess("bike", "Bike", "Make", "Model", "2021",
             "rear shock absorber makes a noise")!!
