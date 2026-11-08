@@ -11,3 +11,6 @@ local.properties
 *.keystore
 google-services.json
 secrets.properties
+
+# Local dataset audit outputs (large source data stays in Actions artifacts)
+dataset-audit/
