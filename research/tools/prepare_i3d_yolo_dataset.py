@@ -4,7 +4,7 @@
 Only the primary `image` column is exported. conditioning_image is deliberately
 not counted as an independent capture. Images are deduplicated by SHA-256 before
 a deterministic 80/10/10 split, preventing exact duplicate leakage across splits.
-This prepares data only; it does not train or validate a model.
+This prepares data only; it does not train or validate a model. The workflow supplies all twelve individually audited source shards.
 """
 from __future__ import annotations
 
