@@ -22,7 +22,7 @@ jobs:
       - name: Install RAR extraction and image audit tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y unar 7zip
+          sudo apt-get install -y unar 7zip 7zip-rar
           python -m pip install --disable-pip-version-check Pillow
       - name: Download Zenodo Bonfiglioli bearing archive
         run: |
