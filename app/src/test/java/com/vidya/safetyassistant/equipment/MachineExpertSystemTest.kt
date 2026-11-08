@@ -56,6 +56,18 @@ class MachineExpertSystemTest {
         assertFalse(result.summary.contains("Potential safety hazard"))
     }
 
+    @Test fun substringWordsDoNotCreateFalseSymptomCategories() {
+        val lightweight = MachineExpertSystem.assess("bike", "Bike", "", "", "", "lightweight frame vibration")!!
+        assertFalse(lightweight.possibleAreas.any { it.contains("Warning indicator") })
+        val soil = MachineExpertSystem.assess("tractor", "Tractor", "", "", "", "soil contamination")!!
+        assertFalse(soil.possibleAreas.any { it.contains("Fluid path / leakage") })
+    }
+
+    @Test fun exactWholeWordWarningStillMatches() {
+        val result = MachineExpertSystem.assess("car", "Car", "", "", "", "warning light blinking")!!
+        assertTrue(result.possibleAreas.any { it.contains("Warning indicator") })
+    }
+
     @Test fun unknownMachineIsNotGuessed() {
         assertNull(MachineExpertSystem.expertFor("unknown_machine"))
         assertNull(MachineExpertSystem.assess("unknown_machine", "Unknown", "", "", "", "noise"))

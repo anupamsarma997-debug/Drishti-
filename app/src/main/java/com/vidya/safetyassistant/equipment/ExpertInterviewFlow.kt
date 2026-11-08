@@ -13,13 +13,13 @@ object ExpertInterviewFlow {
 
         if (round == 0) {
             return when {
-                listOf("noise", "sound", "rattle", "grinding", "vibration").any { it in text } ->
+                listOf("noise", "sound", "rattle", "grinding", "vibration").any { SymptomPhraseMatcher.matches(text, it) } ->
                     "When does the noise happen: at startup, while running, or only under load? Observe from a safe distance."
-                listOf("start", "starting", "crank", "click", "not start").any { it in text } ->
+                listOf("start", "starting", "crank", "click", "not start").any { SymptomPhraseMatcher.matches(text, it) } ->
                     "When you try to start it, do you hear a click, cranking, humming, or nothing? Do not bridge terminals."
-                listOf("leak", "drip", "oil", "fuel", "water").any { it in text } ->
+                listOf("leak", "drip", "oil", "fuel", "water").any { SymptomPhraseMatcher.matches(text, it) } ->
                     "Where is the leak visibly located? Do not touch the fluid or loosen any pipe."
-                listOf("error", "code", "warning", "light", "blink").any { it in text } ->
+                listOf("error", "code", "warning", "light", "blink").any { SymptomPhraseMatcher.matches(text, it) } ->
                     "What is the exact displayed error code or warning-light symbol? Please copy it exactly."
                 else ->
                     "When does the problem occur, and what is the first unusual thing you notice?"

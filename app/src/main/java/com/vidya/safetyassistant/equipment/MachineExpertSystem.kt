@@ -77,7 +77,7 @@ object MachineExpertSystem {
         val stops = mutableListOf<String>()
 
         fun addIf(keys: List<String>, area: String, check: String) {
-            if (keys.any { it in text }) {
+            if (keys.any { SymptomPhraseMatcher.matches(text, it) }) {
                 areas += area
                 checks += check
             }
