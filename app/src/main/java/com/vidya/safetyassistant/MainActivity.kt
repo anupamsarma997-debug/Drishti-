@@ -60,6 +60,7 @@ import com.vidya.safetyassistant.equipment.EquipmentLabelParser
 import com.vidya.safetyassistant.equipment.EquipmentManualMatcher
 import com.vidya.safetyassistant.equipment.HomeTroubleshootingGuide
 import com.vidya.safetyassistant.equipment.MachineExpertSystem
+import com.vidya.safetyassistant.equipment.ExpertInterviewFlow
 import com.vidya.safetyassistant.equipment.MachineRecognitionRouter
 import com.vidya.safetyassistant.equipment.MachineRouteSuggestion
 import com.vidya.safetyassistant.equipment.RuralMachineGuide
@@ -125,6 +126,9 @@ private fun VidyaApp() {
     var expertYear by remember { mutableStateOf("") }
     var expertComplaint by remember { mutableStateOf("") }
     var expertAssessment by remember { mutableStateOf<com.vidya.safetyassistant.equipment.ExpertAssessment?>(null) }
+    var expertFollowUpQuestion by remember { mutableStateOf<String?>(null) }
+    var expertFollowUpAnswer by remember { mutableStateOf("") }
+    var expertInterviewRound by remember { mutableStateOf(0) }
     var cameraMachineSuggestion by remember { mutableStateOf<MachineRouteSuggestion?>(null) }
     var symptomMenuExpanded by remember { mutableStateOf(false) }
     var selectedApplianceId by remember { mutableStateOf(HomeTroubleshootingGuide.categories.first().id) }
@@ -351,6 +355,10 @@ private fun VidyaApp() {
                     expertAssessment = MachineExpertSystem.assess(
                         selectedExpertMachineId, machineName, expertBrand, expertModel,
                         expertYear, expertComplaint
+                    )                    expertInterviewRound = 0
+                    expertFollowUpAnswer = ""
+                    expertFollowUpQuestion = ExpertInterviewFlow.nextQuestion(
+                        selectedExpertMachineId, expertComplaint, expertInterviewRound
                     )
                 }, enabled = expertComplaint.isNotBlank()) { Text("Ask selected machine expert") }
                 expertAssessment?.let { result ->
@@ -371,6 +379,22 @@ private fun VidyaApp() {
                         style = MaterialTheme.typography.bodySmall)
                     Text(result.confidenceNote, color = Color(0xFF9BAFC2),
                         style = MaterialTheme.typography.labelSmall)
+                    expertFollowUpQuestion?.let { question ->
+                        Spacer(Modifier.height(8.dp))
+                        Text("EXPERT FOLLOW-UP QUESTION", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold)
+                        Text(question, color = Color.White, style = MaterialTheme.typography.bodySmall)
+                        OutlinedTextField(value = expertFollowUpAnswer, onValueChange = { expertFollowUpAnswer = it },
+                            label = { Text("Your answer") }, modifier = Modifier.fillMaxWidth(), minLines = 2)
+                        Button(modifier = Modifier.fillMaxWidth(), enabled = expertFollowUpAnswer.isNotBlank(), onClick = {
+                            expertComplaint = listOf(expertComplaint, expertFollowUpAnswer.trim()).filter { it.isNotBlank() }.joinToString(". ")
+                            expertFollowUpAnswer = ""
+                            expertInterviewRound += 1
+                            expertAssessment = MachineExpertSystem.assess(selectedExpertMachineId,
+                                expertMachineOptions.first { it.first == selectedExpertMachineId }.second,
+                                expertBrand, expertModel, expertYear, expertComplaint)
+                            expertFollowUpQuestion = ExpertInterviewFlow.nextQuestion(selectedExpertMachineId, expertComplaint, expertInterviewRound)
+                        }) { Text("Send answer to expert") }
+                    }
                 }
 
                 Spacer(Modifier.height(18.dp))
