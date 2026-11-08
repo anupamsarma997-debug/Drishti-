@@ -103,6 +103,8 @@ This is an offline knowledge-based first version, **not a trained generative AI 
 Imported PDF manuals are OCR-indexed locally. Search now uses a lightweight lexical ranker that rewards complete query coverage, exact phrases, repeated terms and model/fault-code text. Results retain the manual name and page number so users can inspect the source page. This is **not semantic retrieval**, does not verify that a manual matches the exact machine variant, and must not be treated as proof that a suggested action is safe.
 
 Research papers, candidate open-source references, licensing cautions, research gap and an evaluation plan are documented in [docs/RESEARCH_LANDSCAPE_VIDYA.md](docs/RESEARCH_LANDSCAPE_VIDYA.md).
+
+Microsoft Azure and Google AI platform comparison, reusable open-source references, free-tier limits, RAG architecture and a staged Vidya adoption plan are documented in [docs/MICROSOFT_GOOGLE_AI_RESEARCH.md](docs/MICROSOFT_GOOGLE_AI_RESEARCH.md).
 The draft benchmark record format, hazard labels, reviewer protocol, privacy safeguards and evaluation metrics are in [docs/VIDYA_EVALUATION_DATASET_SCHEMA.md](docs/VIDYA_EVALUATION_DATASET_SCHEMA.md).
 
 The rural-machine guide covers tractors, tillers, rotavators, irrigation and solar pumps, sprayers, threshers, combines, reapers, chaff cutters, rice mills, shellers, brush cutters, weeders, transplanters, generators, grain processing/drying, feed mills, root diggers, orchard/areca harvesters, tea harvesters, tillage and planting implements, fodder harvesters, balers/mulchers, and dairy equipment. Guidance remains observation-only and escalates hazardous work to trained service.
