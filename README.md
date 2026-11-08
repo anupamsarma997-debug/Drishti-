@@ -145,3 +145,16 @@ python research/tools/validate_parts_manifest.py --manifest irisp_manifest.jsonl
 ```
 
 The importer records object IDs as instance identities, leaves semantic component labels unknown, and computes SHA-256 hashes. It does not download, extract, relabel, or train images. Query/gallery folders are excluded. CC BY-SA 4.0 obligations require review before redistribution of data or derivatives. The upstream dataset's published counts are not Vidya's imported or validated counts.
+
+
+## ElectroCom61 archive audit (electronics-component detection candidate)
+
+The current [ElectroCom61 v2 record](https://data.mendeley.com/datasets/6scy6h8sjz/2) reports 2,121 annotated images across 61 electronic-component classes under CC BY 4.0. Its data article describes `Train/Image`, `Train/Label`, `Valid/Image`, `Valid/Label`, `Test/Image`, and `Test/Label` folders with YOLO-style class and bounding-box text files. Version 1 reported 2,071 images; use the current v2 record when auditing. This is a narrow electronics-lab dataset, not a general vehicle, farm-machine, or fault-diagnosis dataset.
+
+After manually obtaining and reviewing the dataset licence/attribution files, extract it locally and run:
+
+```bash
+python research/tools/audit_electrocom61.py --root /path/to/ElectroCom61
+```
+
+The auditor checks the three split folders, matching image/label stems, YOLO row syntax, class IDs 0–60, normalized box coordinates, image SHA-256 duplicates across splits, and per-class box counts. It does not train a model, verify semantic class names, decode image pixels, prove commercial rights beyond the declared CC BY 4.0 record, or establish machine-fault recognition. No dataset images are bundled in Vidya.

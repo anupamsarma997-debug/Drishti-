@@ -840,3 +840,20 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - ElectroCom61 is a more actionable near-term dataset candidate than IRISP because its record exposes a Download All action, annotation format metadata and a CC BY 4.0 licence. It only advances the electronics-component recognition track.
 - The Mendeley record is evidence of the dataset's declared licence and metadata, not legal advice or proof that every image is free of third-party rights. Preserve attribution and review the archive's included notices before use.
 - No dataset archive was downloaded in this pass; no model was trained and no app capability has changed.
+
+
+## Nineteenth research pass — ElectroCom61 version and archive validation
+
+95. ElectroCom61 — version 2 electronic-component object detection archive
+    Primary source: https://data.mendeley.com/datasets/6scy6h8sjz/2
+    Data article: https://pmc.ncbi.nlm.nih.gov/articles/PMC11847280/
+    DOI: 10.17632/6scy6h8sjz.2
+    Version 2 record and the 2025 Data in Brief article report 2,121 annotated images and 61 electronic-component classes; version 1 reported 2,071 images. The record declares CC BY 4.0. The article documents Train/Valid/Test folders, each with Image and Label subfolders, YOLO-style text annotations, and a metadata CSV.
+    Vidya use: narrow electronics-component object-detection research only. Prefer v2 and retain dataset citation, attribution and included notices. Audit exact archive contents, labels, duplicates, class balance and capture leakage before training.
+    Limits: sourced from a university electronics lab in Dhaka; no automotive, agricultural or industrial machine-part coverage; no damage/fault labels, OEM fitment, or repair procedures. Dataset metadata and article descriptions are not a substitute for archive inspection.
+    Priority: P0 for archive audit; no images have been downloaded, imported, or trained in Vidya.
+
+## Nineteenth-pass implementation
+- Added `research/tools/audit_electrocom61.py` for the published split/folder convention. It checks image-label pairing, YOLO row shape, class IDs 0–60, normalized box coordinates, positive box dimensions, cross-split duplicate image bytes, and per-class box counts.
+- Added synthetic unit tests for valid layout, invalid class IDs/coordinates, missing/orphan labels, cross-split duplicate bytes, missing split folders and empty negative-sample labels.
+- This is an archive-structure audit only; it does not infer class names, authenticate semantic labels, train a model, or establish suitability for machine troubleshooting.
