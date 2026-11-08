@@ -270,9 +270,9 @@ private fun VidyaApp() {
         )
     ) {
         Surface(modifier = Modifier.fillMaxSize(), color = Color(0xFF080D14)) {
-            Column(modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState())) {
+            Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 18.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().background(Color(0xFF111A25), RoundedCornerShape(20.dp)).padding(horizontal = 16.dp, vertical = 14.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
