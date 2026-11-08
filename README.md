@@ -59,6 +59,21 @@ This is an early engineering MVP, **not a validated safety product**.
 - There is no online official-manual discovery, semantic manual retrieval, manufacturer authenticity verification, verified repair-step generation, persistent inspection history, or validated multilingual translation yet.
 - A camera cannot establish whether a wire is energized or detect many hidden/internal faults.
 
+## Visual parts-AI research tools (not a trained model)
+
+The research workflow deliberately separates archive acquisition, metadata/label auditing, training, and field validation. The tools below do not download datasets, assign semantic labels, train a model, or establish recognition accuracy.
+
+- `research/VIDYA_VISUAL_PARTS_AI_PROTOCOL.md`: dataset rights, task taxonomy, split strategy, training and reliability gates.
+- `research/tools/audit_dataset_archive.py`: inventory a ZIP archive without extracting it; reports archive SHA-256, file/image counts, licence-notice candidates, unsafe paths and size limits. A licence candidate still requires human legal review.
+- `research/tools/validate_parts_manifest.py`: checks a prepared JSONL manifest for required metadata, image hashes, duplicate bytes, path traversal, augmentation parent references and capture-group split leakage.
+- Run the Python utility tests with: `python -m unittest discover -s research/tools -p 'test_*.py' -v`.
+- GitHub Actions now runs these Python tests alongside Android unit tests and debug APK assembly.
+
+Example archive inventory: `python research/tools/audit_dataset_archive.py /path/to/dataset.zip`.
+Example manifest validation: `python research/tools/validate_parts_manifest.py --manifest manifest.jsonl --image-root /path/to/images`.
+
+The archive auditor currently supports ZIP files only. It does not extract files or establish that a dataset's licence permits commercial use. The manifest validator checks structural integrity, not whether a bearing is truly a bearing; domain-expert annotation review remains necessary.
+
 ## Build
 
 Requirements: JDK 17, Android SDK 35, Gradle 8.10.2.
