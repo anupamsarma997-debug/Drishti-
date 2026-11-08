@@ -52,6 +52,13 @@ class MachineRecognitionRouterTest {
     }
 
     @Test
+    fun distinguishesTeaAndArecaHarvestersFromGenericReaper() {
+        assertEquals("tea_harvester", MachineRecognitionRouter.suggestFromOcr("Tea harvester")?.machineId)
+        assertEquals("areca_harvester", MachineRecognitionRouter.suggestFromOcr("Areca harvester")?.machineId)
+        assertEquals("reaper", MachineRecognitionRouter.suggestFromOcr("Reaper machine")?.machineId)
+    }
+
+    @Test
     fun doesNotMatchMachineCluesInsideUnrelatedWords() {
         assertNull(MachineRecognitionRouter.suggestFromOcr("carburetor cleaner"))
         assertNull(MachineRecognitionRouter.suggestFromOcr("service department"))
