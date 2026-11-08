@@ -258,6 +258,18 @@ private fun VidyaApp() {
     }
 
     val assessment = safetyController.assessment
+    LaunchedEffect(obdexRepository) {
+        manualExecutor.execute {
+            val cached = runCatching { obdexRepository.cachedCount() }.getOrDefault(0)
+            mainHandler.post {
+                obdexStatus = if (cached > 0) {
+                    "Offline generic OBD-II reference ready: $cached codes."
+                } else {
+                    "Generic OBD-II database is not downloaded yet. The built-in starter codes remain available."
+                }
+            }
+        }
+    }
     LaunchedEffect(answerToSpeak) {
         if (answerToSpeak.isNotBlank()) voiceAssistant.speak(answerToSpeak)
     }
