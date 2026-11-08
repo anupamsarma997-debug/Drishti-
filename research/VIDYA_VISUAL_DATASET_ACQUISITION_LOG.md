@@ -73,3 +73,13 @@ This log separates downloaded archives from extracted/validated images, and both
 - Android CI run 42494131151 is testing the checksum/7-Zip retry commit.
 - No Vidya specialist model has been trained yet. Existing archives are separate tasks/formats and must not be naively merged into one class list.
 - Next gates: finish bearing archive audit; obtain Roboflow exports only through authorized access; normalize per-dataset labels; split by original source/physical instance where possible; train narrow baselines; evaluate on held-out sources; only then consider Android model integration.
+
+
+### I3D Tools Dataset — first-shard acquisition in progress
+- Source: https://huggingface.co/datasets/i3dlabiisc/I3D-Tools-Dataset
+- Official dataset page lists 36,773 rows, 16 hand-tool classes and 5.52 GB across 12 parquet shards; MIT is the displayed dataset license. The page tags it synthetic.
+- Workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42494453950
+- Current action downloads only shard `train-00000-of-00012.parquet` (~471 MB), then audits embedded primary/conditioning images, image hashes and YOLO boxes. No full-dataset acquisition is claimed.
+- Class list in source order: ball_bearing, gear, hammer, measuring_tape, nail, nut, oring, plier, saw, scissors, screw, screwdriver, spring, utility_knife, washer, wrench.
+- Synthetic images are suitable only for a controlled baseline/domain adaptation experiment; they do not prove recognition on real workshop imagery.
+- Do not combine its 16 class IDs with the PCB, car-body or electronics class IDs. Keep dataset-specific class maps.
