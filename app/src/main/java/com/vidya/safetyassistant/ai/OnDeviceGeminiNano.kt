@@ -2,6 +2,10 @@ package com.vidya.safetyassistant.ai
 
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.prompt.Generation
+import com.google.mlkit.genai.prompt.GenerateContentRequest
+import com.google.mlkit.genai.prompt.TextPart
+import com.google.mlkit.genai.prompt.DownloadStatus
+import kotlinx.coroutines.flow.collect
 
 /**
  * Optional Gemini Nano adapter.
@@ -23,6 +27,26 @@ class OnDeviceGeminiNano {
             }
         } catch (error: Exception) {
             "Gemini Nano could not be checked: ${error.message ?: "device service unavailable"}. Vidya offline expert remains active."
+        }
+    }
+
+    suspend fun downloadModel(): String {
+        return try {
+            if (model.checkStatus() != FeatureStatus.DOWNLOADABLE) {
+                return availabilityMessage()
+            }
+            var message = "Preparing Gemini Nano download…"
+            model.download().collect { downloadStatus ->
+                message = when (downloadStatus) {
+                    is DownloadStatus.DownloadStarted -> "Gemini Nano download started."
+                    is DownloadStatus.DownloadProgress -> "Gemini Nano downloaded \${downloadStatus.totalBytesDownloaded} bytes."
+                    DownloadStatus.DownloadCompleted -> "Gemini Nano download completed. Check availability again."
+                    is DownloadStatus.DownloadFailed -> "Gemini Nano download failed: \${downloadStatus.e.message ?: "unknown error"}."
+                }
+            }
+            message
+        } catch (error: Exception) {
+            "Gemini Nano download could not start: \${error.message ?: "unknown error"}."
         }
     }
 
@@ -64,7 +88,7 @@ class OnDeviceGeminiNano {
             """.trimIndent()
 
         return try {
-            model.generateContent(prompt).text?.takeIf { it.isNotBlank() }
+            model.generateContent(GenerateContentRequest.builder(TextPart(prompt)).build()).candidates.firstOrNull()?.text?.takeIf { it.isNotBlank() }
                 ?: "Gemini Nano returned no text. Continue with the offline expert."
         } catch (error: Exception) {
             "On-device AI request failed: ${error.message ?: "unknown error"}. Continue with the offline expert."
