@@ -1,0 +1,50 @@
+name: Acquire and audit bearing defect dataset
+
+on:
+  push:
+    paths:
+      - ".github/workflows/acquire-bearing-defect.yml"
+      - "research/tools/audit_bonfiglioli_archive.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  acquire-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install RAR extraction and image audit tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unar
+          python -m pip install --disable-pip-version-check Pillow
+      - name: Download Zenodo Bonfiglioli bearing archive
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 4 --retry-all-errors \
+            "https://zenodo.org/records/11034252/files/Bonfiglioli%20data.rar?download=1" \
+            --output /tmp/vidya-bonfiglioli-bearing.rar
+          test -s /tmp/vidya-bonfiglioli-bearing.rar
+          sha256sum /tmp/vidya-bonfiglioli-bearing.rar
+      - name: Extract and audit archive
+        run: |
+          python research/tools/audit_bonfiglioli_archive.py \
+            --archive /tmp/vidya-bonfiglioli-bearing.rar \
+            --output dataset-audit/bonfiglioli-bearing-report.json \
+            --extract-dir /tmp/vidya-bonfiglioli-bearing
+      - name: Upload archive, extracted files and report
+        uses: actions/upload-artifact@v4
+        with:
+          name: vidya-bonfiglioli-bearing-dataset
+          path: |
+            /tmp/vidya-bonfiglioli-bearing.rar
+            /tmp/vidya-bonfiglioli-bearing/
+            dataset-audit/bonfiglioli-bearing-report.json
+          if-no-files-found: error
+          retention-days: 30
