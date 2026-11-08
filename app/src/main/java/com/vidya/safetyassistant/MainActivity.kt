@@ -355,7 +355,8 @@ private fun VidyaApp() {
                     expertAssessment = MachineExpertSystem.assess(
                         selectedExpertMachineId, machineName, expertBrand, expertModel,
                         expertYear, expertComplaint
-                    )                    expertInterviewRound = 0
+                    )
+                    expertInterviewRound = 0
                     expertFollowUpAnswer = ""
                     expertFollowUpQuestion = ExpertInterviewFlow.nextQuestion(
                         selectedExpertMachineId, expertComplaint, expertInterviewRound
