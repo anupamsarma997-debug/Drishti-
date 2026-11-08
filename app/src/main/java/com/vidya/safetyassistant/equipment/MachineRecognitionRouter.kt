@@ -31,7 +31,7 @@ object MachineRecognitionRouter {
         Rule(listOf("rotavator", "rotary tiller", "रोटावेटर"), "rotavator", "Rotavator"),
         Rule(listOf("combine harvester", "combine", "कंबाइन हार्वेस्टर"), "combine", "Combine harvester"),
         Rule(listOf("fodder harvester", "चारा काटने की मशीन"), "fodder_harvester", "Fodder harvester"),
-        Rule(listOf("areca harvester", "tea harvester", "reaper", "रीपर", "हार्वेस्टर"), "reaper", "Reaper / harvester"),
+        Rule(listOf("reaper", "रीपर", "हार्वेस्टर"), "reaper", "Reaper / harvester"),
         Rule(listOf("chaff cutter", "कुट्टी मशीन", "चारा कटर"), "chaff_cutter", "Chaff cutter"),
         Rule(listOf("maize sheller", "corn sheller", "मक्का छीलने की मशीन"), "maize_sheller", "Maize sheller"),
         Rule(listOf("rice mill", "धान मिल", "चावल मिल"), "rice_mill", "Rice mill"),
