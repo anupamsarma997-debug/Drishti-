@@ -1,0 +1,57 @@
+name: Acquire additional visual parts datasets
+
+on:
+  push:
+    paths:
+      - ".github/workflows/acquire-more-parts-datasets.yml"
+      - "research/tools/acquire_visual_parts_datasets.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  acquire-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install audit dependency
+        run: python -m pip install --disable-pip-version-check Pillow
+      - name: Download PCB component detection dataset
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 4 --retry-all-errors \
+            "https://codeload.github.com/wangshnegqi/pcb-component-detection-dataset-yolo/zip/refs/heads/main" \
+            --output /tmp/vidya-pcb-components.zip
+          test -s /tmp/vidya-pcb-components.zip
+          sha256sum /tmp/vidya-pcb-components.zip
+      - name: Download automotive parts segmentation dataset
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 4 --retry-all-errors \
+            "https://github.com/ultralytics/assets/releases/download/v0.0.0/carparts-seg.zip" \
+            --output /tmp/vidya-carparts-seg.zip
+          test -s /tmp/vidya-carparts-seg.zip
+          sha256sum /tmp/vidya-carparts-seg.zip
+      - name: Extract and audit both datasets
+        run: |
+          python research/tools/acquire_visual_parts_datasets.py \
+            --pcb-archive /tmp/vidya-pcb-components.zip \
+            --car-archive /tmp/vidya-carparts-seg.zip \
+            --output dataset-audit/additional-visual-parts-report.json \
+            --work-dir /tmp/vidya-additional-visual-parts
+      - name: Upload original archives, extracted datasets and audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: vidya-additional-visual-parts
+          path: |
+            /tmp/vidya-pcb-components.zip
+            /tmp/vidya-carparts-seg.zip
+            /tmp/vidya-additional-visual-parts/
+            dataset-audit/additional-visual-parts-report.json
+          if-no-files-found: error
+          retention-days: 30
