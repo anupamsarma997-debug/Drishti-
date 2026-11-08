@@ -92,21 +92,35 @@ class ObdexDtcRepository(context: Context) {
             val title = item.optJSONObject("title")?.optString("en").orEmpty()
             if (title.isBlank()) continue
             val description = item.optJSONObject("description")?.optString("en").orEmpty()
-            val causes = item.optJSONArray("common_causes").toEnglishLabels()
+            val causes = item.optJSONArray("common_causes").toCauses()
             val symptoms = item.optJSONArray("symptoms").toEnglishLabels()
             val components = item.optJSONArray("affected_components").toStringList()
             val sources = item.optJSONArray("sources").toStringList()
+            val relatedCodes = item.optJSONArray("related_codes").toStringList().filter { Regex("[PBCU][0-3][0-9A-F]{3}").matches(it) }
             entries += ObdexDtcEntry(
                 code = code,
+                category = item.optString("category").takeIf { it.isNotBlank() },
                 title = title,
                 description = description,
                 affectedComponents = components,
                 commonCauses = causes,
                 symptoms = symptoms,
+                relatedCodes = relatedCodes,
                 sources = sources
             )
         }
         return entries
+    }
+
+    private fun JSONArray?.toCauses(): List<ObdexDtcCause> {
+        if (this == null) return emptyList()
+        return (0 until length()).mapNotNull { index ->
+            val value = optJSONObject(index) ?: return@mapNotNull null
+            val label = value.optJSONObject("label")?.optString("en").orEmpty()
+            if (label.isBlank()) return@mapNotNull null
+            val likelihood = value.optString("likelihood").takeIf { it == "low" || it == "medium" || it == "high" }
+            ObdexDtcCause(label, likelihood)
+        }
     }
 
     private fun JSONArray?.toEnglishLabels(): List<String> {
@@ -139,20 +153,30 @@ class ObdexDtcRepository(context: Context) {
     }
 }
 
+data class ObdexDtcCause(val label: String, val likelihood: String?)
+
 data class ObdexDtcEntry(
     val code: String,
+    val category: String?,
     val title: String,
     val description: String,
     val affectedComponents: List<String>,
-    val commonCauses: List<String>,
+    val commonCauses: List<ObdexDtcCause>,
     val symptoms: List<String>,
+    val relatedCodes: List<String>,
     val sources: List<String>
 ) {
     fun toDiagnosticResult(): VehicleDiagnosticResult = VehicleDiagnosticResult(
         code = code,
         title = title,
         meaning = description.ifBlank { title },
-        possibleCauses = commonCauses.take(8),
+        possibleCauses = commonCauses.take(8).map { it.label },
+        causeLikelihoodNotes = commonCauses.take(8).mapNotNull { cause ->
+            cause.likelihood?.let { "${cause.label}: dataset likelihood tag '$it' (not a probability or vehicle-specific diagnosis)." }
+        },
+        symptoms = symptoms.take(12),
+        affectedComponents = affectedComponents.take(20),
+        relatedCodes = relatedCodes.take(20),
         safeChecks = listOf(
             "This is a generic OBD-II reference, not a confirmed diagnosis for this vehicle.",
             "Record all related codes and freeze-frame data before clearing anything.",
@@ -161,7 +185,7 @@ data class ObdexDtcEntry(
         ),
         severity = "Reference only — severity needs vehicle context",
         manufacturerSpecific = false,
-        limitation = "OBDex generic DTC data. The project declares CC0-1.0 for data and MIT for tooling; its maintainer says imported DTC identifiers/titles derive from Wal33D/dtc-database under MIT, while other prose is independently authored. Retain the MIT notice and inspect record-level sources. Exact vehicle/year/ECU compatibility is not verified. No repair procedure or cost estimate is provided.",
+        limitation = "OBDex generic DTC data (category: " + (category ?: "not supplied") + "). The project declares CC0-1.0 for data and MIT for tooling; its maintainer says imported DTC identifiers/titles derive from Wal33D/dtc-database under MIT, while other prose is independently authored. Retain the MIT notice and inspect record-level sources. Exact vehicle/year/ECU compatibility is not verified. No repair procedure or cost estimate is provided.",
         sourceReferences = sources.filter { it.startsWith("https://") }.distinct().take(5)
     )
 }

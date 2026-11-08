@@ -9,7 +9,11 @@ data class VehicleDiagnosticResult(
     val severity: String,
     val manufacturerSpecific: Boolean,
     val limitation: String,
-    val sourceReferences: List<String> = emptyList()
+    val sourceReferences: List<String> = emptyList(),
+    val causeLikelihoodNotes: List<String> = emptyList(),
+    val symptoms: List<String> = emptyList(),
+    val affectedComponents: List<String> = emptyList(),
+    val relatedCodes: List<String> = emptyList()
 )
 
 /**

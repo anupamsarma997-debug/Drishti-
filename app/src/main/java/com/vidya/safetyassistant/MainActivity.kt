@@ -746,6 +746,18 @@ private fun VidyaApp() {
                     if (result.possibleCauses.isNotEmpty()) {
                         Text("Possible causes (not confirmed):", color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
                         result.possibleCauses.forEach { Text("• $it", color = Color.White, style = MaterialTheme.typography.bodySmall) }
+                        result.causeLikelihoodNotes.forEach { Text(it, color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall) }
+                    }
+                    if (result.symptoms.isNotEmpty()) {
+                        Text("Reported symptoms in reference:", color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
+                        result.symptoms.forEach { Text("• $it", color = Color.White, style = MaterialTheme.typography.bodySmall) }
+                    }
+                    if (result.affectedComponents.isNotEmpty()) {
+                        Text("Related components (not confirmed failed parts):", color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
+                        Text(result.affectedComponents.joinToString(", "), color = Color.White, style = MaterialTheme.typography.bodySmall)
+                    }
+                    if (result.relatedCodes.isNotEmpty()) {
+                        Text("Related DTC references: ${result.relatedCodes.joinToString(", ")}", color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
                     }
                     Text("Safe next steps:", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold)
                     result.safeChecks.forEachIndexed { index, step ->
