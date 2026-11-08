@@ -632,3 +632,32 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - Corrected an OCR routing collision: generic "reaper / harvester" clues no longer pre-empt the more specific tea-harvester and areca-harvester routes. Added regression tests for Tea harvester, Areca harvester and Reaper.
 - Added DGT and ICAR official farm-machinery learning references to the in-app source catalogue, clearly labelled as training/category references rather than OEM repair manuals.
 - No new manuals or datasets were downloaded, copied into the APK, or used to train a model. No physical machine validation was performed.
+
+
+## Thirteenth research pass — six-layer knowledge base foundations
+
+72. Open Repair Alliance — current Open Repair Data Standard v0.3 snapshot
+    Source: https://openrepair.org/open-data/downloads/
+    Current page reports 416,282 EEE + 203,591 non-EEE records, updated October 2026 with records through July 2026; CC BY-SA 4.0.
+    Use: repair-history taxonomy and outcome analysis, not exact-model repair steps. The download workflow asks users to describe intended use; retain attribution and share-alike obligations and inspect the downloaded files/schema before ingestion.
+    Priority: P0 for analysis after download and schema audit; not yet downloaded or integrated.
+
+73. NHTSA vPIC — Vehicle Product Information Catalog API
+    Source: https://vpic.nhtsa.dot.gov/api/
+    Official API documentation describes manufacturer-submitted vehicle/VIN information, make/model/year queries and downloadable standalone databases. Current page identifies API version 4.10 and a 17 Oct 2026 code change.
+    Use: candidate vehicle identity enrichment and VIN decoding for supported markets.
+    Limits: US reporting ecosystem; do not assume coverage of Indian-market motorcycles, tractors, or every global variant. API rate control applies. It does not provide repair procedures or parts fitment.
+    Priority: P1 for market-coverage evaluation; not integrated.
+
+74. MIMII DG — industrial machine abnormal-sound dataset
+    Source: https://zenodo.org/records/6529888
+    Zenodo version 1.0, published 9 May 2022; fans, gearboxes, bearings, slide rails and valves; approximately 4.4 GB across five archives.
+    Explicit license: CC BY-NC-SA 4.0. Non-commercial restriction means it is not cleared for a commercial Vidya product or commercial model training without separate permission.
+    Use: academic/research-only anomaly-detection experiments after license and archive validation; laboratory recordings do not prove field-machine diagnosis.
+    Priority: HOLD for commercial use; P1 only for permitted non-commercial research.
+
+75. Vidya six-layer technical knowledge base contract
+    Repository: research/VIDYA_TECHNICAL_KNOWLEDGE_BASE.md and app/src/main/java/com/vidya/safetyassistant/knowledge/TechnicalKnowledgeModels.kt
+    Defines machine identity, parts, diagnostic codes, manual index, visual/audio/sensor assets, and symptom-to-safe-next-step troubleshooting records. Includes source/license/market/variant provenance, verification states, and an expert-verified exact-variant repair-procedure gate.
+    This is a schema and ingestion plan, not evidence that a global database or trained model has been populated.
+    Priority: P0 architecture foundation; code tests added, CI pending.
