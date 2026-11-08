@@ -839,6 +839,9 @@ private fun VidyaApp() {
                         SafetyOverlay(
                             status = assessment.status,
                             detections = detections,
+                            focusHint = expertAssessment?.let {
+                                PartFailureGuide.match(selectedExpertMachineId, expertComplaint).firstOrNull()?.partName
+                            },
                             modifier = Modifier.fillMaxSize()
                         )
                     } else {
