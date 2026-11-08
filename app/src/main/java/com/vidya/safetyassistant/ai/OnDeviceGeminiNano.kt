@@ -39,14 +39,14 @@ class OnDeviceGeminiNano {
             model.download().collect { downloadStatus ->
                 message = when (downloadStatus) {
                     is DownloadStatus.DownloadStarted -> "Gemini Nano download started."
-                    is DownloadStatus.DownloadProgress -> "Gemini Nano downloaded \${downloadStatus.totalBytesDownloaded} bytes."
+                    is DownloadStatus.DownloadProgress -> "Gemini Nano downloaded ${downloadStatus.totalBytesDownloaded} bytes."
                     DownloadStatus.DownloadCompleted -> "Gemini Nano download completed. Check availability again."
-                    is DownloadStatus.DownloadFailed -> "Gemini Nano download failed: \${downloadStatus.e.message ?: "unknown error"}."
+                    is DownloadStatus.DownloadFailed -> "Gemini Nano download failed: ${downloadStatus.e.message ?: "unknown error"}."
                 }
             }
             message
         } catch (error: Exception) {
-            "Gemini Nano download could not start: \${error.message ?: "unknown error"}."
+            "Gemini Nano download could not start: ${error.message ?: "unknown error"}."
         }
     }
 
