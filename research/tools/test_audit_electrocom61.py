@@ -15,7 +15,8 @@ class ElectroCom61AuditTest(unittest.TestCase):
         for split in ("Train", "Valid", "Test"):
             stem = split.lower() + "_sample"
             (self.root / split / "Image" / f"{stem}.jpg").write_bytes(b"image-" + split.encode())
-            (self.root / split / "Label" / f"{stem}.txt").write_text("0 0.5 0.5 0.25 0.25\n", encoding="utf-8")
+            (self.root / split / "Label" / f"{stem}.txt").write_text("0 0.5 0.5 0.25 0.25
+", encoding="utf-8")
 
     def tearDown(self):
         self.temp.cleanup()
@@ -28,18 +29,21 @@ class ElectroCom61AuditTest(unittest.TestCase):
         self.assertEqual(1, report["observed_class_ids"])
 
     def test_invalid_class_id(self):
-        (self.root / "Train" / "Label" / "train_sample.txt").write_text("61 0.5 0.5 0.2 0.2\n", encoding="utf-8")
+        (self.root / "Train" / "Label" / "train_sample.txt").write_text("61 0.5 0.5 0.2 0.2
+", encoding="utf-8")
         errors, _ = audit(self.root)
         self.assertTrue(any("class_id" in error for error in errors))
 
     def test_invalid_box_coordinates(self):
-        (self.root / "Valid" / "Label" / "valid_sample.txt").write_text("2 1.2 0.5 0.2 0.2\n", encoding="utf-8")
+        (self.root / "Valid" / "Label" / "valid_sample.txt").write_text("2 1.2 0.5 0.2 0.2
+", encoding="utf-8")
         errors, _ = audit(self.root)
         self.assertTrue(any("within [0, 1]" in error for error in errors))
 
     def test_missing_and_orphan_label_pairs(self):
         (self.root / "Train" / "Label" / "train_sample.txt").unlink()
-        (self.root / "Test" / "Label" / "orphan.txt").write_text("1 0.5 0.5 0.2 0.2\n", encoding="utf-8")
+        (self.root / "Test" / "Label" / "orphan.txt").write_text("1 0.5 0.5 0.2 0.2
+", encoding="utf-8")
         errors, _ = audit(self.root)
         self.assertTrue(any("no matching label file" in error for error in errors))
         self.assertTrue(any("no matching image" in error for error in errors))
@@ -65,17 +69,22 @@ class ElectroCom61AuditTest(unittest.TestCase):
     def test_duplicate_label_stems_are_rejected(self):
         duplicate = self.root / "Valid" / "Label" / "nested" / "valid_sample.txt"
         duplicate.parent.mkdir()
-        duplicate.write_text("1 0.5 0.5 0.2 0.2\n", encoding="utf-8")
+        duplicate.write_text("1 0.5 0.5 0.2 0.2
+", encoding="utf-8")
         errors, _ = audit(self.root)
         self.assertTrue(any("duplicate label filename stem" in error for error in errors))
 
     def test_metadata_csv_matches_image_names_and_splits(self):
         metadata = self.root / "Metadata_ElectroCom61.csv"
         metadata.write_text(
-            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\n"
-            "train_sample.jpg,1,1_Resistor,white,Phone,Train\n"
-            "valid_sample.jpg,1,1_Resistor,white,Phone,Valid\n"
-            "test_sample.jpg,1,1_Resistor,white,Phone,Test\n",
+            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE
+"
+            "train_sample.jpg,1,1_Resistor,white,Phone,Train
+"
+            "valid_sample.jpg,1,1_Resistor,white,Phone,Valid
+"
+            "test_sample.jpg,1,1_Resistor,white,Phone,Test
+",
             encoding="utf-8",
         )
         errors, report = audit(self.root)
@@ -86,8 +95,10 @@ class ElectroCom61AuditTest(unittest.TestCase):
     def test_metadata_requires_background_and_capture_device(self):
         metadata = self.root / "Metadata_ElectroCom61.csv"
         metadata.write_text(
-            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\n"
-            "train_sample.jpg,1,1_Resistor,,,Train\n",
+            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE
+"
+            "train_sample.jpg,1,1_Resistor,,,Train
+",
             encoding="utf-8",
         )
         errors, _ = audit(self.root)
@@ -97,15 +108,21 @@ class ElectroCom61AuditTest(unittest.TestCase):
 
     def test_metadata_unique_component_count_matches_distinct_label_classes(self):
         (self.root / "Train" / "Label" / "train_sample.txt").write_text(
-            "0 0.5 0.5 0.25 0.25\n1 0.4 0.4 0.1 0.1\n",
+            "0 0.5 0.5 0.25 0.25
+1 0.4 0.4 0.1 0.1
+",
             encoding="utf-8",
         )
         metadata = self.root / "Metadata_ElectroCom61.csv"
         metadata.write_text(
-            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\n"
-            "train_sample.jpg,1,1_Resistor;1_Diode,white,Phone,Train\n"
-            "valid_sample.jpg,1,1_Resistor,white,Phone,Valid\n"
-            "test_sample.jpg,1,1_Resistor,white,Phone,Test\n",
+            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE
+"
+            "train_sample.jpg,1,1_Resistor;1_Diode,white,Phone,Train
+"
+            "valid_sample.jpg,1,1_Resistor,white,Phone,Valid
+"
+            "test_sample.jpg,1,1_Resistor,white,Phone,Test
+",
             encoding="utf-8",
         )
         errors, _ = audit(self.root)
@@ -114,8 +131,10 @@ class ElectroCom61AuditTest(unittest.TestCase):
     def test_metadata_split_mismatch_is_rejected(self):
         metadata = self.root / "Metadata_ElectroCom61.csv"
         metadata.write_text(
-            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE\n"
-            "train_sample.jpg,1,1_Resistor,white,Phone,Test\n",
+            "IMAGE_NAME,TYPE_OF_OBJECTS,OBJECT_NAME,BACKGROUND,DEVICE_NAME,DATA_TYPE
+"
+            "train_sample.jpg,1,1_Resistor,white,Phone,Test
+",
             encoding="utf-8",
         )
         errors, _ = audit(self.root)
