@@ -323,7 +323,7 @@ private fun VidyaApp() {
                     onClick = {
                         arMode = false
                         if (cameraGranted) {
-                            nanoScope.launch { cameraBringIntoViewRequester.bringIntoView() }
+                            uiScope.launch { cameraBringIntoViewRequester.bringIntoView() }
                         } else {
                             requestArAfterPermission = false
                             cameraPermission.launch(Manifest.permission.CAMERA)
