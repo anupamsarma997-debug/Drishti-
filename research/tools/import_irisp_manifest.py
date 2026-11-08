@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Create a conservative Vidya manifest from an extracted IRISP dataset.
+"""PROVISIONAL IRISP importer for an UNVERIFIED folder-layout assumption.
 
-Only train/val/test image folders are imported. Query/gallery benchmark folders
-are deliberately excluded until their official pairing protocol is audited.
+The upstream repository currently says the full dataset/download is TBA and
+does not publish an archive or exact directory tree. Do not use this adapter
+until you have inspected an authorised archive and confirmed its layout.
 IRISP object IDs are instance identities, NOT semantic part names.
 """
 from __future__ import annotations
@@ -28,6 +29,7 @@ def sha256(path: Path) -> str:
 
 
 def iter_images(root: Path, split_dir: str) -> Iterator[tuple[str, Path]]:
+    # Provisional assumption only: <split>/phone/<object-id>/<image>
     base = root / split_dir / "phone"
     if not base.is_dir():
         return
@@ -79,7 +81,10 @@ def build_records(image_root: Path) -> list[dict]:
                 "instance_id_original": object_id,
                 "semantic_label_status": "NOT_PROVIDED_BY_SOURCE",
                 "source_camera_domain": "phone",
+                "layout_status": "PROVISIONAL_UNVERIFIED",
             })
+    if not records:
+        raise ValueError("No images found in the assumed train/val/test phone layout; inspect the archive and write a verified adapter.")
     return records
 
 
@@ -88,7 +93,11 @@ def main() -> int:
     parser.add_argument("--image-root", required=True, type=Path,
                         help="Extracted IRISP images directory")
     parser.add_argument("--output", required=True, type=Path, help="Output JSONL manifest")
+    parser.add_argument("--acknowledge-unverified-layout", action="store_true",
+                        help="Confirm that you inspected the archive and verified this assumed layout")
     args = parser.parse_args()
+    if not args.acknowledge_unverified_layout:
+        parser.error("upstream archive layout is not published; inspect your authorised archive, then pass --acknowledge-unverified-layout only if the assumed folders match")
     records = build_records(args.image_root)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", encoding="utf-8", newline="\n") as stream:
@@ -99,8 +108,8 @@ def main() -> int:
         "split_counts": {split: sum(r["split"] == split for r in records)
                          for split in ("train", "validation", "test")},
         "semantic_part_labels": 0,
-        "excluded_benchmark_folders": ["query/phone", "gallery/phone", "gallery/phone_challenge", "gallery/studio"],
-        "warning": "IRISP object IDs are instance identities, not component classes. Review CC-BY-SA-4.0 obligations before redistribution."
+        "layout_status": "PROVISIONAL_UNVERIFIED",
+        "warning": "This importer assumes train/phone, val/phone, test/phone folders; upstream has not published its archive layout. Object IDs are instance identities, not component classes. Review CC-BY-SA-4.0 obligations."
     }, indent=2))
     return 0
 

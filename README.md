@@ -132,15 +132,16 @@ The rural-machine guide covers tractors, tillers, rotavators, irrigation and sol
 
 
 
-## IRISP instance-retrieval manifest importer (not semantic parts labels)
 
-The IRISP repository documents a folder layout with per-object ID directories. Its object IDs identify individual physical objects; they do **not** say whether an object is a bearing, spring, cable, pump component, or any other semantic part class. Vidya therefore imports this source only as an instance-retrieval dataset.
+## IRISP instance-retrieval importer (provisional; upstream layout unverified)
 
-After obtaining the source archives yourself, follow the upstream extraction instructions and run:
+The upstream [IRISP repository](https://github.com/imyliu1717/industrial_spare_part_dataset) reports dataset statistics and a CC BY-SA 4.0 licence, but its README currently marks the full download as **TBA** and does not publish an archive URL or an exact directory tree. Therefore Vidya has **not** downloaded or inspected the dataset, and the importer below is only a provisional adapter for the assumed `train/phone/<object-id>/`, `val/phone/<object-id>/`, and `test/phone/<object-id>/` layout. Its tests use synthetic fixtures, not IRISP images. Do not treat this as a verified upstream-compatible importer.
+
+If an authorised archive becomes available, inspect its actual structure and licence first. Only if it matches the assumed layout, run:
 
 ```bash
-python research/tools/import_irisp_manifest.py --image-root /path/to/images --output irisp_manifest.jsonl
+python research/tools/import_irisp_manifest.py --image-root /path/to/images --output irisp_manifest.jsonl --acknowledge-unverified-layout
 python research/tools/validate_parts_manifest.py --manifest irisp_manifest.jsonl --image-root /path/to/images
 ```
 
-The importer scans only `train/phone`, `val/phone`, and `test/phone`; it deliberately excludes query/gallery benchmark folders until their pairing protocol is separately audited. It records object IDs as instance identity and capture groups, leaves semantic component labels unknown, and computes SHA-256 for each image. It does not download, extract, relabel, or train on images. IRISP is CC BY-SA 4.0; review attribution and ShareAlike obligations before redistributing any derived dataset or model. The source's dataset count is not a claim about Vidya's imported or validated data.
+The importer records object IDs as instance identities, leaves semantic component labels unknown, and computes SHA-256 hashes. It does not download, extract, relabel, or train images. Query/gallery folders are excluded. CC BY-SA 4.0 obligations require review before redistribution of data or derivatives. The upstream dataset's published counts are not Vidya's imported or validated counts.
