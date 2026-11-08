@@ -1,64 +1,65 @@
 package com.vidya.safetyassistant.equipment
 
-import java.util.Locale
-
+/**
+ * Conservative OCR-to-expert routing. The built-in ML Kit object detector only
+ * provides coarse categories, so it must not be treated as a vehicle/machine classifier.
+ * These are text clues from visible labels/decals and always require user confirmation.
+ */
 data class MachineRouteSuggestion(
     val machineId: String,
     val machineName: String,
     val expertName: String,
-    val confidence: Float,
-    val needsUserConfirmation: Boolean,
+    val confidence: Float? = null,
+    val needsUserConfirmation: Boolean = true,
     val reason: String
 )
 
-/**
- * Routes only labels that the current generic ML Kit detector actually reports.
- * It does not claim fine-grained make/model recognition. Low-confidence or
- * ambiguous labels are not auto-routed.
- */
 object MachineRecognitionRouter {
     private data class Rule(
-        val labels: Set<String>,
+        val terms: List<String>,
         val machineId: String,
-        val machineName: String,
-        val minimumConfidence: Float = 0.65f
+        val machineName: String
     )
 
     private val rules = listOf(
-        Rule(setOf("motorcycle", "motorbike"), "bike", "Motorcycle"),
-        Rule(setOf("bicycle", "bike"), "bike", "Bicycle / two-wheeler"),
-        Rule(setOf("car", "automobile"), "car", "Car"),
-        Rule(setOf("truck", "lorry"), "truck", "Truck"),
-        Rule(setOf("bus"), "truck", "Bus / heavy vehicle"),
-        Rule(setOf("air conditioner", "air conditioning unit"), "ac", "Air conditioner"),
-        Rule(setOf("television", "tv", "monitor"), "tv", "Display / television"),
-        Rule(setOf("washing machine", "washer"), "washer", "Washing machine"),
-        Rule(setOf("refrigerator", "fridge"), "fridge", "Refrigerator"),
-        Rule(setOf("microwave oven", "microwave"), "microwave", "Microwave oven")
+        Rule(listOf("motorcycle", "motorbike", "two wheeler", "two-wheeler"), "bike", "Motorcycle"),
+        Rule(listOf("scooter"), "scooter", "Scooter"),
+        Rule(listOf("tractor"), "tractor", "Tractor"),
+        Rule(listOf("power tiller", "power weeder"), "power_tiller", "Power tiller / weeder"),
+        Rule(listOf("rotavator", "rotary tiller"), "rotavator", "Rotavator"),
+        Rule(listOf("combine harvester", "combine"), "combine", "Combine harvester"),
+        Rule(listOf("thresher"), "thresher", "Thresher"),
+        Rule(listOf("sprayer"), "sprayer", "Agricultural sprayer"),
+        Rule(listOf("water pump", "irrigation pump", "pump"), "motor", "Pump / motor"),
+        Rule(listOf("diesel engine"), "diesel_engine", "Diesel engine"),
+        Rule(listOf("generator"), "generator", "Generator"),
+        Rule(listOf("car", "automobile"), "car", "Car"),
+        Rule(listOf("truck", "lorry"), "truck", "Truck"),
+        Rule(listOf("electric vehicle", "ev"), "ev", "Electric vehicle"),
+        Rule(listOf("air conditioner", "air conditioning"), "ac", "Air conditioner"),
+        Rule(listOf("washing machine", "washer"), "washer", "Washing machine"),
+        Rule(listOf("refrigerator", "fridge"), "fridge", "Refrigerator"),
+        Rule(listOf("microwave oven", "microwave"), "microwave", "Microwave oven"),
+        Rule(listOf("television", "smart tv", "tv"), "tv", "Television")
     )
 
-    fun suggest(label: String, confidence: Float): MachineRouteSuggestion? {
-        val normalized = label.trim().lowercase(Locale.ROOT)
-        if (normalized.isBlank() || confidence !in 0f..1f) return null
-        val rule = rules.firstOrNull { normalized in it.labels } ?: return null
-        if (confidence < rule.minimumConfidence) return null
+    fun suggestFromOcr(ocrText: String): MachineRouteSuggestion? {
+        val normalized = ocrText.lowercase()
+        if (normalized.isBlank()) return null
+        val rule = rules
+            .sortedByDescending { candidate -> candidate.terms.maxOf { it.length } }
+            .firstOrNull { candidate ->
+                candidate.terms.any { term ->
+                    Regex("(?<![a-z0-9])" + Regex.escape(term) + "(?![a-z0-9])")
+                        .containsMatchIn(normalized)
+                }
+            } ?: return null
         val expert = MachineExpertSystem.expertFor(rule.machineId) ?: return null
         return MachineRouteSuggestion(
             machineId = rule.machineId,
             machineName = rule.machineName,
             expertName = expert.name,
-            confidence = confidence,
-            needsUserConfirmation = true,
-            reason = "Camera label suggests this category only. Confirm the machine before troubleshooting."
+            reason = "OCR found a possible machine-name clue. This is not visual recognition; confirm the machine and exact model."
         )
-    }
-
-    fun bestSuggestion(objects: List<DetectedObjectLike>): MachineRouteSuggestion? =
-        objects.mapNotNull { suggest(it.label, it.confidence) }
-            .maxByOrNull { it.confidence }
-
-    interface DetectedObjectLike {
-        val label: String
-        val confidence: Float
     }
 }
