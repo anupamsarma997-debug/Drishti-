@@ -205,3 +205,10 @@ This log separates downloaded archives from extracted/validated images, and both
 - CI run: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42496271862 — passed.
 - Dataset audit/preparation unit-test suite passed, including cross-shard exact-duplicate detection, conflicting-label detection, and blank-label handling.
 - Android unit tests and debug APK assembly passed; APK artifact ID `13623302847` (80,372,566 bytes).
+
+
+### Full YOLO dataset preparation workflow
+- Workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42496477259.
+- Downloads all 12 audited Parquet artifacts, then runs `prepare_i3d_yolo_dataset.py` to deduplicate by primary-image SHA-256, reject conflicting labels, write YOLO image/label folders, and produce deterministic hash-based train/validation/test splits plus YAML, manifest, and preparation report.
+- All 12 artifact downloads completed successfully; the preparation step was still running at the time of this log update. No prepared-dataset artifact is claimed until the workflow completes and upload succeeds.
+- Latest Android CI after adding cross-shard tests and preparation workflow passed; APK artifact ID `13623971048` (80,372,565 bytes), run https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42496477305.
