@@ -1,0 +1,45 @@
+name: Acquire and audit I3D tools shard 00001
+
+on:
+  push:
+    paths:
+      - ".github/workflows/acquire-i3d-tools-shard-00001.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  acquire-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install parquet and image audit tools
+        run: python -m pip install --disable-pip-version-check pyarrow Pillow
+      - name: Download second official parquet shard
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/i3d
+          curl --fail --location --retry 5 --retry-all-errors --connect-timeout 30 --max-time 1800 \
+            --output /tmp/i3d/train-00001-of-00012.parquet \
+            "https://huggingface.co/datasets/i3dlabiisc/I3D-Tools-Dataset/resolve/main/data/train-00001-of-00012.parquet"
+          test -s /tmp/i3d/train-00001-of-00012.parquet
+          ls -lh /tmp/i3d/train-00001-of-00012.parquet
+      - name: Audit images and YOLO annotations
+        run: |
+          python research/tools/audit_i3d_tools_parquet.py \
+            --parquet /tmp/i3d/train-00001-of-00012.parquet \
+            --output dataset-audit/i3d-tools-shard-00001.json
+      - name: Upload audited shard and report
+        uses: actions/upload-artifact@v4
+        with:
+          name: vidya-i3d-tools-shard-00001-audited
+          path: |
+            /tmp/i3d/train-00001-of-00012.parquet
+            dataset-audit/i3d-tools-shard-00001.json
+          if-no-files-found: error
+          retention-days: 30
