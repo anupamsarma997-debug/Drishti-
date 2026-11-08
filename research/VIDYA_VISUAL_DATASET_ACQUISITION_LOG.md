@@ -112,7 +112,7 @@ This log separates downloaded archives from extracted/validated images, and both
 ### I3D YOLO preparation pipeline
 - Added `research/tools/prepare_i3d_yolo_dataset.py`: exports only primary images (not conditioning images), converts annotations to YOLO labels, removes exact duplicate image hashes, rejects conflicting labels, and makes deterministic 80/10/10 train/val/test splits. Writes `dataset.yaml`, manifest and preparation report.
 - Added unit tests in `research/tools/test_prepare_i3d_yolo_dataset.py`, including multi-box parsing and duplicate-image handling.
-- Android CI now installs PyArrow/Pillow and runs all dataset audit/preparation tests before Gradle tests and APK build. New CI run is pending/running; do not call the preparation tests passed until the new run completes.
+- Android CI now installs PyArrow/Pillow and runs all dataset audit/preparation tests before Gradle tests and APK build. - CI run https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42495292944 passed the full Python dataset test suite (31 tests), Gradle unit tests and debug APK build; APK artifact ID `13623242531` (80,372,565 bytes). The preparation test first exposed an incorrect test assumption about seed changes; the test was corrected, and the subsequent full run passed.
 
 
 ### I3D Tools Dataset — fifth shard acquired and audited
