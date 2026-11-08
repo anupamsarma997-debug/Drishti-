@@ -558,3 +558,34 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - Acoustic anomaly detection is a research signal, not a component-level diagnosis or repair instruction.
 - Reddit is useful for product-gap discovery, not as an authoritative source of DTC definitions or proprietary data.
 - No new datasets were downloaded, integrated into Android, or used to train Vidya in this pass.
+
+
+## Tenth research pass — reusable OBD-II database and offline scanner projects
+
+65. OBDex — generic OBD-II DTC and PID data
+   Primary source: https://github.com/foerbsnavi/OBDex
+   Data license: CC0 1.0, confirmed in repository LICENSE-DATA. Code/tooling license: MIT, confirmed separately in LICENSE-CODE.
+   Published project snapshot describes 9,533 generic DTC entries and 132 standard PIDs (Mode 01 and Mode 09), with machine-readable YAML/JSON and schemas. The repository currently stores multiple large YAML family files; this is not a tiny drop-in Android asset.
+   Vidya use: strongest candidate to expand the generic offline DTC/PID dictionary after a version-pinned import, schema validation, duplicate checks, provenance review and safety wording audit. Preserve the distinction between code identifier, source description, affected system and verified repair procedure.
+   Limits: manufacturer-specific definitions are explicitly out of scope. CC0 covers this repository's data files according to its own license notice; independently verify third-party source text embedded in individual records. Descriptions/cause lists are not a substitute for OEM service manuals or Indian vehicle applicability.
+   Priority: P1 for an audited generic-data import; not yet integrated.
+
+66. OBDium — offline ELM327 diagnostic software architecture
+   Primary source: https://github.com/provrb/obdium
+   Project describes a Rust-based offline OBD-II scanner using ELM327 serial adapters, with DTC reading, live standard PID decoding and VIN parsing. Public repository topic/search metadata reports GPL-3.0.
+   Vidya use: architecture study for offline adapter communication, serial parsing, PID formulas, VIN context and separation of transport from interpretation.
+   Limits: GPL-3.0 obligations require compatibility review before copying or linking code into Vidya. It requires a compatible physical adapter and vehicle test; no app-only camera feature can replace actual ECU communication. Manufacturer-specific PID coverage is not claimed as complete.
+   Priority: P1 architecture study only; no code copied.
+
+67. Wal33D/dtc-database — broad generic and manufacturer-labelled DTC database
+   Primary source: https://github.com/Wal33D/dtc-database
+   Repository README claims 18,805 rows, 12,128 unique DTCs, 9,415 generic definitions and 9,390 manufacturer-specific definitions for 33 brands; the repo includes a 3.1 MB SQLite DB and per-brand source text files. Repository LICENSE is MIT.
+   Vidya use: discovery lead for DTC schema, SQLite indexing and offline lookup patterns; potential comparison corpus to find gaps in the small existing dictionary.
+   Limits: repository MIT license does not by itself prove that every imported manufacturer description has compatible upstream rights. The source-data folder includes aggregated brand-specific definitions but the README does not establish a complete rights/provenance chain for every entry. Keep on HOLD until per-source provenance and reuse rights are documented; do not import or claim OEM-verified coverage.
+   Priority: HOLD for data ingestion; P1 for schema/coverage comparison.
+
+## Tenth-pass decisions
+- OBDex is the best new data candidate because the repository explicitly separates CC0 data from MIT tooling and provides a schema. It still needs a version-pinned data audit and record-level source checks before an app import.
+- OBDium is useful as a technical architecture reference, but GPL-3.0 and physical ELM327 requirements make it unsuitable for blind code copying.
+- Wal33D/dtc-database has broad claimed coverage, but an MIT repository license is not sufficient evidence that all aggregated manufacturer-specific descriptions can be redistributed. Keep the database on HOLD.
+- No third-party database or scanner code was copied into Vidya in this pass; no new model training or hardware validation was performed.
