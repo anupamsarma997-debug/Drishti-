@@ -129,6 +129,7 @@ private fun VidyaApp() {
     var expertFollowUpQuestion by remember { mutableStateOf<String?>(null) }
     var expertFollowUpAnswer by remember { mutableStateOf("") }
     var expertInterviewRound by remember { mutableStateOf(0) }
+    var expertManualEvidence by remember { mutableStateOf(emptyList<com.vidya.safetyassistant.manuals.ManualPageText>()) }
     var cameraMachineSuggestion by remember { mutableStateOf<MachineRouteSuggestion?>(null) }
     var symptomMenuExpanded by remember { mutableStateOf(false) }
     var selectedApplianceId by remember { mutableStateOf(HomeTroubleshootingGuide.categories.first().id) }
@@ -154,6 +155,18 @@ private fun VidyaApp() {
     var warningMenuExpanded by remember { mutableStateOf(false) }
     var selectedWarningId by remember { mutableStateOf(VehicleWarningLightGuide.entries.first().id) }
     val mainHandler = remember { Handler(Looper.getMainLooper()) }
+    fun retrieveExpertManualEvidence() {
+        val query = listOf(expertBrand, expertModel, expertYear, expertComplaint)
+            .filter { it.isNotBlank() }.joinToString(" ")
+        if (query.isBlank()) {
+            expertManualEvidence = emptyList()
+            return
+        }
+        manualExecutor.execute {
+            val matches = runCatching { manualIndexer.search(query, 6) }.getOrDefault(emptyList())
+            mainHandler.post { expertManualEvidence = matches }
+        }
+    }
     var arMode by remember { mutableStateOf(false) }
     var requestArAfterPermission by remember { mutableStateOf(false) }
     var arStatus by remember { mutableStateOf("AR mode is optional and requires an ARCore-supported phone.") }
@@ -361,6 +374,7 @@ private fun VidyaApp() {
                     expertFollowUpQuestion = ExpertInterviewFlow.nextQuestion(
                         selectedExpertMachineId, expertComplaint, expertInterviewRound
                     )
+                    retrieveExpertManualEvidence()
                 }, enabled = expertComplaint.isNotBlank()) { Text("Ask selected machine expert") }
                 expertAssessment?.let { result ->
                     Text(result.expert.name, color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold)
@@ -380,6 +394,33 @@ private fun VidyaApp() {
                         style = MaterialTheme.typography.bodySmall)
                     Text(result.confidenceNote, color = Color(0xFF9BAFC2),
                         style = MaterialTheme.typography.labelSmall)
+                    val expertParts = PartFailureGuide.match(selectedExpertMachineId, expertComplaint)
+                    if (expertParts.isNotEmpty()) {
+                        Spacer(Modifier.height(8.dp))
+                        Text("POSSIBLE PARTS — VISUAL CONFIRMATION REQUIRED", color = Color(0xFFFFC247), fontWeight = FontWeight.Bold)
+                        expertParts.forEach { part ->
+                            Text(part.partName, color = Color.White, fontWeight = FontWeight.Bold)
+                            Text("Clues: " + part.failureClues.joinToString(", "), color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                            part.safeObservations.forEach { Text("Observe: " + it, color = Color.White, style = MaterialTheme.typography.bodySmall) }
+                            Text("Technician: " + part.technicianAction, color = Color(0xFF9BAFC2), style = MaterialTheme.typography.bodySmall)
+                            Text("Never: " + part.neverDo, color = Color(0xFFFF8D70), style = MaterialTheme.typography.labelSmall)
+                        }
+                    }
+                    Text("MATCHED PAGES FROM YOUR IMPORTED MANUALS", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold)
+                    if (expertManualEvidence.isEmpty()) {
+                        Text("No matching indexed manual page found on this phone. Import and index the exact model manual, or search official manufacturer sources below.", color = Color(0xFF9BAFC2), style = MaterialTheme.typography.labelSmall)
+                    } else {
+                        expertManualEvidence.forEach { page ->
+                            Text(page.manualName + " · page " + page.pageNumber, color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold)
+                            Text(page.text.take(420), color = Color.White, style = MaterialTheme.typography.bodySmall)
+                        }
+                        Text("These are OCR search matches from your files, not authenticated instructions. Verify the manual's make, model and year before use.", color = Color(0xFFFFC247), style = MaterialTheme.typography.labelSmall)
+                    }
+                    Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                        val query = Uri.encode(listOf(expertBrand, expertModel, expertYear, expertComplaint, "official manufacturer service manual fault diagnosis").filter { it.isNotBlank() }.joinToString(" "))
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/search?q=" + query))
+                        runCatching { context.startActivity(intent) }.onFailure { onlineResearchStatus = "Could not open a browser on this device." }
+                    }) { Text("Research this exact problem on the web") }
                     expertFollowUpQuestion?.let { question ->
                         Spacer(Modifier.height(8.dp))
                         Text("EXPERT FOLLOW-UP QUESTION", color = Color(0xFF68E0FF), fontWeight = FontWeight.Bold)
@@ -394,6 +435,7 @@ private fun VidyaApp() {
                                 expertMachineOptions.first { it.first == selectedExpertMachineId }.second,
                                 expertBrand, expertModel, expertYear, expertComplaint)
                             expertFollowUpQuestion = ExpertInterviewFlow.nextQuestion(selectedExpertMachineId, expertComplaint, expertInterviewRound)
+                            retrieveExpertManualEvidence()
                         }) { Text("Send answer to expert") }
                     }
                 }
