@@ -176,3 +176,80 @@ Current dependency conflict with the desired independent-AI direction:
 
 ## Next research passes
 This register is a starting catalogue, not a claim that every public resource has been found. Continue domain-by-domain for motorcycles/cars and OBD; tractors/farm machinery; pumps/motors; appliances; industrial audio/vibration; machine-part images; public repair manuals/service bulletins; diagnostic standards; multilingual technical corpora; mobile vision models; model quantization and Android runtimes. Record each candidate and reject irrelevant, unsafe, non-reusable or duplicate resources rather than adding them merely to inflate the catalogue.
+
+
+## Second research pass — vehicle diagnostics, appliances and machine sound
+
+17. OBDex — generic OBD-II diagnostic code and PID database
+   Source: https://github.com/foerbsnavi/obdex
+   Source states 9,533 generic OBD-II codes in English/German; data CC0-1.0, tooling MIT. Includes 132 PIDs and source references per code.
+   Vidya use: candidate expansion of generic OBD-II lookup and PID metadata, subject to schema/provenance review and unit tests.
+   Limits: generic codes only; OEM-specific P1/B1/C1/U1 code meanings are deliberately outside its scope. A DTC is a symptom clue, not a confirmed failed part. Do not copy SAE J2012 copyrighted text.
+   Priority: P0 after validating current dataset snapshot and each row's source.
+
+18. Real-vehicle OBD-II dataset — AbouAbdallah-Lounis/OBD-Dataset
+   Source: https://github.com/AbouAbdallah-Lounis/OBD-Dataset
+   Repository describes time-stamped OBD sensor samples from real vehicles, with vehicle identifiers and powertrain parameters; dataset claims CC BY 4.0.
+   Vidya use: research for time-series vehicle condition classification and DTC prediction experiments.
+   Limits: limited vehicle population, diesel-only according to repository notes, sparse DTC classes and possible leakage if splits are not grouped by vehicle. Inspect actual files, labels, paper and data quality before use.
+   Priority: P1; attribution required.
+
+19. LEVIN Vehicle Telematics Data by Yun Solutions
+   Source: https://github.com/YunSolutions/levin-openData
+   Repository describes approximately four months of OBD data from about 30 four-wheelers, 1 Hz OBD and 25 Hz accelerometer, with GPS and engine telemetry. Stated license: CC BY-NC-SA.
+   Vidya use: non-commercial research on driving/vehicle telemetry, event detection and sensor fusion only if terms fit.
+   Limits: non-commercial restriction; not a repair manual or broad vehicle fault dataset.
+   Priority: HOLD for any commercial release; P1 for permitted non-commercial research.
+
+20. KIT Automotive OBD-II Dataset (RADAR4KIT)
+   Source: https://radar.kit.edu/radar/en/dataset/bCtGxdTklQlfQcAq
+   Cited by a 2026 open-access connected-vehicle maintenance paper as an available automotive OBD-II dataset.
+   Vidya use: potential vehicle telemetry benchmark.
+   Limits: fetch dataset metadata and its exact license/access conditions before any download, training or redistribution.
+   Priority: HOLD pending primary metadata and license check.
+
+21. ApplianceDB public developer sample
+   Source: https://github.com/ApplianceDB/ApplianceDB-public
+   Repository describes 438 appliance error codes across 13 brands and 288 ranked repair procedures; ODbL 1.0 stated, with per-row source provenance.
+   Vidya use: appliance code schema research, error-code ingestion prototype, provenance-aware retrieval.
+   Limits: coverage described for US/UK markets; appliance brand/model/market combinations differ from India. ODbL share-alike and database attribution obligations need review; repair procedures are not automatically applicable to Indian variants. It is a developer sample, not a complete global database.
+   Priority: P1 after ODbL compatibility review.
+
+22. MIMII industrial machine sound dataset
+   Discovery record: https://www.indatlas.com/datasets/mimii-dataset-sound-dataset-for-malfunctioning-industrial-machine-investigation/
+   Original dataset access: https://zenodo.org/records/3384388
+   Reported scope: normal/anomalous sounds for valves, pumps, fans and slide rails, multiple models and factory background noise. Reported license: CC BY-SA 4.0.
+   Vidya use: acoustic anomaly-detection research and noise-robustness experiments for industrial equipment.
+   Limits: laboratory/factory recordings and fixed microphone geometry do not establish accuracy on phone recordings, Indian field conditions or different machine models. Preserve attribution and share-alike obligations; verify Zenodo metadata before use.
+   Priority: P0 for research after confirming the original record's metadata and files.
+
+23. HB-Bearing real-background-noise audio dataset
+   Discovery index: https://github.com/VictorBauler/awesome-bearing-dataset
+   Reported 13,500 four-second, 16 kHz clips for normal and bearing fault conditions, with machinery and human background noise. DataCite metadata reportedly lists CC BY 4.0; IEEE DataPort subscription required for download.
+   Vidya use: evaluate whether acoustic classifiers remain robust in noisy environments.
+   Limits: access may require subscription; verify original DataCite record and rights before use.
+   Priority: HOLD until download/access and license are confirmed.
+
+24. Rotating-machine multi-sensor dataset (vibration, acoustic, temperature, current)
+   Paper/data article: https://www.sciencedirect.com/science/article/pii/S2352340923001671
+   Describes sensor recordings under normal operation, bearing inner/outer race faults, shaft misalignment and rotor unbalance across torque loads. Article states open access under a Creative Commons license.
+   Vidya use: multi-sensor feature engineering and controlled condition-monitoring experiments.
+   Limits: confirm the exact CC license, repository download and reuse permissions from the article's data availability statement. Lab rig conditions do not transfer directly to field machines.
+   Priority: P1 pending license and raw data verification.
+
+25. MPDD — Metal Parts Defect Detection Dataset
+   Discovery record: https://www.indatlas.com/datasets/mpdd/
+   Reports 1,000+ industrial metal-part images with pixel-level defect masks; license reported CC BY-NC-SA 4.0.
+   Vidya use: non-commercial research into defect segmentation and visual inspection.
+   Limits: commercial use is restricted; industrial metal surface defects are not equivalent to machine identification or mechanical fault diagnosis.
+   Priority: HOLD for product training; P1 for non-commercial method study.
+
+## Additional cautions from this pass
+- ApplianceDB and MechanicDB-style repositories may contain curated repair text, but their database licenses, per-row source rights, regional applicability and share-alike terms must be checked before inclusion.
+- Open code databases do not grant rights to reproduce copyrighted standards verbatim.
+- Audio anomaly datasets detect distribution changes under their recording setup; they do not prove the cause, identify every fault, or justify a repair instruction.
+- Public OBD datasets often contain few vehicles. Split by vehicle, not random rows, to reduce leakage and overestimated performance.
+- A 2026 connected-vehicle paper cites UCI AI4I, KIT RADAR4KIT and carOBD as benchmarks; its reported results are the paper's results, not Vidya results. Its field cohort is small and must not be treated as broad validation.
+
+## Research status after pass 2
+This is a curated shortlist, not a complete census of worldwide public resources. Some entries are P0 only for research or prototype ingestion, not automatically approved for commercial model training. No external dataset has yet been downloaded, merged into the Android app, or used to train a Vidya model. Each candidate still needs a reproducible download/version, checksum, license copy, schema validation and data-quality report.
