@@ -70,6 +70,7 @@ import com.vidya.safetyassistant.equipment.MachineRouteSuggestion
 import com.vidya.safetyassistant.equipment.RuralMachineGuide
 import com.vidya.safetyassistant.equipment.FarmMachineBrandCatalog
 import com.vidya.safetyassistant.equipment.PartFailureGuide
+import com.vidya.safetyassistant.equipment.ObdexDtcRepository
 import com.vidya.safetyassistant.equipment.VehicleDiagnosticLookup
 import com.vidya.safetyassistant.equipment.VehicleDiagnosticResult
 import com.vidya.safetyassistant.equipment.VehicleWarningLightGuide
