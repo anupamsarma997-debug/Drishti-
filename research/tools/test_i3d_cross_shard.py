@@ -28,9 +28,8 @@ class CrossShardAuditTest(unittest.TestCase):
             pq.write_table(pa.Table.from_pylist([same]), second)
             output = root / "report.json"
             with patch("sys.argv", ["audit", "--parquet", str(first), str(second), "--output", str(output)]):
-                with self.assertRaises(SystemExit) as error:
-                    main()
-            self.assertEqual(1, error.exception.code)
+                result = main()
+            self.assertEqual(1, result)
             report = json.loads(output.read_text())
             self.assertEqual(1, report["globally_unique_primary_images"])
             self.assertEqual(1, report["cross_shard_and_within_input_duplicate_rows"])
@@ -50,9 +49,8 @@ class CrossShardAuditTest(unittest.TestCase):
             pq.write_table(pa.Table.from_pylist([second]), b)
             output = root / "report.json"
             with patch("sys.argv", ["audit", "--parquet", str(a), str(b), "--output", str(output)]):
-                with self.assertRaises(SystemExit) as error:
-                    main()
-            self.assertEqual(1, error.exception.code)
+                result = main()
+            self.assertEqual(1, result)
             report = json.loads(output.read_text())
             self.assertEqual(1, report["conflicting_duplicate_annotations"])
 
