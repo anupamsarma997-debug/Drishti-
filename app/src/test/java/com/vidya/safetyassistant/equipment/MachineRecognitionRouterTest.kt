@@ -23,6 +23,27 @@ class MachineRecognitionRouterTest {
     }
 
     @Test
+    fun routesHindiMachineNamesFromOcr() {
+        assertEquals("tractor", MachineRecognitionRouter.suggestFromOcr("महिंद्रा ट्रैक्टर")?.machineId)
+        assertEquals("motor", MachineRecognitionRouter.suggestFromOcr("कृषि पानी का पंप")?.machineId)
+        assertEquals("rotavator", MachineRecognitionRouter.suggestFromOcr("रोटावेटर")?.machineId)
+    }
+
+    @Test
+    fun routesAdditionalRuralAndWorkshopMachinesToExistingExperts() {
+        assertEquals("chaff_cutter", MachineRecognitionRouter.suggestFromOcr("Chaff cutter 2 HP")?.machineId)
+        assertEquals("compressor", MachineRecognitionRouter.suggestFromOcr("Air compressor")?.machineId)
+        assertEquals("forklift", MachineRecognitionRouter.suggestFromOcr("Forklift")?.machineId)
+    }
+
+    @Test
+    fun doesNotMatchMachineCluesInsideUnrelatedWords() {
+        assertNull(MachineRecognitionRouter.suggestFromOcr("carburetor cleaner"))
+        assertNull(MachineRecognitionRouter.suggestFromOcr("service department"))
+        assertNull(MachineRecognitionRouter.suggestFromOcr("TVS Motor Company"))
+    }
+
+    @Test
     fun doesNotInferMachineFromGenericMlKitLabels() {
         assertNull(MachineRecognitionRouter.suggestFromOcr("home goods"))
         assertNull(MachineRecognitionRouter.suggestFromOcr("fashion goods"))
