@@ -143,7 +143,7 @@ class OnDeviceObjectAnalyzer(
                         }
                     }
                     .addOnCompleteListener { latinTask ->
-                        if (closed || latinTask.result?.text?.isNotBlank() == true) {
+                        if (closed || (latinTask.isSuccessful && latinTask.result?.text?.isNotBlank() == true)) {
                             finishFrame()
                         } else {
                             try {
