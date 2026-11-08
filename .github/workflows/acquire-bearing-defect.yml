@@ -22,7 +22,7 @@ jobs:
       - name: Install RAR extraction and image audit tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y unar
+          sudo apt-get install -y unar 7zip
           python -m pip install --disable-pip-version-check Pillow
       - name: Download Zenodo Bonfiglioli bearing archive
         run: |
@@ -32,6 +32,16 @@ jobs:
             --output /tmp/vidya-bonfiglioli-bearing.rar
           test -s /tmp/vidya-bonfiglioli-bearing.rar
           sha256sum /tmp/vidya-bonfiglioli-bearing.rar
+          md5sum /tmp/vidya-bonfiglioli-bearing.rar
+          python - <<'PY'
+          import hashlib
+          p='/tmp/vidya-bonfiglioli-bearing.rar'
+          h=hashlib.md5(open(p,'rb').read()).hexdigest()
+          expected='d252807928f29c11c2a6344afb7f8eef'
+          print(f'Zenodo MD5 expected={expected} actual={h}')
+          if h != expected:
+              raise SystemExit('Downloaded archive checksum does not match Zenodo metadata')
+          PY
       - name: Extract and audit archive
         run: |
           python research/tools/audit_bonfiglioli_archive.py \
