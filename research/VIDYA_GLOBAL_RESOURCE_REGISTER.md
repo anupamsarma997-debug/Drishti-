@@ -490,3 +490,33 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - The government-reported 66-company figure is dated 10 February 2026 and must not be presented as a live count.
 - ICAR publication catalogue entries are credible leads, but publisher copyright means access is not equivalent to an open reuse license.
 - No new manuals or datasets were copied into the app or used to train a model in this pass.
+
+## Seventh research pass — Reddit leads and vehicle-diagnostics research
+
+54. OBDb — community vehicle-specific OBD signal catalogue
+   Primary source: https://github.com/obdb/
+   Reddit discovery: https://www.reddit.com/r/CarHacking/comments/1xbebi7/the_car_catalog_the_worlds_largest_open_source/
+   The project documents OBD parameters, scaling and diagnostic codes organized by vehicle make/model, with default signal sets and model-year overrides. Its project page says most text is licensed CC BY-SA 4.0, while individual repositories may carry one or more licenses.
+   Vidya use: investigate a version-pinned importer for vehicle-specific PID/signal definitions, units, scaling and model-year applicability. This is more useful than assuming every car exposes the same generic PID set.
+   Limits: coverage is community-contributed and uneven; inspect each exact repository/file license, provenance and signal definition. CC BY-SA obligations require legal review before bundling or redistributing derived data. Current catalog coverage is not proof of Indian-market vehicle coverage.
+   Priority: P1 for a small audited pilot; no bulk ingestion until per-repository license and quality checks pass.
+
+55. Reddit Devvit dtcbot — DTC coverage and source-provenance lead
+   Source: https://developers.reddit.com/apps/dtcbot
+   Describes generic SAE-style code ranges plus 774 Toyota-specific codes sourced from named Prius/FJ Cruiser factory service manuals and another DTC database.
+   Vidya use: inspect its source references and schema as a lead for separating generic DTCs from make/model-specific code tables, and for tests that ensure OEM definitions take precedence only when the exact vehicle applicability matches.
+   Limits: Reddit app listing is not a clear license grant for its code/data; referenced factory manuals may be copyrighted and US-market/model-specific. Do not copy its JSON or code until repository license, upstream data rights and model applicability are verified.
+   Priority: HOLD for ingestion; P1 as architecture/provenance research.
+
+56. Reddit mechanic discussions — diagnostic uncertainty and repair-manual indexing practices
+   Discovery sources: https://www.reddit.com/r/MechanicAdvice/comments/jj8t2d/obd_codes/ ; https://www.reddit.com/r/DataHoarder/comments/m48xee/service_repair_manuals/
+   Community discussions highlight two practical requirements: a trouble code narrows the subsystem but does not identify a failed part, and exact year/make/model/engine/trim/drive-train plus the specific repair procedure are important when selecting a manual. A separate discussion describes photographing model/serial labels and indexing manuals by those identifiers.
+   Vidya use: reinforce a symptom-and-evidence workflow, exact machine identity capture, model/variant filtering, page-level source links and a strict rule against replacing parts solely from a DTC.
+   Limits: Reddit comments are anecdotal, may be incomplete or wrong, and are not licensed technical manuals or verified repair procedures. Use only as qualitative product-discovery input; do not ingest comments as training data or present them as authoritative guidance.
+   Priority: P1 for product requirements; not an approved technical knowledge source.
+
+## Seventh-pass decisions
+- OBDb is the strongest new technical lead: vehicle-specific signal definitions and year overrides can improve diagnostic context, but only after per-repository license and Indian-market coverage audits.
+- dtcbot demonstrates a useful generic-versus-OEM DTC separation pattern; its data is not approved for reuse until code and upstream manual rights are clear.
+- Reddit supports the need for exact model identification and diagnostic uncertainty handling, not automatic repair instructions.
+- No Reddit comments, manuals, OBDb data or dtcbot data have been copied into the Android app or used to train a Vidya model in this pass.
