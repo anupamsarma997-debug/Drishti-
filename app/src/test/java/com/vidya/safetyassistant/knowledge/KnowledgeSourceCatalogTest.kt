@@ -46,6 +46,20 @@ class KnowledgeSourceCatalogTest {
         }
     }
 
+    @Test fun commercialImageDatasetRightsAreDistinguishedFromNonCommercialBenchmarks() {
+        val cc0 = KnowledgeSourceCatalog.find("electronics-parts-cc0")
+        val shareAlike = KnowledgeSourceCatalog.find("irisp-industrial-spare-parts")
+        val workpieces = KnowledgeSourceCatalog.find("machined-workpieces-defect-images")
+        val mvtec = KnowledgeSourceCatalog.find("mvtec-ad-industrial-anomaly")
+        val autovi = KnowledgeSourceCatalog.find("autovi-renault-industrial-visual-inspection")
+        assertTrue(cc0!!.commercialUseAllowed)
+        assertTrue(shareAlike!!.commercialUseAllowed)
+        assertTrue(shareAlike.license.contains("ShareAlike"))
+        assertTrue(workpieces!!.commercialUseAllowed)
+        assertFalse(mvtec!!.commercialUseAllowed)
+        assertFalse(autovi!!.commercialUseAllowed)
+    }
+
     @Test fun unknownSourceDoesNotResolve() {
         assertEquals(null, KnowledgeSourceCatalog.find("made-up-source"))
     }

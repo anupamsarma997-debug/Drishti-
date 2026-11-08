@@ -60,6 +60,59 @@ object KnowledgeSourceCatalog {
             verification = KnowledgeVerification.SOURCE_CHECKED
         ),
         KnowledgeSource(
+            sourceId = "electronics-parts-cc0",
+            title = "Electronics Parts Dataset — capacitors, potentiometers and voltage regulators",
+            publisher = "praneelchand10 contributors",
+            canonicalUrl = "https://github.com/praneelchand10/Electronics-Parts-Dataset",
+            revisionOrVersion = "2024 updated image resolutions; verify archive snapshot before use",
+            license = "CC0-1.0 declared in repository; check image provenance and privacy before reuse",
+            commercialUseAllowed = true,
+            redistributionAllowed = true,
+            verification = KnowledgeVerification.SOURCE_CHECKED
+        ),
+        KnowledgeSource(
+            sourceId = "irisp-industrial-spare-parts",
+            title = "IRISP fine-grained industrial spare-parts image retrieval dataset",
+            publisher = "IRISP dataset authors",
+            canonicalUrl = "https://github.com/imyliu1717/industrial_spare_part_dataset",
+            revisionOrVersion = "CVPRW 2026; 17,410 objects and 141,937 images per README",
+            license = "CC BY-SA 4.0; attribution and ShareAlike obligations apply; object IDs are not semantic part labels",
+            commercialUseAllowed = true,
+            redistributionAllowed = true,
+            verification = KnowledgeVerification.SOURCE_CHECKED
+        ),
+        KnowledgeSource(
+            sourceId = "machined-workpieces-defect-images",
+            title = "Dataset of surface images for automated inspection of machined workpieces",
+            publisher = "University of León authors via Zenodo",
+            canonicalUrl = "https://zenodo.org/records/16361102",
+            revisionOrVersion = "24,007 expert-labelled RGB images per dataset article",
+            license = "CC BY 4.0; attribution required; verify dataset record metadata before download",
+            commercialUseAllowed = true,
+            redistributionAllowed = true,
+            verification = KnowledgeVerification.SOURCE_CHECKED
+        ),
+        KnowledgeSource(
+            sourceId = "mvtec-ad-industrial-anomaly",
+            title = "MVTec Anomaly Detection benchmark",
+            publisher = "MVTec",
+            canonicalUrl = "https://www.mvtec.com/research-teaching/datasets/mvtec-ad",
+            license = "CC BY-NC-SA 4.0; non-commercial only",
+            commercialUseAllowed = false,
+            redistributionAllowed = true,
+            verification = KnowledgeVerification.SOURCE_CHECKED
+        ),
+        KnowledgeSource(
+            sourceId = "autovi-renault-industrial-visual-inspection",
+            title = "Automotive Visual Inspection Dataset (AutoVI)",
+            publisher = "Renault Group",
+            canonicalUrl = "https://zenodo.org/records/10459003",
+            license = "CC BY-NC-SA 4.0; non-commercial only; commercial use requires separate permission",
+            commercialUseAllowed = false,
+            redistributionAllowed = true,
+            verification = KnowledgeVerification.SOURCE_CHECKED
+        ),
+        KnowledgeSource(
             sourceId = "icar-agricultural-engineering-catalogue",
             title = "Agricultural Engineering machinery catalogue",
             publisher = "Indian Council of Agricultural Research",

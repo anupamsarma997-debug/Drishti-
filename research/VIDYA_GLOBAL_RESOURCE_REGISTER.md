@@ -729,3 +729,53 @@ This is a curated shortlist, not a complete census of worldwide public resources
 - The app preserves up to five HTTPS record source links and displays them as tappable references.
 - OBDex data is not a diagnostic authority: code meanings, cause labels and qualitative likelihood tags remain candidate references; no repair step or cost estimate is imported. The app preserves symptoms, affected components, related codes and source URLs when available. Model/engine/ECU compatibility and actual vehicle behaviour require exact OEM evidence.
 - The first successful GitHub Actions build after the downloader integration passed. A later pass preserves additional schema fields (category, cause likelihood tags, symptoms, affected components and related DTCs) and bounds download streaming to 25 MiB; its CI run is pending. No physical Android download/offline test has been performed.
+
+
+## Sixteenth research pass — parts imagery and manufacturer parts portals
+
+83. Electronics Parts Dataset — CC0 electronic-component images
+    Primary source: https://github.com/praneelchand10/Electronics-Parts-Dataset
+    Repository README describes images of capacitors, potentiometers and IC voltage regulators, with updated 2024 resolutions including 224×224 grayscale and RGB folders. Repository LICENSE declares CC0 1.0.
+    Vidya use: small, narrow electronic-component visual-classification experiment candidate after archive inspection, duplicate checks and class-count audit.
+    Limits: only a few electronic-component classes; not machine-wide parts recognition, not fault/damage labels, and no exact appliance PCB/model coverage. CC0 does not clear third-party marks or privacy rights in every image.
+    Priority: P0 candidate for audit; not downloaded or integrated.
+
+84. IRISP — fine-grained industrial spare-parts image retrieval
+    Primary source: https://github.com/imyliu1717/industrial_spare_part_dataset
+    Dataset README reports 17,410 distinct object instances and 141,937 images, with phone and studio captures, retrieval/instance-matching splits, and a CC BY-SA 4.0 licence. Download instructions link to the Mannheim data host.
+    Vidya use: candidate for image-to-image retrieval of the same physical industrial object and cross-domain phone-camera matching; useful to research instance retrieval.
+    Limits: object IDs are not semantic labels such as "bearing" or "fuel injector"; no machine make/model/year fitment, defect diagnosis or repair steps. ShareAlike and attribution obligations apply to redistributed adaptations; assess compatibility with Vidya's distribution model before training or bundling.
+    Priority: P1 after license and download integrity review; not downloaded or integrated.
+
+85. Dataset of surface images for automated inspection of machined workpieces
+    Primary source: https://zenodo.org/records/16361102
+    Dataset article reports 24,007 high-resolution RGB images of machined workpiece inner/outer surfaces, manually labelled by experts, with CC BY 4.0 licence and a checksum for the archive.
+    Vidya use: candidate for surface-wear/finish anomaly research and image-pipeline tests, subject to inspecting the exact Zenodo record and labels.
+    Limits: machined workpiece surfaces are not whole-machine parts; this is not a leak/corrosion/electrical-fault dataset and does not establish repair diagnosis.
+    Priority: P1 after checksum, metadata and label audit; not downloaded or integrated.
+
+86. MVTec AD — industrial anomaly benchmark
+    Primary source: https://www.mvtec.com/research-teaching/datasets/mvtec-ad
+    Official source describes more than 5,000 high-resolution images over 15 object/texture categories with pixel-precise anomaly masks. Licence: CC BY-NC-SA 4.0; the provider explicitly prohibits commercial use.
+    Vidya use: academic non-commercial method comparison only unless a separate commercial licence is obtained.
+    Priority: HOLD for commercial Vidya; not downloaded or integrated.
+
+87. Renault Group AutoVI — automotive industrial visual inspection
+    Primary source: https://zenodo.org/records/10459003
+    Dataset record describes industrial production-line defect images examined and labelled by Renault experts; CC BY-NC-SA 4.0, commercial use requires permission.
+    Vidya use: non-commercial research into automotive manufacturing surface-anomaly methods only; not road-vehicle repair diagnosis.
+    Priority: HOLD for commercial Vidya; not downloaded or integrated.
+
+88. John Deere India — official parts and services
+    Primary source: https://www.deere.co.in/en-in/parts-owner-support/parts-and-services
+    Official India site describes parts genuineness and a "Find Parts" entry point with diagrams.
+    Vidya use: exact machine/serial-specific link-out for users to identify parts through the manufacturer. Do not scrape, mirror or infer fitment from product photographs.
+    Rights: official portal link only; no bulk data or redistribution permission assumed.
+    Priority: P0 for official link-out.
+
+89. Swaraj Tractors — genuine parts
+    Primary source: https://www.swarajtractors.com/genuine-parts
+    Official India page explains genuine-parts availability through authorised dealers/distributors and authenticity markers.
+    Vidya use: link users to genuine parts support and warn against treating visually similar non-genuine parts as confirmed fitment.
+    Limits: not a public exploded-parts catalogue or model/serial lookup dataset.
+    Priority: P0 for official link-out.
