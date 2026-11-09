@@ -71,3 +71,24 @@ This register distinguishes real photographs from synthetic/augmented images and
 - Candidate: https://data.mendeley.com/datasets/gmjkzdxhc6/2
 - Publisher describes 24 real workshop tool/hardware categories and CC BY 4.0.
 - Public archive metadata endpoint returned HTTP 401 without OAuth; no credentials were available or requested. No archive acquired. Access-check workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42564731466.
+
+
+## Additional real-data leads (not yet acquired)
+
+### I-AsSET — 32 industrial mechanical-component classes
+- Source: https://huggingface.co/datasets/moiaraya/I-AsSET
+- Dataset card describes 508 annotated real images across 32 mechanical-component classes and four industrial scenes, captured with a Zivid industrial RGB-D camera. The same repository also contains 8,000 synthetic training images, 3D assets, and model checkpoints; do not mix those with its 508 real test images.
+- The full repository reports 218 GB, so only the real RGB images and their matching COCO/YOLO annotations should be considered for a targeted partial download.
+- License: the card points to a repository `LICENSE` file, but the actual terms have not yet been verified in this workflow. Status: HOLD — do not download/use until the license text is inspected and confirms permission for the intended training and distribution.
+- The 508 real images are a useful complement to the ball-screw pitting dataset because they cover multiple mechanical component classes, but are still not a broad field dataset for vehicles or every machine type.
+
+### 3CAD — real 3C manufacturing anomalies
+- Source repo: https://github.com/EnquanYang2022/3CAD
+- Paper and project describe 27,039 real production-line images across 8 manufactured-part categories and 47 anomaly types with pixel-level masks.
+- A Google Drive archive is linked by the project, but a clear dataset license was not verified in the source materials inspected. Status: HOLD — no download/training/redistribution until rights are clarified.
+- This is an anomaly-localization dataset for aluminum/copper/iron 3C parts, not general machine-part recognition.
+
+### M2 screw defect dataset
+- Source: https://data.mendeley.com/datasets/2y6mcsyrpy/2
+- Publisher describes 5,536 screw-head/thread OK/NG images and CC BY 4.0.
+- The two RAR archives are 2.72 GB and 1.02 GB. Mendeley public metadata access has required OAuth in the earlier acquisition test; this specific dataset has not yet been downloaded or audited. Status: candidate, not acquired.
