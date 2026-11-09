@@ -4,7 +4,7 @@ Updated: 2026-11-09
 
 ## Acquired: KIT / 2Obe ball-screw surface-defect dataset
 
-<badge>Not a trained model</badge>
+**Status:** Dataset acquired and prepared; model training has not started.
 
 - Upstream source: https://github.com/2Obe/BSData
 - Upstream license: CC BY-SA 4.0 (repository LICENSE); preserve attribution and share-alike terms.
