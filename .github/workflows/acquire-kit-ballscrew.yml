@@ -1,0 +1,46 @@
+name: Acquire real KIT ball-screw defect images
+
+on:
+  push:
+    paths:
+      - ".github/workflows/acquire-kit-ballscrew.yml"
+      - "research/tools/audit_kit_ballscrew.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  acquire-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image audit dependency
+        run: python -m pip install --disable-pip-version-check Pillow
+      - name: Download public upstream repository archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p acquisition
+          curl --fail --location --retry 3 --retry-all-errors \
+            https://codeload.github.com/2Obe/BSData/zip/refs/heads/main \
+            --output acquisition/kit-ballscrew-bsdata.zip
+          sha256sum acquisition/kit-ballscrew-bsdata.zip | tee acquisition/SHA256SUMS.txt
+          unzip -tq acquisition/kit-ballscrew-bsdata.zip
+      - name: Audit real images, hashes, and LabelMe annotations
+        run: |
+          set -euo pipefail
+          python research/tools/audit_kit_ballscrew.py acquisition/kit-ballscrew-bsdata.zip --output acquisition/audit-report.json
+          cat acquisition/audit-report.json
+      - name: Upload acquired dataset and audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: vidya-kit-ballscrew-real-defect-dataset
+          path: |
+            acquisition/kit-ballscrew-bsdata.zip
+            acquisition/SHA256SUMS.txt
+            acquisition/audit-report.json
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
