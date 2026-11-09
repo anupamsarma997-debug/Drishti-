@@ -16,7 +16,7 @@ This register distinguishes real photographs from synthetic/augmented images and
 - Version 2 says duplicate-image removal was performed to reduce cross-split leakage and class distribution imbalance was addressed.
 - Source code and benchmark pipelines: https://github.com/mark-0polo/ML-CODES
 - This is a much better real-photo validation candidate than synthetic-only I3D. However, it is still a hardware/tools dataset, not a comprehensive set of vehicle/industrial machine assemblies or fault labels.
-- Acquisition status: candidate identified; archive not yet downloaded or audited by Vidya.
+- Acquisition status: candidate identified; archive not yet downloaded or audited by Vidya. An automated request to Mendeley's public archive metadata endpoint returned HTTP 401 (2026-11-09); its API docs require OAuth2. No token was available, and no credential was requested from the user or stored. The workflow now records this as an access limitation instead of claiming acquisition.
 - Before use: download the publisher's exact version 2 archive, verify SHA-256, inspect archive layout and COCO category IDs, audit image integrity and duplicates, check raw vs augmented overlap, preserve original train/validation/test partitions, and retain attribution. Do not claim it has been acquired until the workflow confirms extraction and audit.
 
 ## Other candidates / caveats
