@@ -1,0 +1,55 @@
+name: Acquire real-world industrial bolt dataset
+
+on:
+  push:
+    paths:
+      - ".github/workflows/acquire-strathclyde-bolts.yml"
+      - "research/tools/audit_strathclyde_bolts.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  acquire-and-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check publisher download endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://pureportal.strath.ac.uk/files/144044425/obj_train_data.tar.gz"
+          curl --silent --show-error --location --range 0-0 --output /tmp/strath-probe.bin --write-out 'HTTP=%{http_code} SIZE=%{size_download} URL=%{url_effective}\n' "$URL" | tee acquisition-endpoint.txt
+          test -s /tmp/strath-probe.bin
+      - name: Download publisher archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p acquisition
+          curl --fail --location --retry 3 --retry-all-errors --connect-timeout 30 --max-time 5400 \
+            "https://pureportal.strath.ac.uk/files/144044425/obj_train_data.tar.gz" \
+            --output acquisition/obj_train_data.tar.gz
+          stat -c 'archive_bytes=%s' acquisition/obj_train_data.tar.gz
+          sha256sum acquisition/obj_train_data.tar.gz | tee acquisition/SHA256SUMS.txt
+          gzip -t acquisition/obj_train_data.tar.gz
+          tar -tzf acquisition/obj_train_data.tar.gz > acquisition/archive-members.txt
+      - name: Audit archive structure and annotations
+        shell: bash
+        run: |
+          set -euo pipefail
+          python research/tools/audit_strathclyde_bolts.py acquisition/obj_train_data.tar.gz --output acquisition/audit-report.json
+          cat acquisition/audit-report.json
+      - name: Upload acquired real-world dataset and audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: vidya-strathclyde-real-bolts-dataset
+          path: |
+            acquisition/obj_train_data.tar.gz
+            acquisition/SHA256SUMS.txt
+            acquisition/audit-report.json
+            acquisition/archive-members.txt
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
