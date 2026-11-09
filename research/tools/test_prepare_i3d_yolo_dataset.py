@@ -49,7 +49,7 @@ class I3DPreparationTest(unittest.TestCase):
             self.assertEqual(1, sum(report["split_images"].values()))
             split_boxes = report["split_class_box_counts"]
             self.assertEqual(1, sum(sum(counts.values()) for counts in split_boxes.values()))
-            self.assertEqual(report["class_box_counts"]["ball_bearing"], 1)
+            self.assertEqual(report["class_box_counts"]["gear"], 1)
 
     def test_conflicting_labels_for_same_image_are_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
