@@ -47,6 +47,9 @@ class I3DPreparationTest(unittest.TestCase):
             self.assertEqual(1, report["unique_primary_images"])
             self.assertEqual(1, report["duplicate_primary_rows_removed"])
             self.assertEqual(1, sum(report["split_images"].values()))
+            split_boxes = report["split_class_box_counts"]
+            self.assertEqual(1, sum(sum(counts.values()) for counts in split_boxes.values()))
+            self.assertEqual(report["class_box_counts"]["ball_bearing"], 1)
 
     def test_conflicting_labels_for_same_image_are_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -95,6 +98,9 @@ class I3DPreparationTest(unittest.TestCase):
             self.assertEqual(4, len(image_files))
             self.assertEqual(4, len(label_files))
             self.assertTrue((output / "dataset.yaml").is_file())
+            split_boxes = report["split_class_box_counts"]
+            self.assertEqual(4, sum(sum(counts.values()) for counts in split_boxes.values()))
+            self.assertEqual(4, sum(report["class_box_counts"].values()))
 
 
 if __name__ == "__main__":
