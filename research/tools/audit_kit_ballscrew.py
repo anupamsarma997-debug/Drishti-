@@ -9,7 +9,7 @@ def main():
  p=argparse.ArgumentParser()
  p.add_argument("archive"); p.add_argument("--output",required=True)
  a=p.parse_args()
- ext=collections.Counter(); images=[]; jsons=[]; bad=[]; hashes={}; dup=[]
+ ext=collections.Counter(); images=[]; jsons=[]; bad=[]; hashes={}; dup=[]; shape_labels=collections.Counter(); json_imagepaths=[]
  with zipfile.ZipFile(a.archive) as z:
   for info in z.infolist():
    if info.is_dir(): continue
@@ -39,15 +39,15 @@ def main():
   "archive_integrity":"ZIP readable; each image decoded and verified",
   "archive_file_count":sum(ext.values()),
   "extension_counts":dict(sorted(ext.items())),
-  "decoded_image_count":len(images),
+  "decoded_image_count":len(images),\n  "image_counts_by_parent_folder":dict(collections.Counter(PurePosixPath(x["path"]).parent.name for x in images)),\n  "jpg_count":sum(PurePosixPath(x["path"]).suffix.lower()==".jpg" for x in images),\n  "data_folder_image_count":sum(PurePosixPath(x["path"]).parent.name=="data" for x in images),\n  "demo_folder_image_count":sum(PurePosixPath(x["path"]).parent.name=="demo" for x in images),
   "unique_image_sha256_count":len(hashes),
-  "exact_duplicate_images":len(dup),
+  "exact_duplicate_images":len(dup),\n  "duplicate_image_paths":dup,
   "invalid_image_or_json_files":bad,
   "labelme_json_count":len(jsons),
   "same_basename_image_json_pairs":len(image_stems & json_stems),
   "images_without_same_basename_json":len(image_stems-json_stems),
   "json_without_same_basename_image":len(json_stems-image_stems),
-  "labelme_shapes_total":sum(x["shapes"] for x in jsons),
+  "labelme_shapes_total":sum(x["shapes"] for x in jsons),\n  "labelme_shape_label_counts":dict(sorted(shape_labels.items())),\n  "labelme_imagePath_values_missing":sum(not x for x in json_imagepaths),
   "image_dimensions":dict(collections.Counter(f'{x["width"]}x{x["height"]}' for x in images)),
   "samples":images[:10],
   "classification_patches_21835":"NOT INCLUDED IN THIS REPOSITORY ARCHIVE; separate KIT publication link",
