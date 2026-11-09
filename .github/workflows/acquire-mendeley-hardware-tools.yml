@@ -1,0 +1,89 @@
+name: Acquire Mendeley real-world hardware tools dataset
+
+on:
+  push:
+    paths:
+      - ".github/workflows/acquire-mendeley-hardware-tools.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Request public version 2 archive metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p acquisition
+          curl --fail --silent --show-error --location --retry 3 \
+            "https://api.data.mendeley.com/datasets/gmjkzdxhc6/zip?version=2" \
+            -H "Accept: application/json" -o acquisition/mendeley-archive-metadata.json
+          cat acquisition/mendeley-archive-metadata.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path("acquisition/mendeley-archive-metadata.json").read_text())
+          if data.get("status") not in (None, "COMPLETED", "READY"):
+              raise SystemExit(f"Archive not ready or API requires access: {data.get('status')}")
+          url=data.get("url")
+          if not url:
+              raise SystemExit("Mendeley public archive metadata did not provide a download URL")
+          Path("acquisition/download-url.txt").write_text(url)
+          PY
+      - name: Download public version 2 archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="$(cat acquisition/download-url.txt)"
+          curl --fail --location --retry 3 --retry-all-errors --output acquisition/ML_Hardware_Tools_Complete_Dataset.zip "$URL"
+          sha256sum acquisition/ML_Hardware_Tools_Complete_Dataset.zip | tee acquisition/SHA256SUMS.txt
+          unzip -tq acquisition/ML_Hardware_Tools_Complete_Dataset.zip
+      - name: Audit archive structure and image counts without modifying source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, zipfile
+          from collections import Counter
+          from pathlib import PurePosixPath
+          archive="acquisition/ML_Hardware_Tools_Complete_Dataset.zip"
+          with zipfile.ZipFile(archive) as z:
+              bad=z.testzip()
+              if bad:
+                  raise SystemExit(f"Corrupt ZIP member: {bad}")
+              names=[n for n in z.namelist() if not n.endswith("/")]
+              extensions=Counter(PurePosixPath(n).suffix.lower() for n in names)
+              images=[n for n in names if PurePosixPath(n).suffix.lower() in {".jpg",".jpeg",".png",".webp"}]
+              jsons=[n for n in names if PurePosixPath(n).suffix.lower()==".json"]
+              report={
+                  "archive":archive,
+                  "zip_members":len(names),
+                  "image_files_listed":len(images),
+                  "json_files_listed":len(jsons),
+                  "extension_counts":dict(sorted(extensions.items())),
+                  "coco_json_candidates":jsons[:100],
+                  "archive_integrity":"PASS",
+                  "images_decoded":"NOT YET TESTED",
+                  "duplicate_hash_audit":"NOT YET PERFORMED",
+                  "model_training":"NOT PERFORMED"
+              }
+              with open("acquisition/acquisition-audit.json","w") as f:
+                  json.dump(report,f,indent=2)
+              print(json.dumps(report,indent=2))
+          PY
+      - name: Upload source archive and acquisition audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: vidya-mendeley-hardware-tools-v2-source
+          path: |
+            acquisition/ML_Hardware_Tools_Complete_Dataset.zip
+            acquisition/mendeley-archive-metadata.json
+            acquisition/SHA256SUMS.txt
+            acquisition/acquisition-audit.json
+          if-no-files-found: error
+          retention-days: 30
