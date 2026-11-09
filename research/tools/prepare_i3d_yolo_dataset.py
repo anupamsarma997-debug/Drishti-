@@ -126,6 +126,7 @@ def main():
 
     split_counts = Counter()
     class_counts = Counter()
+    split_class_counts = {split: Counter() for split in ("train", "val", "test")}
     total_boxes = 0
     manifest = []
     for digest in sorted(records):
@@ -137,6 +138,7 @@ def main():
         split_counts[split] += 1
         total_boxes += record["box_count"]
         class_counts.update(record["classes"])
+        split_class_counts[split].update(record["classes"])
         manifest.append({"sha256": digest, "split": split, "image": f"images/{split}/{stem}.jpg", "label": f"labels/{split}/{stem}.txt", "boxes": record["box_count"]})
 
     yaml = [
@@ -157,6 +159,10 @@ def main():
         "valid_yolo_boxes": total_boxes,
         "split_images": dict(split_counts),
         "class_box_counts": {CLASS_NAMES[k]: v for k, v in sorted(class_counts.items())},
+        "split_class_box_counts": {
+            split: {CLASS_NAMES[k]: v for k, v in sorted(counts.items())}
+            for split, counts in split_class_counts.items()
+        },
         "seed": args.seed,
         "split_method": "SHA-256 image deduplication followed by deterministic 80/10/10 hash split",
         "conditioning_images_exported": False,
