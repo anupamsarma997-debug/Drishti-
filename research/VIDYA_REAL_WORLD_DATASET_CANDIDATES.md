@@ -45,3 +45,29 @@ This register distinguishes real photographs from synthetic/augmented images and
 4. Deduplicate exact hashes globally before splitting; split by physical object/session where metadata permits.
 5. Keep licensing evidence, attribution, checksums, and source version in the dataset card.
 6. Model training and real-world validation are separate gates. Synthetic test metrics cannot establish workshop performance.
+
+
+## Acquired real dataset: KIT ball-screw surface defects (2Obe/BSData)
+
+- Upstream: https://github.com/2Obe/BSData
+- License: CC BY-SA 4.0, as declared by the upstream repository LICENSE. Share-alike obligations apply; do not assume a derived combined model can be distributed under a different license.
+- Scope: real industrial ball-screw spindle surface photographs, with LabelMe JSON pitting annotations for a subset. This is a narrow industrial defect dataset, not general object/part recognition.
+- Acquisition workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42565327267
+- Acquired artifact: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42565327267/artifacts/13650593145 (122,256,410 bytes; ZIP integrity and image decode audit completed; 30-day retention).
+- Initial archive audit: 1,107 images decoded; 1,106 unique SHA-256 hashes; 1 exact duplicate; 395 LabelMe JSON files; 394 same-basename image/JSON pairs; 485 annotation shapes; zero invalid image or JSON files.
+- The repository README describes 1,104 dataset images and 394 annotated images. The archive also contains demo material; the audit script is being refined to report dataset-folder images separately from demo images and to report per-label annotation counts. Use that refined report before preparing training data.
+- The repository also references a separate 21,835-patch classification dataset hosted by KIT. Its separate Hugging Face record lists CC BY-NC 4.0, so it is not cleared for commercial app/model use; it has not been acquired by this workflow.
+- Model training: not performed. No recognition accuracy or field performance claim.
+
+## Acquisition blockers encountered
+
+### Strathclyde electronic-enclosure bolt dataset
+- Publisher record: https://pureportal.strath.ac.uk/en/datasets/afrccrad1718corefboltsdetection/
+- Publisher lists a 3.03 GB archive and CC BY 4.0.
+- Automated GitHub Actions runner received HTTP 403 from the direct archive URL, so the archive was not acquired. Workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42565227323.
+- Do not report it as downloaded.
+
+### Mendeley Hardware Tools Complete Dataset
+- Candidate: https://data.mendeley.com/datasets/gmjkzdxhc6/2
+- Publisher describes 24 real workshop tool/hardware categories and CC BY 4.0.
+- Public archive metadata endpoint returned HTTP 401 without OAuth; no credentials were available or requested. No archive acquired. Access-check workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42564731466.
