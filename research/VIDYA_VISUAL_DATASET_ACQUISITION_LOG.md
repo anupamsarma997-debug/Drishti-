@@ -219,3 +219,15 @@ This log separates downloaded archives from extracted/validated images, and both
 - Added `research/VIDYA_REAL_WORLD_VALIDATION_PROTOCOL.md` defining image permission/privacy checks, instance-level split rules, annotation QA, per-class metrics, device benchmarking, and safety release gates.
 - Latest Android CI run after these documentation updates: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42496789952 — passed; debug APK artifact ID `13623602150` (80,372,565 bytes).
 - Full 12-shard dataset preparation run `42496477259` had downloaded all source artifacts and remained in its preparation step at the last status check; upload and final report are not yet confirmed.
+
+
+### Final I3D dataset preparation — SUCCESS (supersedes earlier pending status above)
+- Workflow: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42496477259 — all 12 source downloads, global preparation, and artifact upload completed successfully.
+- Prepared artifact: `vidya-i3d-tools-yolo-prepared`, ID `13624217016`, 6,487,378,410 bytes (~6.49 GB), expires 2026-12-08.
+- Verified preparation report: 36,773 source rows; 36,773 unique primary images; 0 duplicate rows removed; 55,865 valid YOLO boxes; 0 invalid rows / annotation conflicts.
+- Deterministic SHA-256 split (seed `20261108`): train 29,358 images; validation 3,725; test 3,690. This is hash-based, not class-stratified; inspect split-wise class balance before training.
+- All 16 classes are represented. Conditioning images were not exported.
+- Report and detailed counts: `research/VIDYA_I3D_PREPARATION_REPORT.md`.
+- Important: source dataset is synthetic. Preparation is complete; model training and real-world validation have NOT been performed.
+- The artifact is 6.49 GB, exceeding the GitHub connector's 512 MB direct-download limit. GitHub Actions can retrieve it using the workflow artifact download action.
+- Subsequent Android CI runs 42496933782 and 42496982300 both passed dataset tests, Android unit tests, and debug APK assembly. Latest APK artifact: https://github.com/anupamsarma997-debug/Drishti-/actions/runs/42496982300/artifacts/13624370699 (80,372,566 bytes).
